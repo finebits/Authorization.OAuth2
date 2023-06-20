@@ -1,3 +1,5 @@
+certificates/
+nupkgs/
 source/.vs/
 source/Authentication.OAuth2/bin/
 source/Authentication.OAuth2/obj/
