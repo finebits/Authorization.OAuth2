@@ -20,13 +20,20 @@ name: Build and Test
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches:
+      - main
+      - develop
+      - release/**
   pull_request:
-    branches: [ "main", "develop" ]
+    branches:
+      - main
+      - develop
+      - release/**
 
 env:
   project: source/Authentication.OAuth2.sln
   test-project: source/Authentication.OAuth2.sln
+  test-report-root: source/TestResults
 
 jobs:
 
@@ -57,4 +64,18 @@ jobs:
       run: dotnet build ${{ env.project }} --configuration ${{ env.configuration }}
         
     - name: Test the project
-      run: dotnet test ${{ env.test-project }} --configuration ${{ env.configuration }}
+      run: dotnet test ${{ env.test-project }} --configuration ${{ env.configuration }} --collect:"XPlat Code Coverage" --results-directory="${{ env.test-report-root }}"
+
+    - name: Generate test coverage badge
+      if: ${{ env.gist-id != '' && env.gist-auth-token != '' }}
+      uses: finebits/github-actions/badges/coverlet-coverage-badge@v1.1.1
+      with:
+        label-color: "343b42"
+        report-root: "${{ env.test-report-root }}/**/"
+        report-filename: coverage.cobertura.xml
+        gist-filename-format: "${{ github.event.repository.name }}-{0}-test-coverage.json"
+        gist-id: ${{ env.gist-id }}
+        gist-auth-token: ${{ env.gist-auth-token }}
+      env:
+        gist-id: ${{ vars.BADGE_COVERLET_COVERAGE_GIST_ID }}
+        gist-auth-token: ${{ secrets.TOKEN_GITHUB_GIST }}
