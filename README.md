@@ -1,4 +1,4 @@
-# Authorization.Oauth2
+# Authorization.OAuth2
 
 [![Build and Test status](https://github.com/finebits/Authentication.OAuth2/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/finebits/Authentication.OAuth2/actions/workflows/build-and-test.yml)
 ![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authentication.OAuth2-total-test-coverage.json)
