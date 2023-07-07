@@ -18,25 +18,25 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Finebits.Authentication.OAuth2</RootNamespace>
-    <AssemblyName>Finebits.Authentication.OAuth2</AssemblyName>
+    <RootNamespace>Finebits.Authorization.OAuth2</RootNamespace>
+    <AssemblyName>Finebits.Authorization.OAuth2</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
 
-    <PackageId>Finebits.Authentication.OAuth2</PackageId>
-    <Title>Finebits.Authentication.OAuth2</Title>
+    <PackageId>Finebits.Authorization.OAuth2</PackageId>
+    <Title>Finebits.Authorization.OAuth2</Title>
 
     <Authors>Finebits</Authors>
     <Company>Finebits</Company>
 
     <Product>OAuth2 Client (netstandard2.0)</Product>
-    <Description>This is a .netstandard2 library that allows an application to support OAuth 2.0 authentication workflow.</Description>
+    <Description>This is a .netstandard2 library that allows an application to support the OAuth 2.0 authorization protocol.</Description>
     <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
 
-    <PackageProjectUrl>https://github.com/finebits/Authentication.OAuth2</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>oauth2;auth;</PackageTags>
+    <PackageTags>oauth2;authorization;</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 

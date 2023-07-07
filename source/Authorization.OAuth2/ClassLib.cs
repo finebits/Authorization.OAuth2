@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits(https://finebits.com/)                             //
+//   Copyright 2023 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -16,7 +16,7 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-namespace Finebits.Authentication.OAuth2
+namespace Finebits.Authorization.OAuth2
 {
     public class ClassLib
     {

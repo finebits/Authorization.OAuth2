@@ -1,10 +1,10 @@
 certificates/
 nupkgs/
 source/.vs/
-source/Authentication.OAuth2/bin/
-source/Authentication.OAuth2/obj/
-source/Authentication.OAuth2.Samlpe/bin/
-source/Authentication.OAuth2.Samlpe/obj/
-source/Authentication.OAuth2.Test/bin/
-source/Authentication.OAuth2.Test/obj/
+source/Authorization.OAuth2/bin/
+source/Authorization.OAuth2/obj/
+source/Authorization.OAuth2.Samlpe/bin/
+source/Authorization.OAuth2.Samlpe/obj/
+source/Authorization.OAuth2.Test/bin/
+source/Authorization.OAuth2.Test/obj/
 source/TestResults/
