@@ -20,14 +20,25 @@ name: Pack Nuget
 
 on:
   workflow_dispatch:
+    inputs:
+      push-nuget:
+        description: 'Nuget will be pushed to nuget.org'
+        type: boolean
+        required: false
+        default: false
+      ignore-certificate:
+        description: 'Nuget can be pushed without a certificate'
+        type: boolean
+        required: false
+        default: false
   release:
     types: [published]
 
 env:
+  artifact-name: Finebits.Authorization.OAuth2
   nuget-project: ./source/Authorization.OAuth2/Authorization.OAuth2.csproj
   test-project: ./source/Authorization.OAuth2.Test/Authorization.OAuth2.Test.csproj
   configuration: Release
-  artifact-name: Finebits.Authorization.OAuth2
 
   package-root: "${{ github.workspace }}/nupkgs"
   certificate-root: "${{ github.workspace }}/certificates"
@@ -122,5 +133,5 @@ jobs:
         artifact-name: ${{ steps.nuget.outputs.artifact-full-name }}
 
     - name: Push package to nuget.org
-      if: ${{ github.event_name == 'release' && env.nuget-apikey != '' && env.certificate != '' }}
+      if: ${{ ( github.event_name == 'release' || inputs.push-nuget ) && env.nuget-apikey != '' && ( env.certificate != '' || inputs.ignore-certificate ) }}
       run: dotnet nuget push "${{ env.package-root }}/*.nupkg" --api-key "${{ env.nuget-apikey }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
