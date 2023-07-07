@@ -24,10 +24,10 @@ on:
     types: [published]
 
 env:
-  nuget-project: ./source/Authentication.OAuth2/Authentication.OAuth2.csproj
-  test-project: ./source/Authentication.OAuth2.Test/Authentication.OAuth2.Test.csproj
+  nuget-project: ./source/Authorization.OAuth2/Authorization.OAuth2.csproj
+  test-project: ./source/Authorization.OAuth2.Test/Authorization.OAuth2.Test.csproj
   configuration: Release
-  artifact-name: Finebits.Authentication.OAuth2
+  artifact-name: Finebits.Authorization.OAuth2
 
   package-root: "${{ github.workspace }}/nupkgs"
   certificate-root: "${{ github.workspace }}/certificates"

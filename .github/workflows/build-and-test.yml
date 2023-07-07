@@ -31,8 +31,8 @@ on:
       - release/**
 
 env:
-  project: source/Authentication.OAuth2.sln
-  test-project: source/Authentication.OAuth2.sln
+  project: source/Authorization.OAuth2.sln
+  test-project: source/Authorization.OAuth2.sln
   test-report-root: source/TestResults
 
 jobs:

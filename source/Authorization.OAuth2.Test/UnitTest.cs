@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits(https://finebits.com/)                             //
+//   Copyright 2023 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -18,7 +18,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Authentication.OAuth2.Test;
+namespace Authorization.OAuth2.Test;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
 internal class Tests

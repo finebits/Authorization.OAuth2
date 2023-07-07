@@ -5,8 +5,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>Finebits.Authentication.OAuth2.Samlpe</AssemblyName>
-    <RootNamespace>Finebits.Authentication.OAuth2.Samlpe</RootNamespace>
+    <AssemblyName>Finebits.Authorization.OAuth2.Samlpe</AssemblyName>
+    <RootNamespace>Finebits.Authorization.OAuth2.Samlpe</RootNamespace>
     <AnalysisLevel>6.0-all</AnalysisLevel>
   </PropertyGroup>
 
@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Authentication.OAuth2\Authentication.OAuth2.csproj" />
+    <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
   </ItemGroup>
 
 </Project>
