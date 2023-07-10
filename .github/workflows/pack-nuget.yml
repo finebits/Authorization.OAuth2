@@ -21,13 +21,18 @@ name: Pack Nuget
 on:
   workflow_dispatch:
     inputs:
-      push-nuget:
-        description: 'Nuget will be pushed to nuget.org'
+      upload-artifact:
+        description: 'NuGet artifact will be saved'
+        type: boolean
+        required: false
+        default: false
+      push-to-nuget:
+        description: 'NuGet will be pushed to nuget.org'
         type: boolean
         required: false
         default: false
       ignore-certificate:
-        description: 'Nuget can be pushed without a certificate'
+        description: 'NuGet can be pushed without a certificate'
         type: boolean
         required: false
         default: false
@@ -42,10 +47,6 @@ env:
 
   package-root: "${{ github.workspace }}/nupkgs"
   certificate-root: "${{ github.workspace }}/certificates"
-
-  certificate: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
-  certificate-password: ${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}
-  nuget-apikey: ${{ secrets.NUGET_APIKEY }}
 
 jobs:
   test-nuget:
@@ -71,8 +72,6 @@ jobs:
   pack-nuget:
     runs-on: ubuntu-latest
     needs: [test-nuget]
-    outputs:
-      artifact-full-name: ${{ steps.nuget.outputs.artifact-full-name }}
 
     steps:
     - name: Checkout
@@ -86,52 +85,18 @@ jobs:
       with:
         dotnet-version: 7.0.x
 
-    - name: Get version number
-      id: version
-      uses: finebits/github-actions/version-number@v1
-
-    - name: Save nuget parameters
-      id: nuget 
-      run: |
-        echo "file-version=${{ env.file-version }}" >> $GITHUB_OUTPUT
-        echo "package-version=${{ env.package-version }}" >> $GITHUB_OUTPUT
-        echo "artifact-full-name=${{ env.artifact-name }}-v${{ env.package-version }}" >> $GITHUB_OUTPUT
-      env:
-        file-version: ${{ steps.version.outputs.suffix-version }}
-        package-version: ${{ steps.version.outputs.semantic-hash-version }}
-
-    - name: Build nuget
-      run: dotnet build ${{ env.nuget-project }} --configuration ${{ env.configuration }} --property:Version=${{ env.file-version }} --property:ContinuousIntegrationBuild=true
-      env:
-        file-version: ${{ steps.nuget.outputs.file-version }}
-
-    - name: Pack nuget
-      run: dotnet pack "${{ env.nuget-project }}" --output="${{ env.package-root }}" --configuration ${{ env.configuration }} --p:PackageVersion="${{ env.package-version }}" --no-build
-      env:
-        package-version: ${{ steps.nuget.outputs.package-version }}
-
-    - name: Sign nuget
-      if: ${{ env.certificate != '' }}
-      run: |
-        mkdir -p ${{ env.certificate-root }}
-        echo "${{ env.certificate }}" | base64 --decode > "${{ env.certificate-file }}"
-        dotnet nuget sign "${{ env.package-root }}/*.nupkg" --certificate-path="${{ env.certificate-file }}" --certificate-password="${{ env.certificate-password }}" --timestamper "http://timestamp.digicert.com"
-      env:
-        certificate-file: "${{ env.certificate-root }}/certificate.pfx"
-
-    - name: Verify nuget
-      if: ${{ env.certificate != '' }}
-      run: dotnet nuget verify "${{ env.package-root }}/*.nupkg"
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Pack
+      uses: finebits/github-actions/pack-nuget@v1.2
       with:
-        name: ${{ env.artifact-name }}
-        path: |
-          ${{ env.package-root }}
+        project: ${{ env.nuget-project }}
+        configuration: ${{ env.configuration }}
+        upload-artifact: ${{ github.event_name == 'release' || inputs.upload-artifact == true }}
+        artifact-name: ${{ env.artifact-name }}
+        push-to-nuget: ${{ ( github.event_name == 'release' || inputs.push-to-nuget == true ) && env.nuget-apikey != '' && ( env.certificate != '' || inputs.ignore-certificate == true ) }}
+        nuget-apikey: ${{ env.nuget-apikey }}
+        push-to-github: false
+        certificate: ${{ env.certificate }}
+        certificate-password: ${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}
       env:
-        artifact-name: ${{ steps.nuget.outputs.artifact-full-name }}
-
-    - name: Push package to nuget.org
-      if: ${{ ( github.event_name == 'release' || inputs.push-nuget ) && env.nuget-apikey != '' && ( env.certificate != '' || inputs.ignore-certificate ) }}
-      run: dotnet nuget push "${{ env.package-root }}/*.nupkg" --api-key "${{ env.nuget-apikey }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        certificate: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
+        nuget-apikey: ${{ secrets.NUGET_APIKEY }}
