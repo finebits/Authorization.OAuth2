@@ -81,7 +81,9 @@ jobs:
         report-root: "${{ env.test-report-root }}/**/"
         report-filename: coverage.cobertura.xml
         gist-filename-format: "${{ github.event.repository.name }}-${{ env.branch-name }}-{0}-test-coverage.json"
+        gist-id: ${{ env.gist-id }}
+        gist-auth-token: ${{ env.gist-auth-token }}
+      env:
         gist-id: ${{ vars.BADGE_COVERLET_COVERAGE_GIST_ID }}
         gist-auth-token: ${{ secrets.TOKEN_GITHUB_GIST }}
-      env:
         branch-name: ${{ steps.branch.outputs.name }}
