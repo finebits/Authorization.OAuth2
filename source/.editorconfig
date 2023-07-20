@@ -18,8 +18,7 @@ tab_width = 4
 indent_size = 4
 
 # New line preferences
-end_of_line = crlf
-insert_final_newline = false
+insert_final_newline = true
 
 
 
