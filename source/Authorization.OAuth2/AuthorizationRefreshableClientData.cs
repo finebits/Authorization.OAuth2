@@ -16,6 +16,48 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-#pragma warning disable CA1303 // Do not pass literals as localized parameters
-Console.WriteLine("Hello, World!");
-#pragma warning restore CA1303 // Do not pass literals as localized parameters
+using System.Collections.Specialized;
+
+using Finebits.Authorization.OAuth2.Abstractions;
+using Finebits.Authorization.OAuth2.RestClient;
+
+namespace Finebits.Authorization.OAuth2
+{
+    public abstract partial class AuthorizationRefreshableClient : BaseAuthorizationClient, IRefreshable
+    {
+        protected class RefreshPayload : IFormUrlEncodedPayload
+        {
+            public string ClientId { get; set; }
+
+            public string ClientSecret { get; set; }
+
+            public string RefreshToken { get; set; }
+
+            public string GrantType
+            {
+                get { return _grantType ?? RefreshTokenType; }
+                set { _grantType = value; }
+            }
+
+            public NameValueCollection GetCollection()
+            {
+                var result = new NameValueCollection
+                {
+                    {"grant_type", GrantType},
+                    {"client_id", ClientId},
+                    {"refresh_token", RefreshToken},
+                };
+
+                if (!string.IsNullOrEmpty(ClientSecret))
+                {
+                    result.Add("client_secret", ClientSecret);
+                }
+
+                return result;
+            }
+
+            private string _grantType;
+            private const string RefreshTokenType = "refresh_token";
+        }
+    }
+}

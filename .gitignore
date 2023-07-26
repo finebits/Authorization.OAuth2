@@ -3,8 +3,14 @@ nupkgs/
 source/.vs/
 source/Authorization.OAuth2/bin/
 source/Authorization.OAuth2/obj/
-source/Authorization.OAuth2.Samlpe/bin/
-source/Authorization.OAuth2.Samlpe/obj/
+source/Authorization.OAuth2.Brokers/bin/
+source/Authorization.OAuth2.Brokers/obj/
+source/Authorization.OAuth2.Google/bin/
+source/Authorization.OAuth2.Google/obj/
+source/Authorization.OAuth2.Microsoft/bin/
+source/Authorization.OAuth2.Microsoft/obj/
+source/Authorization.OAuth2.Sample/bin/
+source/Authorization.OAuth2.Sample/obj/
 source/Authorization.OAuth2.Test/bin/
 source/Authorization.OAuth2.Test/obj/
 source/TestResults/

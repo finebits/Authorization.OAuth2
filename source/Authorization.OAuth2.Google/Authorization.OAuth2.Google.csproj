@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Finebits.Authorization.OAuth2</RootNamespace>
-    <AssemblyName>Finebits.Authorization.OAuth2</AssemblyName>
+    <RootNamespace>Finebits.Authorization.OAuth2.Google</RootNamespace>
+    <AssemblyName>Finebits.Authorization.OAuth2.Google</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
 
-    <PackageId>Finebits.Authorization.OAuth2</PackageId>
-    <Title>Finebits.Authorization.OAuth2</Title>
+    <PackageId>Finebits.Authorization.OAuth2.Google</PackageId>
+    <Title>Finebits.Authorization.OAuth2.Google</Title>
 
     <Authors>Finebits</Authors>
     <Company>Finebits</Company>
@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Finebits.Network.RestClient" Version="0.1.0-alpha" />
+    <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 
