@@ -16,10 +16,32 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-namespace Finebits.Authorization.OAuth2
-{
-    public class ClassLib
-    {
+using System;
+using System.Collections.Specialized;
 
+namespace Finebits.Authorization.OAuth2.Types
+{
+    public class AuthenticationResult
+    {
+        public static readonly AuthenticationResult Canceled = new AuthenticationResult(true, null);
+
+        protected bool IsCanceled { get; }
+
+        public NameValueCollection Properties { get; }
+
+        public AuthenticationResult(NameValueCollection properties)
+            : this(false, properties)
+        {
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
+            }
+        }
+
+        protected AuthenticationResult(bool isCanceled, NameValueCollection properties)
+        {
+            IsCanceled = isCanceled;
+            Properties = properties;
+        }
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2023 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -16,21 +16,15 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Authorization.OAuth2.Test;
+using Finebits.Authorization.OAuth2.Types;
 
-[SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
-internal class Tests
+namespace Finebits.Authorization.OAuth2.Abstractions
 {
-    [SetUp]
-    public void Setup()
+    public interface IRevocable
     {
-    }
-
-    [Test]
-    public void Test1()
-    {
-        Assert.Pass();
+        Task RevokeTokenAsync(Token token, CancellationToken cancellationToken = default);
     }
 }
