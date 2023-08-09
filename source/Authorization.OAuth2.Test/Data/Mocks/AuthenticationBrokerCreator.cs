@@ -77,8 +77,8 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             var request = new Uri("https://request");
 
             var mock = new Mock<IAuthenticationBroker>();
-            mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>()))
-                .Callback<Uri, Uri>((r, _) => request = r)
+            mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+                .Callback<Uri, Uri, CancellationToken>((r, _, _) => request = r)
                 .Returns(() => Task.FromResult(GetMissingResult(request)));
 
             return mock;
@@ -91,13 +91,13 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         internal static Mock<IAuthenticationBroker> CreateThrowExceptionBroker()
         {
-            return CreateBroker(() => throw new InvalidOperationException("IAuthenticationBroker exception"));
+            return CreateBroker(() => throw new InvalidOperationException());
         }
 
         private static Mock<IAuthenticationBroker> CreateBroker(Func<Task<AuthenticationResult>> valueFunction)
         {
             var mock = new Mock<IAuthenticationBroker>();
-            mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>()))
+            mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
                 .Returns(valueFunction);
 
             return mock;
@@ -121,8 +121,8 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             var request = new Uri("https://request");
 
             var mock = new Mock<IAuthenticationBroker>();
-            mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>()))
-                .Callback<Uri, Uri>((r, _) => request = r)
+            mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+                .Callback<Uri, Uri, CancellationToken>((r, _, _) => request = r)
                 .Returns(() => Task.FromResult(GetSuccessResult(request, state)));
 
             return mock;

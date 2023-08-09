@@ -17,7 +17,6 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -41,16 +40,9 @@ namespace Finebits.Authorization.OAuth2.Brokers
 
         protected static bool StartProcess(string fileName)
         {
-            try
+            using (var process = Process.Start(new ProcessStartInfo { FileName = fileName, UseShellExecute = true }))
             {
-                using (var process = Process.Start(new ProcessStartInfo { FileName = fileName, UseShellExecute = true }))
-                {
-                    return process != null;
-                }
-            }
-            catch (Win32Exception)
-            {
-                return false;
+                return process != null;
             }
         }
     }

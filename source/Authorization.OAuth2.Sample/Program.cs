@@ -16,9 +16,6 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System.Net;
-using System.Net.Sockets;
-
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Brokers;
 using Finebits.Authorization.OAuth2.Brokers.Abstractions;
@@ -31,26 +28,16 @@ namespace Finebits.Authorization.OAuth2.Sample;
 
 class Program
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
-    private static async Task Main(string[] args)
+    private static async Task Main(string[] _)
     {
-        var arguments = string.Join(", ", args);
-        arguments = string.IsNullOrEmpty(arguments) ? "empty" : arguments;
-
-        Console.WriteLine($"Hello, World!\nCommand line: {arguments}");
-
-        var port = GetRandomUnusedPort();
-
         try
         {
             using var httpClient = new HttpClient();
             var launcher = new WebBrowserLauncher();
-            using var listener = new WebBrowserHttpListener();
-            var redirectURI = new Uri($"http://{IPAddress.Loopback}:{port}/");
-
+            var redirectURI = WebBrowserAuthenticationBroker.GetLoopbackUri();
 
             Console.Write("""
+                Welcome to OAuth2.Sample.
 
                 1. Google
                 2. Microsoft
@@ -61,9 +48,9 @@ class Program
 
             var authClient = Console.ReadLine() switch
             {
-                "2" => GetMicrosoftAuthClient(httpClient, launcher, listener, redirectURI),
-                "3" => GetOffice365AuthClient(httpClient, launcher, listener, redirectURI),
-                _ => GetGoogleAuthClient(httpClient, launcher, listener, redirectURI),
+                "2" => GetMicrosoftAuthClient(httpClient, launcher, redirectURI),
+                "3" => GetOffice365AuthClient(httpClient, launcher, redirectURI),
+                _ => GetGoogleAuthClient(httpClient, launcher, redirectURI),
             };
 
             var token = await authClient.LoginAsync().ConfigureAwait(false);
@@ -146,7 +133,6 @@ class Program
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
     private static async Task<Types.AuthorizationToken?> RefreshTokenAsync(IAuthorizationClient client, Token token)
     {
         if (client is IRefreshable refreshClient)
@@ -159,7 +145,6 @@ class Program
         return null;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
     private static async Task RevokeTokenAsync(IAuthorizationClient client, Token token)
     {
         if (token is null)
@@ -174,7 +159,7 @@ class Program
         }
     }
 
-    private static IAuthorizationClient GetGoogleAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, AuthenticationListener listener, Uri redirectURI)
+    private static IAuthorizationClient GetGoogleAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
     {
         // Create <client_id> and <client_secret>: https://console.developers.google.com/apis/credentials
         // You can add additional scopes if necessary.
@@ -189,10 +174,10 @@ class Program
                 "email",
             }
         };
-        return new GoogleAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher, listener), config);
+        return new GoogleAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher), config);
     }
 
-    private static IAuthorizationClient GetMicrosoftAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, AuthenticationListener listener, Uri redirectURI)
+    private static IAuthorizationClient GetMicrosoftAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
     {
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
@@ -207,10 +192,10 @@ class Program
                 "https://graph.microsoft.com/.default",
             }
         };
-        return new MicrosoftAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher, listener), config);
+        return new MicrosoftAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher), config);
     }
 
-    private static IAuthorizationClient GetOffice365AuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, AuthenticationListener listener, Uri redirectURI)
+    private static IAuthorizationClient GetOffice365AuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
     {
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
@@ -224,15 +209,6 @@ class Program
                 "offline_access",
             }
         };
-        return new MicrosoftAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher, listener), config);
-    }
-
-    private static int GetRandomUnusedPort()
-    {
-        var listener = new TcpListener(IPAddress.Loopback, 0);
-        listener.Start();
-        var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-        listener.Stop();
-        return port;
+        return new MicrosoftAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher), config);
     }
 }

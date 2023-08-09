@@ -16,10 +16,7 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-namespace Finebits.Authorization.OAuth2.Brokers.Abstractions
-{
-    public interface IAuthenticationCanceler
-    {
-        void Cancel();
-    }
-}
+using System.Diagnostics.CodeAnalysis;
+
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Unhandled Exception Handler", Scope = "member", Target = "~M:Finebits.Authorization.OAuth2.Sample.Program.Main(System.String[])~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "This application is not localized.", Scope = "module")]

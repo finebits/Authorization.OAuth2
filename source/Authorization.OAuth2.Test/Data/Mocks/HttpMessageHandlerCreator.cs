@@ -155,7 +155,6 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             return mock;
         }
 
-
         public static Mock<HttpMessageHandler> CreateHttpError()
         {
             return Create(() => new HttpResponseMessage()

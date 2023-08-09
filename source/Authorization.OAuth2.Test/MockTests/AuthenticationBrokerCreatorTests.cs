@@ -61,7 +61,7 @@ internal class AuthenticationBrokerCreatorTests
         Assert.Multiple(() =>
         {
             Assert.That(result, Is.EqualTo(AuthenticationResult.Canceled));
-            Assert.That(result.Properties, Is.Null);
+            Assert.That(result.Properties, Is.Empty);
         });
     }
 
