@@ -19,7 +19,6 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Finebits.Authorization.OAuth2.Test.Data.Mocks;
-using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Test.MockTests;
 
@@ -39,7 +38,6 @@ internal class AuthenticationBrokerCreatorTests
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(result, Is.Not.EqualTo(AuthenticationResult.Canceled));
             Assert.That(result.Properties, Is.Not.Null);
             Assert.That(result.Properties["state"], Is.EqualTo(state));
             Assert.That(result.Properties["code"], Is.Not.Null);
@@ -49,20 +47,15 @@ internal class AuthenticationBrokerCreatorTests
     }
 
     [Test]
-    public async Task CreateCanceledBroker_BrokerWorkflow_Canceled()
+    public void CreateCanceledBroker_BrokerWorkflow_Exception()
     {
         var requestUri = new Uri($"https://service/auth-uri");
         var callbackUri = new Uri("https://redirect");
 
         var mockBroker = AuthenticationBrokerCreator.CreateCanceledBroker();
-        var result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
 
-        Assert.That(result, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(result, Is.EqualTo(AuthenticationResult.Canceled));
-            Assert.That(result.Properties, Is.Empty);
-        });
+        Assert.That(exception, Is.Not.Null);
     }
 
     [Test]
@@ -77,7 +70,6 @@ internal class AuthenticationBrokerCreatorTests
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(result, Is.Not.EqualTo(AuthenticationResult.Canceled));
             Assert.That(result.Properties, Is.Not.Null);
             Assert.That(result.Properties["state"], Is.Null);
             Assert.That(result.Properties["code"], Is.Null);
@@ -110,7 +102,6 @@ internal class AuthenticationBrokerCreatorTests
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(result, Is.Not.EqualTo(AuthenticationResult.Canceled));
             Assert.That(result.Properties, Is.Not.Null);
             Assert.That(result.Properties, Is.Empty);
         });
@@ -128,7 +119,6 @@ internal class AuthenticationBrokerCreatorTests
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(result, Is.Not.EqualTo(AuthenticationResult.Canceled));
             Assert.That(result.Properties, Is.Not.Null);
             Assert.That(result.Properties, Is.Not.Empty);
             Assert.That(result.Properties["code"], Is.Null);
@@ -150,7 +140,6 @@ internal class AuthenticationBrokerCreatorTests
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(result, Is.Not.EqualTo(AuthenticationResult.Canceled));
             Assert.That(result.Properties, Is.Not.Null);
             Assert.That(result.Properties, Is.Not.Empty);
             Assert.That(result.Properties["state"], Is.Not.EqualTo(state));

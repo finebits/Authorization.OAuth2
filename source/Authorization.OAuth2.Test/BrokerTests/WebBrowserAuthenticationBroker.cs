@@ -21,6 +21,7 @@ using System.Net;
 
 using Finebits.Authorization.OAuth2.Brokers;
 using Finebits.Authorization.OAuth2.Brokers.Abstractions;
+using Finebits.Authorization.OAuth2.Types;
 
 using Moq;
 
@@ -68,6 +69,42 @@ internal class WebBrowserAuthenticationBrokerTests
     }
 
     [Test]
+    public void AuthenticateAsync_CancellationToken_Exception()
+    {
+        using var cts = new CancellationTokenSource();
+        var mockLauncher = new Mock<IWebBrowserLauncher>();
+        mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
+
+        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object);
+        var callback = WebBrowserAuthenticationBroker.GetLoopbackUri();
+
+        cts.Cancel();
+        AuthenticationResult? result = null;
+        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => result = await broker.AuthenticateAsync(new Uri("https://request/"), callback, cts.Token).ConfigureAwait(false));
+
+        Assert.That(exception, Is.Not.Null);
+        Assert.That(exception.CancellationToken, Is.EqualTo(cts.Token));
+    }
+
+    [Test]
+    public void AuthenticateAsync_CancellationTokenDelay_Exception()
+    {
+        using var cts = new CancellationTokenSource();
+        var mockLauncher = new Mock<IWebBrowserLauncher>();
+        mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
+
+        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object);
+        var callback = WebBrowserAuthenticationBroker.GetLoopbackUri();
+
+        cts.CancelAfter(500);
+        AuthenticationResult? result = null;
+        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => result = await broker.AuthenticateAsync(new Uri("https://request/"), callback, cts.Token).ConfigureAwait(false));
+
+        Assert.That(exception, Is.Not.Null);
+        Assert.That(exception.CancellationToken, Is.EqualTo(cts.Token));
+    }
+
+    [Test]
     public void GetRandomUnusedPort_Call_Success()
     {
         var port = int.MinValue;
@@ -91,5 +128,11 @@ internal class WebBrowserAuthenticationBrokerTests
             Assert.That(uri.IsLoopback, Is.True);
             Assert.That(uri.Port, Is.InRange(IPEndPoint.MinPort, IPEndPoint.MaxPort));
         });
+    }
+
+    [Test]
+    public void IsSupported_Call_NotException()
+    {
+        Assert.DoesNotThrow(() => _ = WebBrowserAuthenticationBroker.IsSupported);
     }
 }

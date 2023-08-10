@@ -93,12 +93,12 @@ namespace Finebits.Authorization.OAuth2.Brokers
                 catch (HttpListenerException exHttpListener) when (exHttpListener.ErrorCode == ERROR_OPERATION_ABORTED &&
                                                                    cancellationToken.IsCancellationRequested)
                 {
-                    return AuthenticationResult.Canceled;
+                    throw new OperationCanceledException(cancellationToken);
                 }
                 catch (InvalidOperationException exInvalidOperation) when (exInvalidOperation.Source == typeof(HttpListener).FullName &&
                                                                            cancellationToken.IsCancellationRequested)
                 {
-                    return AuthenticationResult.Canceled;
+                    throw new OperationCanceledException(cancellationToken);
                 }
                 finally
                 {

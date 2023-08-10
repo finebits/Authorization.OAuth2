@@ -28,29 +28,29 @@ namespace Finebits.Authorization.OAuth2.Exceptions
         public string PropertyName { get; private set; }
 
         public AuthorizationPropertiesException()
-            : base(ErrorType.InvalidResponse, EmptyProperties)
+            : base(EmptyProperties)
         { }
 
         public AuthorizationPropertiesException(string message)
-            : base(ErrorType.InvalidResponse, message)
+            : base(message)
         { }
 
         public AuthorizationPropertiesException(string message, string propertyName)
-            : base(ErrorType.InvalidResponse, GetPropertyMessage(message, propertyName))
+            : base(GetPropertyMessage(message, propertyName))
         {
             PropertyName = propertyName;
         }
 
         public AuthorizationPropertiesException(Exception innerException)
-            : base(ErrorType.InvalidResponse, EmptyProperties, innerException)
+            : base(EmptyProperties, innerException)
         { }
 
         public AuthorizationPropertiesException(string message, string propertyName, Exception innerException)
-            : base(ErrorType.InvalidResponse, GetPropertyMessage(message, propertyName), innerException)
+            : base(GetPropertyMessage(message, propertyName), innerException)
         { }
 
         public AuthorizationPropertiesException(string message, Exception innerException)
-            : base(ErrorType.InvalidResponse, message, innerException)
+            : base(message, innerException)
         { }
 
         private static string GetPropertyMessage(string message, string propertyName)

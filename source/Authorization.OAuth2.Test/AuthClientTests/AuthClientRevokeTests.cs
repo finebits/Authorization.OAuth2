@@ -116,7 +116,6 @@ internal class AuthClientRevokeTests
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
             Assert.That(exception.ErrorReason, Is.Not.Null);
             Assert.That(exception.ErrorDescription, Is.Not.Null);
         });

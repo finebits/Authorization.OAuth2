@@ -21,26 +21,25 @@ using System.Collections.Specialized;
 
 namespace Finebits.Authorization.OAuth2.Exceptions
 {
-    public sealed class AuthorizationInvalidBrokerResultException : AuthorizationException
+    public sealed class AuthorizationBrokerResultException : AuthorizationException
     {
         public string Error { get; private set; }
         public string ErrorDescription { get; private set; }
         public NameValueCollection Properties { get; private set; }
 
-        public AuthorizationInvalidBrokerResultException()
-            : base(ErrorType.InvalidResponse)
+        public AuthorizationBrokerResultException()
         { }
 
-        public AuthorizationInvalidBrokerResultException(string message)
-            : base(ErrorType.InvalidResponse, message)
+        public AuthorizationBrokerResultException(string message)
+            : base(message)
         { }
 
-        public AuthorizationInvalidBrokerResultException(string message, Exception innerException)
-            : base(ErrorType.InvalidResponse, message, innerException)
+        public AuthorizationBrokerResultException(string message, Exception innerException)
+            : base(message, innerException)
         { }
 
-        public AuthorizationInvalidBrokerResultException(NameValueCollection properties, string message, Exception innerException)
-            : base(ErrorType.InvalidResponse, message, innerException)
+        public AuthorizationBrokerResultException(NameValueCollection properties, string message, Exception innerException)
+            : base(message, innerException)
         {
             Properties = properties;
             Error = Properties?["error"];

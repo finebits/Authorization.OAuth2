@@ -30,40 +30,39 @@ namespace Finebits.Authorization.OAuth2.Exceptions
         public static readonly string DefaultMessage = "Authorization cannot be done. The service response contains an error.";
 
         public AuthorizationInvalidResponseException()
-            : base(ErrorType.InvalidResponse)
         { }
 
         public AuthorizationInvalidResponseException(string message)
-            : base(ErrorType.InvalidResponse, message)
+            : base(message)
         { }
 
         public AuthorizationInvalidResponseException(string message, Exception innerException)
-            : base(ErrorType.InvalidResponse, message, innerException)
+            : base(message, innerException)
         { }
 
         public AuthorizationInvalidResponseException(IInvalidResponse content, string message, Exception innerException)
-            : base(ErrorType.InvalidResponse, message, innerException)
+            : base(message, innerException)
         {
             ErrorReason = content?.ErrorReason;
             ErrorDescription = content?.ErrorDescription;
         }
 
         public AuthorizationInvalidResponseException(IInvalidResponse content, string message)
-            : base(ErrorType.InvalidResponse, message)
+            : base(message)
         {
             ErrorReason = content?.ErrorReason;
             ErrorDescription = content?.ErrorDescription;
         }
 
         public AuthorizationInvalidResponseException(IInvalidResponse content, Exception innerException)
-            : base(ErrorType.InvalidResponse, DefaultMessage, innerException)
+            : base(DefaultMessage, innerException)
         {
             ErrorReason = content?.ErrorReason;
             ErrorDescription = content?.ErrorDescription;
         }
 
         public AuthorizationInvalidResponseException(IInvalidResponse content)
-            : base(ErrorType.InvalidResponse, DefaultMessage)
+            : base(DefaultMessage)
         {
             ErrorReason = content?.ErrorReason;
             ErrorDescription = content?.ErrorDescription;

@@ -20,46 +20,17 @@ using System;
 
 namespace Finebits.Authorization.OAuth2.Exceptions
 {
-    public enum ErrorType
-    {
-        Error,
-        Cancel,
-        InvalidResponse,
-    }
-
     public class AuthorizationException : Exception
     {
-        public ErrorType ErrorType { get; private set; }
-
         public AuthorizationException()
-        {
-            ErrorType = ErrorType.Error;
-        }
+        { }
 
-        public AuthorizationException(string message) : base(message)
-        {
-            ErrorType = ErrorType.Error;
-        }
+        public AuthorizationException(string message)
+            : base(message)
+        { }
 
-        public AuthorizationException(string message, Exception innerException) : base(message, innerException)
-        {
-            ErrorType = ErrorType.Error;
-        }
-
-        public AuthorizationException(ErrorType type)
-        {
-            ErrorType = type;
-        }
-
-        public AuthorizationException(ErrorType type, string message) : base(message)
-        {
-            ErrorType = type;
-        }
-
-        public AuthorizationException(ErrorType type, string message, Exception innerException)
+        public AuthorizationException(string message, Exception innerException)
             : base(message, innerException)
-        {
-            ErrorType = type;
-        }
+        { }
     }
 }
