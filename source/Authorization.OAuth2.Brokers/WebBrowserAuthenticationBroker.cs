@@ -17,6 +17,11 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Collections.Specialized;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
@@ -27,26 +32,23 @@ namespace Finebits.Authorization.OAuth2.Brokers
 {
     public class WebBrowserAuthenticationBroker : IAuthenticationBroker
     {
+        public const int WrongPort = int.MinValue;
+        public string ResponseString { get; set; } = "<html><body>Please return to the application.</body></html>";
         private readonly IWebBrowserLauncher _launcher;
-        private readonly AuthenticationListener _listener;
 
-        public WebBrowserAuthenticationBroker(IWebBrowserLauncher launcher, AuthenticationListener listener)
+        public static bool IsSupported => HttpListener.IsSupported;
+
+        public WebBrowserAuthenticationBroker(IWebBrowserLauncher launcher)
         {
             if (launcher is null)
             {
                 throw new ArgumentNullException(nameof(launcher));
             }
 
-            if (listener is null)
-            {
-                throw new ArgumentNullException(nameof(listener));
-            }
-
             _launcher = launcher;
-            _listener = listener;
         }
 
-        public async Task<AuthenticationResult> AuthenticateAsync(Uri requestUri, Uri callbackUri)
+        public async Task<AuthenticationResult> AuthenticateAsync(Uri requestUri, Uri callbackUri, CancellationToken cancellationToken = default)
         {
             if (requestUri is null)
             {
@@ -58,14 +60,72 @@ namespace Finebits.Authorization.OAuth2.Brokers
                 throw new ArgumentNullException(nameof(callbackUri));
             }
 
-            _listener.SetCallback(callbackUri);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (await _launcher.LaunchAsync(requestUri).ConfigureAwait(false))
+            using (var httpListener = new HttpListener())
             {
-                return await _listener.GetResultAsync().ConfigureAwait(false);
-            }
+                const int ERROR_OPERATION_ABORTED = 995;
+                try
+                {
+                    httpListener.Prefixes.Add(callbackUri.ToString());
+                    httpListener.Start();
 
-            throw new InvalidOperationException($"{nameof(IWebBrowserLauncher)} can't be launched.");
+                    if (!await _launcher.LaunchAsync(requestUri).ConfigureAwait(false))
+                    {
+                        throw new InvalidOperationException($"The web browser cannot be launched.");
+                    }
+
+                    using (var ctr = cancellationToken.Register(() => httpListener.Stop()))
+                    {
+                        var context = await httpListener.GetContextAsync().ConfigureAwait(false);
+
+                        var response = context.Response;
+                        var buffer = Encoding.UTF8.GetBytes(ResponseString);
+                        response.ContentLength64 = buffer.Length;
+                        using (var responseOutput = response.OutputStream)
+                        {
+                            responseOutput.Write(buffer, 0, buffer.Length);
+                        }
+
+                        return new AuthenticationResult(context?.Request?.QueryString ?? new NameValueCollection());
+                    }
+                }
+                catch (HttpListenerException exHttpListener) when (exHttpListener.ErrorCode == ERROR_OPERATION_ABORTED &&
+                                                                   cancellationToken.IsCancellationRequested)
+                {
+                    return AuthenticationResult.Canceled;
+                }
+                catch (InvalidOperationException exInvalidOperation) when (exInvalidOperation.Source == typeof(HttpListener).FullName &&
+                                                                           cancellationToken.IsCancellationRequested)
+                {
+                    return AuthenticationResult.Canceled;
+                }
+                finally
+                {
+                    httpListener.Stop();
+                    httpListener.Close();
+                }
+            }
+        }
+
+        public static int GetRandomUnusedPort()
+        {
+            var listener = new TcpListener(IPAddress.Loopback, IPEndPoint.MinPort);
+            try
+            {
+                listener.Start();
+
+                return listener.LocalEndpoint is IPEndPoint ipEndPoint ? ipEndPoint.Port : throw new InvalidOperationException("Could not find an available local port.");
+            }
+            finally
+            {
+                listener.Stop();
+            }
+        }
+
+        public static Uri GetLoopbackUri()
+        {
+            return new Uri($"http://{IPAddress.Loopback}:{GetRandomUnusedPort()}/");
         }
     }
 }

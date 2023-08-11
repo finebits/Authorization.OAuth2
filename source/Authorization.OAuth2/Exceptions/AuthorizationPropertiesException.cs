@@ -22,13 +22,13 @@ namespace Finebits.Authorization.OAuth2.Exceptions
 {
     public sealed class AuthorizationPropertiesException : AuthorizationException
     {
-        private const string _emptyProperties = "Required properties are missing.";
-        private const string _missingProperty = "A property is missing.";
+        private const string EmptyProperties = "Required properties are missing.";
+        private const string MissingProperty = "A property is missing.";
 
         public string PropertyName { get; private set; }
 
         public AuthorizationPropertiesException()
-            : base(ErrorType.InvalidResponse, _emptyProperties)
+            : base(ErrorType.InvalidResponse, EmptyProperties)
         { }
 
         public AuthorizationPropertiesException(string message)
@@ -42,7 +42,7 @@ namespace Finebits.Authorization.OAuth2.Exceptions
         }
 
         public AuthorizationPropertiesException(Exception innerException)
-            : base(ErrorType.InvalidResponse, _emptyProperties, innerException)
+            : base(ErrorType.InvalidResponse, EmptyProperties, innerException)
         { }
 
         public AuthorizationPropertiesException(string message, string propertyName, Exception innerException)
@@ -55,7 +55,7 @@ namespace Finebits.Authorization.OAuth2.Exceptions
 
         private static string GetPropertyMessage(string message, string propertyName)
         {
-            return $"{message ?? _missingProperty} (Property '{propertyName}')";
+            return $"{message ?? MissingProperty} (Property '{propertyName}')";
         }
     }
 }

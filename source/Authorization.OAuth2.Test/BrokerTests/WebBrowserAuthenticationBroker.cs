@@ -16,15 +16,13 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 using Finebits.Authorization.OAuth2.Brokers;
 using Finebits.Authorization.OAuth2.Brokers.Abstractions;
-using Finebits.Authorization.OAuth2.Types;
 
 using Moq;
-using Moq.Protected;
 
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 
@@ -34,14 +32,8 @@ internal class WebBrowserAuthenticationBrokerTests
     [Test]
     public void Constructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new WebBrowserAuthenticationBroker(null, null));
+        var exception = Assert.Throws<ArgumentNullException>(() => new WebBrowserAuthenticationBroker(null));
         Assert.That(exception.ParamName, Is.EqualTo("launcher"));
-
-        exception = Assert.Throws<ArgumentNullException>(() => new WebBrowserAuthenticationBroker(null, new Mock<AuthenticationListener>().Object));
-        Assert.That(exception.ParamName, Is.EqualTo("launcher"));
-
-        exception = Assert.Throws<ArgumentNullException>(() => new WebBrowserAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object, null));
-        Assert.That(exception.ParamName, Is.EqualTo("listener"));
     }
 
     [Test]
@@ -50,7 +42,7 @@ internal class WebBrowserAuthenticationBrokerTests
     [TestCase("https://request", null, "callbackUri")]
     public void AuthenticateAsync_NullParam_Exception(string requestStringUri, string callbackStringUri, string paramName)
     {
-        var broker = new WebBrowserAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object, new Mock<AuthenticationListener>().Object);
+        var broker = new WebBrowserAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
 
         Uri? requestUri = string.IsNullOrEmpty(requestStringUri) ? null : new(requestStringUri);
         Uri? callbackUri = string.IsNullOrEmpty(callbackStringUri) ? null : new(callbackStringUri);
@@ -62,39 +54,42 @@ internal class WebBrowserAuthenticationBrokerTests
     }
 
     [Test]
-    public async Task AuthenticateAsync_Launched_Success()
-    {
-        var mockLauncher = new Mock<IWebBrowserLauncher>();
-        mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
-
-        var mockListener = new Mock<AuthenticationListener>();
-        mockListener.Protected().Setup<Task<AuthenticationResult>>("GetResultAsync").ReturnsAsync(new AuthenticationResult(new Mock<NameValueCollection>().Object));
-
-        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object, mockListener.Object);
-
-        var result = await broker.AuthenticateAsync(new Uri("https://request/"), new Uri("https://callback/")).ConfigureAwait(false);
-
-        Assert.That(result, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(result, Is.Not.EqualTo(AuthenticationResult.Canceled));
-            Assert.That(result.Properties, Is.Not.Null);
-        });
-    }
-
-    [Test]
-    public void AuthenticateAsync_NonLaunched_Success()
+    public void AuthenticateAsync_NonLaunched_Exception()
     {
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(false));
 
-        var mockListener = new Mock<AuthenticationListener>();
-        mockListener.Protected().Setup<Task<AuthenticationResult>>("GetResultAsync").ReturnsAsync(new AuthenticationResult(new Mock<NameValueCollection>().Object));
+        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object);
+        var callback = WebBrowserAuthenticationBroker.GetLoopbackUri();
 
-        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object, mockListener.Object);
-
-        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), new Uri("https://callback/")).ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), callback).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
+    }
+
+    [Test]
+    public void GetRandomUnusedPort_Call_Success()
+    {
+        var port = int.MinValue;
+
+        Assert.DoesNotThrow(() => port = WebBrowserAuthenticationBroker.GetRandomUnusedPort());
+
+        Assert.That(port, Is.InRange(IPEndPoint.MinPort, IPEndPoint.MaxPort));
+    }
+
+    [Test]
+    public void GetDefaultCallbackUri_Call_Success()
+    {
+        Uri? uri = null;
+
+        Assert.DoesNotThrow(() => uri = WebBrowserAuthenticationBroker.GetLoopbackUri());
+
+        Assert.That(uri, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(uri.IsAbsoluteUri, Is.True);
+            Assert.That(uri.IsLoopback, Is.True);
+            Assert.That(uri.Port, Is.InRange(IPEndPoint.MinPort, IPEndPoint.MaxPort));
+        });
     }
 }

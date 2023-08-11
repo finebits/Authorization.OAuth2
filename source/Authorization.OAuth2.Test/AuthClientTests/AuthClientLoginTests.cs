@@ -89,7 +89,7 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        var exception = Assert.ThrowsAsync<ArgumentException>(async () => await client.LoginAsync("").ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<ArgumentException>(async () => await client.LoginAsync(string.Empty).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("userId"));

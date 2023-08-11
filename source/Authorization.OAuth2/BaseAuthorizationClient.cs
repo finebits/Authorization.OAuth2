@@ -88,9 +88,9 @@ namespace Finebits.Authorization.OAuth2
             var callbackUri = await GetCallbackUriAsync(properties, cancellationToken).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+            var result = await AuthenticateAsync(requestUri, callbackUri, cancellationToken).ConfigureAwait(false);
 
-            ThrowIfBrokerError(result);
+            ThrowIfAuthenticationUnsuccessful(result);
 
             cancellationToken.ThrowIfCancellationRequested();
             return await GetTokenAsync(result, properties, cancellationToken).ConfigureAwait(false);
@@ -132,16 +132,16 @@ namespace Finebits.Authorization.OAuth2
                 );
         }
 
-        protected virtual void ThrowIfBrokerError(AuthenticationResult result)
+        protected virtual void ThrowIfAuthenticationUnsuccessful(AuthenticationResult result)
         {
             if (result is null)
             {
-                throw new AuthorizationEmptyResponseException("IAuthenticationBroker doesn't return a result.", new ArgumentNullException(nameof(result)));
+                throw new AuthorizationEmptyResponseException("The result of the authentication operation is empty.", new ArgumentNullException(nameof(result)));
             }
 
             if (result == AuthenticationResult.Canceled)
             {
-                throw new AuthorizationException(ErrorType.Cancel);
+                throw new AuthorizationException(ErrorType.Cancel, "Authentication operation canceled.");
             }
 
             var properties = result.Properties;
@@ -151,7 +151,7 @@ namespace Finebits.Authorization.OAuth2
             {
                 throw new AuthorizationInvalidBrokerResultException(
                     properties: properties,
-                    message: "Authorization cannot be done. IAuthenticationBroker result contains an error.",
+                    message: "Authorization cannot be done. The result of the authentication operation contains an error.",
                     innerException: null);
             }
 
@@ -187,15 +187,15 @@ namespace Finebits.Authorization.OAuth2
             throw new ArgumentException("The argument has an unexpected type.", nameof(properties));
         }
 
-        private Task<AuthenticationResult> AuthenticateAsync(Uri requestUri, Uri callbackUri)
+        private async Task<AuthenticationResult> AuthenticateAsync(Uri requestUri, Uri callbackUri, CancellationToken cancellationToken)
         {
             try
             {
-                return Broker.AuthenticateAsync(requestUri, callbackUri);
+                return await Broker.AuthenticateAsync(requestUri, callbackUri, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                throw new AuthorizationException("IAuthenticationBroker.AuthenticateAsync operation failed", ex);
+                throw new AuthorizationException("Authentication operation failed.", ex);
             }
         }
     }

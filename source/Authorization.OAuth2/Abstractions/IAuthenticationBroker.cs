@@ -17,6 +17,7 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Types;
@@ -25,6 +26,6 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IAuthenticationBroker
     {
-        Task<AuthenticationResult> AuthenticateAsync(Uri requestUri, Uri callbackUri);
+        Task<AuthenticationResult> AuthenticateAsync(Uri requestUri, Uri callbackUri, CancellationToken cancellationToken = default);
     }
 }
