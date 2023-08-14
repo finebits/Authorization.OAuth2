@@ -35,7 +35,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         internal static Mock<IAuthenticationBroker> CreateCanceledBroker()
         {
-            return CreateBroker(() => Task.FromResult(AuthenticationResult.Canceled));
+            return CreateBroker(() => throw new OperationCanceledException());
         }
 
         internal static Mock<IAuthenticationBroker> CreateInvalidDataBroker()

@@ -139,17 +139,12 @@ namespace Finebits.Authorization.OAuth2
                 throw new AuthorizationEmptyResponseException("The result of the authentication operation is empty.", new ArgumentNullException(nameof(result)));
             }
 
-            if (result == AuthenticationResult.Canceled)
-            {
-                throw new AuthorizationException(ErrorType.Cancel, "Authentication operation canceled.");
-            }
-
             var properties = result.Properties;
 
             var error = properties?.Get("error");
             if (!string.IsNullOrEmpty(error))
             {
-                throw new AuthorizationInvalidBrokerResultException(
+                throw new AuthorizationBrokerResultException(
                     properties: properties,
                     message: "Authorization cannot be done. The result of the authentication operation contains an error.",
                     innerException: null);
@@ -192,6 +187,10 @@ namespace Finebits.Authorization.OAuth2
             try
             {
                 return await Broker.AuthenticateAsync(requestUri, callbackUri, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

@@ -23,15 +23,14 @@ namespace Finebits.Authorization.OAuth2.Exceptions
     public sealed class AuthorizationEmptyResponseException : AuthorizationException
     {
         public AuthorizationEmptyResponseException()
-            : base(ErrorType.InvalidResponse)
         { }
 
         public AuthorizationEmptyResponseException(string message)
-            : base(ErrorType.InvalidResponse, message)
+            : base(message)
         { }
 
         public AuthorizationEmptyResponseException(string message, Exception innerException)
-            : base(ErrorType.InvalidResponse, message, innerException)
+            : base(message, innerException)
         { }
     }
 }

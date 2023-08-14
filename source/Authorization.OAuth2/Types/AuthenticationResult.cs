@@ -23,20 +23,11 @@ namespace Finebits.Authorization.OAuth2.Types
 {
     public class AuthenticationResult
     {
-        public static readonly AuthenticationResult Canceled = new AuthenticationResult(true, new NameValueCollection());
-
-        protected bool IsCanceled { get; }
-
         public NameValueCollection Properties { get; }
 
         public AuthenticationResult(NameValueCollection properties)
-            : this(false, properties)
-        { }
-
-        protected AuthenticationResult(bool isCanceled, NameValueCollection properties)
         {
             Properties = properties ?? throw new ArgumentNullException(nameof(properties));
-            IsCanceled = isCanceled;
         }
     }
 }

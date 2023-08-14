@@ -36,8 +36,14 @@ class Program
             var launcher = new WebBrowserLauncher();
             var redirectURI = WebBrowserAuthenticationBroker.GetLoopbackUri();
 
+            Console.WriteLine("Welcome to OAuth2.Sample.");
+
+            if (!WebBrowserAuthenticationBroker.IsSupported)
+            {
+                throw new InvalidOperationException($"{nameof(WebBrowserAuthenticationBroker)} is not supported.");
+            }
+
             Console.Write("""
-                Welcome to OAuth2.Sample.
 
                 1. Google
                 2. Microsoft
@@ -53,7 +59,9 @@ class Program
                 _ => GetGoogleAuthClient(httpClient, launcher, redirectURI),
             };
 
-            var token = await authClient.LoginAsync().ConfigureAwait(false);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+
+            var token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             PrintToken(token, "Login response");
 
             var newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
@@ -69,13 +77,13 @@ class Program
             newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
             PrintToken(token, "Refresh response");
         }
-        catch (AuthorizationInvalidBrokerResultException propEx)
+        catch (AuthorizationBrokerResultException propEx)
         {
             Console.WriteLine($"""
 
-                Exception:
-                AuthenticationPropertiesException.Error: {propEx.Error}
-                AuthenticationPropertiesException.ErrorDescription: {propEx.ErrorDescription}
+                AuthorizationInvalidBrokerResultException:
+                Error: {propEx.Error}
+                ErrorDescription: {propEx.ErrorDescription}
                 """);
         }
         catch (AuthorizationException authEx) when (authEx.InnerException is not null)

@@ -145,14 +145,8 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        var exception = Assert.ThrowsAsync<AuthorizationException>(async () => await client.LoginAsync().ConfigureAwait(false));
-
+        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => await client.LoginAsync().ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.Cancel));
-            Assert.That(exception.InnerException, Is.Null);
-        });
     }
 
     [Test]
@@ -163,12 +157,11 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidBrokerResultException>(async () => await client.LoginAsync().ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<AuthorizationBrokerResultException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
             Assert.That(exception.Error, Is.EqualTo("fake-error"));
             Assert.That(exception.ErrorDescription, Is.EqualTo("fake-error-description"));
             Assert.That(exception.Properties, Is.Not.Null);
@@ -188,7 +181,6 @@ internal class AuthClientLoginTests
         var exception = Assert.ThrowsAsync<AuthorizationPropertiesException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
         Assert.That(exception.PropertyName, Is.Null);
     }
 
@@ -203,7 +195,6 @@ internal class AuthClientLoginTests
         var exception = Assert.ThrowsAsync<AuthorizationPropertiesException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
         Assert.That(exception.PropertyName, Is.EqualTo("state"));
     }
 
@@ -218,7 +209,6 @@ internal class AuthClientLoginTests
         var exception = Assert.ThrowsAsync<AuthorizationPropertiesException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
         Assert.That(exception.PropertyName, Is.EqualTo("code"));
     }
 
@@ -233,11 +223,7 @@ internal class AuthClientLoginTests
         var exception = Assert.ThrowsAsync<AuthorizationException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.Error));
-            Assert.That(exception.InnerException, Is.Not.Null);
-        });
+        Assert.That(exception.InnerException, Is.Not.Null);
     }
 
     [Test]
@@ -253,7 +239,6 @@ internal class AuthClientLoginTests
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
             Assert.That(exception.ErrorReason, Is.Not.Null);
             Assert.That(exception.ErrorDescription, Is.Not.Null);
         });
@@ -291,6 +276,5 @@ internal class AuthClientLoginTests
         var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        Assert.That(exception.ErrorType, Is.EqualTo(ErrorType.InvalidResponse));
     }
 }
