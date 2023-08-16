@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Authorization.OAuth2.Brokers\Authorization.OAuth2.Brokers.csproj" />
+    <ProjectReference Include="..\Authorization.OAuth2.WebBrowserAuthenticationBroker\Authorization.OAuth2.WebBrowserAuthenticationBroker.csproj" />
     <ProjectReference Include="..\Authorization.OAuth2.Google\Authorization.OAuth2.Google.csproj" />
     <ProjectReference Include="..\Authorization.OAuth2.Microsoft\Authorization.OAuth2.Microsoft.csproj" />
     <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
