@@ -17,8 +17,8 @@
 // ---------------------------------------------------------------------------- //
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.Brokers;
-using Finebits.Authorization.OAuth2.Brokers.Abstractions;
+using Finebits.Authorization.OAuth2.AuthenticationBroker;
+using Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
 using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Microsoft;
@@ -34,13 +34,13 @@ class Program
         {
             using var httpClient = new HttpClient();
             var launcher = new WebBrowserLauncher();
-            var redirectURI = WebBrowserAuthenticationBroker.GetLoopbackUri();
+            var redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
 
             Console.WriteLine("Welcome to OAuth2.Sample.");
 
-            if (!WebBrowserAuthenticationBroker.IsSupported)
+            if (!DesktopAuthenticationBroker.IsSupported)
             {
-                throw new InvalidOperationException($"{nameof(WebBrowserAuthenticationBroker)} is not supported.");
+                throw new InvalidOperationException($"{typeof(DesktopAuthenticationBroker).FullName} is not supported.");
             }
 
             Console.Write("""
@@ -182,7 +182,7 @@ class Program
                 "email",
             }
         };
-        return new GoogleAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher), config);
+        return new GoogleAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
 
     private static IAuthorizationClient GetMicrosoftAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
@@ -200,7 +200,7 @@ class Program
                 "https://graph.microsoft.com/.default",
             }
         };
-        return new MicrosoftAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher), config);
+        return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
 
     private static IAuthorizationClient GetOffice365AuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
@@ -217,6 +217,6 @@ class Program
                 "offline_access",
             }
         };
-        return new MicrosoftAuthClient(httpClient, new WebBrowserAuthenticationBroker(launcher), config);
+        return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
 }

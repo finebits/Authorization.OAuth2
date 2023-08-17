@@ -19,7 +19,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Finebits.Authorization.OAuth2.Brokers.Abstractions
+namespace Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions
 {
     public interface IWebBrowserLauncher
     {

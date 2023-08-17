@@ -3,6 +3,8 @@ nupkgs/
 source/.vs/
 source/Authorization.OAuth2/bin/
 source/Authorization.OAuth2/obj/
+source/Authorization.OAuth2.AuthenticationBroker.Desktop/bin/
+source/Authorization.OAuth2.AuthenticationBroker.Desktop/obj/
 source/Authorization.OAuth2.Google/bin/
 source/Authorization.OAuth2.Google/obj/
 source/Authorization.OAuth2.Microsoft/bin/
@@ -12,6 +14,4 @@ source/Authorization.OAuth2.Sample/obj/
 source/Authorization.OAuth2.Sample/Authorization.OAuth2.Sample.csproj.user
 source/Authorization.OAuth2.Test/bin/
 source/Authorization.OAuth2.Test/obj/
-source/Authorization.OAuth2.WebBrowserAuthenticationBroker/bin/
-source/Authorization.OAuth2.WebBrowserAuthenticationBroker/obj/
 source/TestResults/

@@ -20,9 +20,9 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-using Finebits.Authorization.OAuth2.Brokers.Abstractions;
+using Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions;
 
-namespace Finebits.Authorization.OAuth2.Brokers
+namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 {
     public class WebBrowserLauncher : IWebBrowserLauncher
     {

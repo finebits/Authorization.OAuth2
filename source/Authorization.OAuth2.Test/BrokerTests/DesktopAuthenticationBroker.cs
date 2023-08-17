@@ -19,8 +19,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
-using Finebits.Authorization.OAuth2.Brokers;
-using Finebits.Authorization.OAuth2.Brokers.Abstractions;
+using Finebits.Authorization.OAuth2.AuthenticationBroker;
+using Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions;
 using Finebits.Authorization.OAuth2.Types;
 
 using Moq;
@@ -28,12 +28,12 @@ using Moq;
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
-internal class WebBrowserAuthenticationBrokerTests
+internal class DesktopAuthenticationBrokerTests
 {
     [Test]
     public void Constructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new WebBrowserAuthenticationBroker(null));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DesktopAuthenticationBroker(null));
         Assert.That(exception.ParamName, Is.EqualTo("launcher"));
     }
 
@@ -43,7 +43,7 @@ internal class WebBrowserAuthenticationBrokerTests
     [TestCase("https://request", null, "callbackUri")]
     public void AuthenticateAsync_NullParam_Exception(string requestStringUri, string callbackStringUri, string paramName)
     {
-        var broker = new WebBrowserAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
+        var broker = new DesktopAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
 
         Uri? requestUri = string.IsNullOrEmpty(requestStringUri) ? null : new(requestStringUri);
         Uri? callbackUri = string.IsNullOrEmpty(callbackStringUri) ? null : new(callbackStringUri);
@@ -60,8 +60,8 @@ internal class WebBrowserAuthenticationBrokerTests
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(false));
 
-        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object);
-        var callback = WebBrowserAuthenticationBroker.GetLoopbackUri();
+        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), callback).ConfigureAwait(false));
 
@@ -75,8 +75,8 @@ internal class WebBrowserAuthenticationBrokerTests
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object);
-        var callback = WebBrowserAuthenticationBroker.GetLoopbackUri();
+        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.Cancel();
         AuthenticationResult? result = null;
@@ -93,8 +93,8 @@ internal class WebBrowserAuthenticationBrokerTests
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        var broker = new WebBrowserAuthenticationBroker(mockLauncher.Object);
-        var callback = WebBrowserAuthenticationBroker.GetLoopbackUri();
+        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.CancelAfter(500);
         AuthenticationResult? result = null;
@@ -109,7 +109,7 @@ internal class WebBrowserAuthenticationBrokerTests
     {
         var port = int.MinValue;
 
-        Assert.DoesNotThrow(() => port = WebBrowserAuthenticationBroker.GetRandomUnusedPort());
+        Assert.DoesNotThrow(() => port = DesktopAuthenticationBroker.GetRandomUnusedPort());
 
         Assert.That(port, Is.InRange(IPEndPoint.MinPort, IPEndPoint.MaxPort));
     }
@@ -119,7 +119,7 @@ internal class WebBrowserAuthenticationBrokerTests
     {
         Uri? uri = null;
 
-        Assert.DoesNotThrow(() => uri = WebBrowserAuthenticationBroker.GetLoopbackUri());
+        Assert.DoesNotThrow(() => uri = DesktopAuthenticationBroker.GetLoopbackUri());
 
         Assert.That(uri, Is.Not.Null);
         Assert.Multiple(() =>
@@ -133,6 +133,6 @@ internal class WebBrowserAuthenticationBrokerTests
     [Test]
     public void IsSupported_Call_NotException()
     {
-        Assert.DoesNotThrow(() => _ = WebBrowserAuthenticationBroker.IsSupported);
+        Assert.DoesNotThrow(() => _ = DesktopAuthenticationBroker.IsSupported);
     }
 }
