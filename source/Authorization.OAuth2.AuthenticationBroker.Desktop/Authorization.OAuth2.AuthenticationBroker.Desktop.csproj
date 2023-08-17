@@ -2,10 +2,34 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AnalysisLevel>6.0-all</AnalysisLevel>
-    <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <RootNamespace>Finebits.Authorization.OAuth2.AuthenticationBroker</RootNamespace>
     <AssemblyName>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</AssemblyName>
+
+    <AnalysisLevel>6.0-all</AnalysisLevel>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+
+    <PackageId>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</PackageId>
+    <Title>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</Title>
+
+    <Authors>Finebits</Authors>
+    <Company>Finebits</Company>
+
+    <Product>AuthenticationBroker Desktop (netstandard2.0)</Product>
+    <Description>This package contains an authentication broker that can be used in client desktop applications.</Description>
+    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+
+    <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <PackageTags>OAuth2;Authorization;Broker</PackageTags>
+
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,7 +43,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\images\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

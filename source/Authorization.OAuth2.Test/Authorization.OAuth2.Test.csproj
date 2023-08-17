@@ -2,13 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Finebits.Authorization.OAuth2.Test</RootNamespace>
+
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+
     <AnalysisLevel>6.0-all</AnalysisLevel>
-    <RootNamespace>Finebits.Authorization.OAuth2.Test</RootNamespace>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
