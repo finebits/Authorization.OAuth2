@@ -5,6 +5,7 @@
     <RootNamespace>Finebits.Authorization.OAuth2.Microsoft</RootNamespace>
     <AssemblyName>Finebits.Authorization.OAuth2.Microsoft</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
 
     <PackageId>Finebits.Authorization.OAuth2.Microsoft</PackageId>
     <Title>Finebits.Authorization.OAuth2.Microsoft</Title>
@@ -13,14 +14,14 @@
     <Company>Finebits</Company>
 
     <Product>OAuth2 Client (netstandard2.0)</Product>
-    <Description>This is a .netstandard2 library that allows an application to support the OAuth 2.0 authorization protocol.</Description>
+    <Description>This package contains the authorization client for the Microsoft services.</Description>
     <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>oauth2;authorization;</PackageTags>
+    <PackageTags>OAuth2;Authorization;Microsoft;Graph;Office365;Outlook;OneDrive</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
