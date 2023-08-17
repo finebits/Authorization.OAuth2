@@ -28,12 +28,12 @@ using Moq;
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
-internal class DesktopBrokerTests
+internal class DesktopAuthenticationBrokerTests
 {
     [Test]
     public void Constructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DesktopBroker(null));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DesktopAuthenticationBroker(null));
         Assert.That(exception.ParamName, Is.EqualTo("launcher"));
     }
 
@@ -43,7 +43,7 @@ internal class DesktopBrokerTests
     [TestCase("https://request", null, "callbackUri")]
     public void AuthenticateAsync_NullParam_Exception(string requestStringUri, string callbackStringUri, string paramName)
     {
-        var broker = new DesktopBroker(new Mock<IWebBrowserLauncher>().Object);
+        var broker = new DesktopAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
 
         Uri? requestUri = string.IsNullOrEmpty(requestStringUri) ? null : new(requestStringUri);
         Uri? callbackUri = string.IsNullOrEmpty(callbackStringUri) ? null : new(callbackStringUri);
@@ -60,8 +60,8 @@ internal class DesktopBrokerTests
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(false));
 
-        var broker = new DesktopBroker(mockLauncher.Object);
-        var callback = DesktopBroker.GetLoopbackUri();
+        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), callback).ConfigureAwait(false));
 
@@ -75,8 +75,8 @@ internal class DesktopBrokerTests
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        var broker = new DesktopBroker(mockLauncher.Object);
-        var callback = DesktopBroker.GetLoopbackUri();
+        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.Cancel();
         AuthenticationResult? result = null;
@@ -93,8 +93,8 @@ internal class DesktopBrokerTests
         var mockLauncher = new Mock<IWebBrowserLauncher>();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        var broker = new DesktopBroker(mockLauncher.Object);
-        var callback = DesktopBroker.GetLoopbackUri();
+        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.CancelAfter(500);
         AuthenticationResult? result = null;
@@ -109,7 +109,7 @@ internal class DesktopBrokerTests
     {
         var port = int.MinValue;
 
-        Assert.DoesNotThrow(() => port = DesktopBroker.GetRandomUnusedPort());
+        Assert.DoesNotThrow(() => port = DesktopAuthenticationBroker.GetRandomUnusedPort());
 
         Assert.That(port, Is.InRange(IPEndPoint.MinPort, IPEndPoint.MaxPort));
     }
@@ -119,7 +119,7 @@ internal class DesktopBrokerTests
     {
         Uri? uri = null;
 
-        Assert.DoesNotThrow(() => uri = DesktopBroker.GetLoopbackUri());
+        Assert.DoesNotThrow(() => uri = DesktopAuthenticationBroker.GetLoopbackUri());
 
         Assert.That(uri, Is.Not.Null);
         Assert.Multiple(() =>
@@ -133,6 +133,6 @@ internal class DesktopBrokerTests
     [Test]
     public void IsSupported_Call_NotException()
     {
-        Assert.DoesNotThrow(() => _ = DesktopBroker.IsSupported);
+        Assert.DoesNotThrow(() => _ = DesktopAuthenticationBroker.IsSupported);
     }
 }

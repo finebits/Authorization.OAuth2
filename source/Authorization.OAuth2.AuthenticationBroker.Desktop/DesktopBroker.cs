@@ -30,7 +30,7 @@ using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 {
-    public class DesktopBroker : IAuthenticationBroker
+    public class DesktopAuthenticationBroker : IAuthenticationBroker
     {
         public const int WrongPort = int.MinValue;
         public string ResponseString { get; set; } = "<html><body>Please return to the application.</body></html>";
@@ -38,7 +38,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
         public static bool IsSupported => HttpListener.IsSupported;
 
-        public DesktopBroker(IWebBrowserLauncher launcher)
+        public DesktopAuthenticationBroker(IWebBrowserLauncher launcher)
         {
             if (launcher is null)
             {
