@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>Finebits.Authorization.OAuth2.Sample</AssemblyName>
+    <RootNamespace>Finebits.Authorization.OAuth2.Sample</RootNamespace>
+
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <AnalysisLevel>6.0-all</AnalysisLevel>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>9999</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>9999</WarningLevel>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Authorization.OAuth2.AuthenticationBroker.Desktop\Authorization.OAuth2.AuthenticationBroker.Desktop.csproj" />
+    <ProjectReference Include="..\Authorization.OAuth2.Google\Authorization.OAuth2.Google.csproj" />
+    <ProjectReference Include="..\Authorization.OAuth2.Microsoft\Authorization.OAuth2.Microsoft.csproj" />
+    <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
+  </ItemGroup>
+
+</Project>

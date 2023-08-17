@@ -1,0 +1,22 @@
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Maintain dependencies for NuGet
+  - package-ecosystem: "nuget"
+    directory: "/source/" # Location of package manifests
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "al-kau"
+      - "ValeraFinebits"
+      
+  # Maintain dependencies for gitsubmodule
+  - package-ecosystem: "gitsubmodule"
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "al-kau"
+      - "ValeraFinebits"

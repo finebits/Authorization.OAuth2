@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Finebits.Authorization.OAuth2.Google</RootNamespace>
+    <AssemblyName>Finebits.Authorization.OAuth2.Google</AssemblyName>
+    <AnalysisLevel>6.0-all</AnalysisLevel>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+
+    <PackageId>Finebits.Authorization.OAuth2.Google</PackageId>
+    <Title>Finebits.Authorization.OAuth2.Google</Title>
+
+    <Authors>Finebits</Authors>
+    <Company>Finebits</Company>
+
+    <Product>OAuth2 Client (netstandard2.0)</Product>
+    <Description>This package contains the authorization client for the Google services.</Description>
+    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+
+    <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <PackageTags>OAuth2;Authorization;Google;Gmail,GoogleDrive</PackageTags>
+
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <WarningLevel>9999</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <WarningLevel>9999</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\images\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
