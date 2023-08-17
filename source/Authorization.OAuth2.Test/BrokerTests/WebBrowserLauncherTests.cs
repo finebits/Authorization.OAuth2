@@ -18,7 +18,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using Finebits.Authorization.OAuth2.Brokers;
+using Finebits.Authorization.OAuth2.AuthenticationBroker;
 
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 

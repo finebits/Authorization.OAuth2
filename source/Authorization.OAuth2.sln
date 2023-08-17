@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.Micros
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.Google", "Authorization.OAuth2.Google\Authorization.OAuth2.Google.csproj", "{80459D02-A2F5-498B-8C4A-DC73A0078ADB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.WebBrowserAuthenticationBroker", "Authorization.OAuth2.WebBrowserAuthenticationBroker\Authorization.OAuth2.WebBrowserAuthenticationBroker.csproj", "{5367CE50-F1B3-4A44-8C35-7712DB7E077C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.AuthenticationBroker.Desktop", "Authorization.OAuth2.AuthenticationBroker.Desktop\Authorization.OAuth2.AuthenticationBroker.Desktop.csproj", "{5367CE50-F1B3-4A44-8C35-7712DB7E077C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

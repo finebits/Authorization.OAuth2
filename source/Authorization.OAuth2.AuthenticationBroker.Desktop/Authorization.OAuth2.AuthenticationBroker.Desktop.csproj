@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AnalysisLevel>6.0-all</AnalysisLevel>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <RootNamespace>Finebits.Authorization.OAuth2.Brokers</RootNamespace>
-    <AssemblyName>Finebits.Authorization.OAuth2.WebBrowserAuthenticationBroker</AssemblyName>
+    <RootNamespace>Finebits.Authorization.OAuth2.AuthenticationBroker</RootNamespace>
+    <AssemblyName>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

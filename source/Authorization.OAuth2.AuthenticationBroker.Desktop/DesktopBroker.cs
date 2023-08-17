@@ -25,12 +25,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.Brokers.Abstractions;
+using Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions;
 using Finebits.Authorization.OAuth2.Types;
 
-namespace Finebits.Authorization.OAuth2.Brokers
+namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 {
-    public class WebBrowserAuthenticationBroker : IAuthenticationBroker
+    public class DesktopBroker : IAuthenticationBroker
     {
         public const int WrongPort = int.MinValue;
         public string ResponseString { get; set; } = "<html><body>Please return to the application.</body></html>";
@@ -38,7 +38,7 @@ namespace Finebits.Authorization.OAuth2.Brokers
 
         public static bool IsSupported => HttpListener.IsSupported;
 
-        public WebBrowserAuthenticationBroker(IWebBrowserLauncher launcher)
+        public DesktopBroker(IWebBrowserLauncher launcher)
         {
             if (launcher is null)
             {
