@@ -44,7 +44,6 @@ dotnet add package Finebits.Authorization.OAuth2.Microsoft [--version <VERSION>]
 ### Example
 
 ```C#
-using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.AuthenticationBroker;
 using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Types;
@@ -72,24 +71,18 @@ var authClient = new GoogleAuthClient(httpClient, new DesktopAuthenticationBroke
 var token = await authClient.LoginAsync();
 Console.WriteLine("Authorization operation is completed.");
 
-if (authClient is IRefreshable refreshClient)
-{
-    var result = await refreshClient.RefreshTokenAsync(token);
-    Console.WriteLine("Refresh operation is completed.");
+var result = await authClient.RefreshTokenAsync(token);
+Console.WriteLine("Refresh operation is completed.");
 
-    token = new AuthorizationToken(accessToken: result.AccessToken,
-                                   refreshToken: !string.IsNullOrEmpty(result.RefreshToken) ? result.RefreshToken : token.RefreshToken,
-                                   tokenType: result.TokenType,
-                                   expiresIn: result.ExpiresIn,
-                                   scope: result.Scope
-                                  );
-}
+token = new AuthorizationToken(accessToken: result.AccessToken,
+                               refreshToken: !string.IsNullOrEmpty(result.RefreshToken) ? result.RefreshToken : token.RefreshToken,
+                               tokenType: result.TokenType,
+                               expiresIn: result.ExpiresIn,
+                               scope: result.Scope
+                              );
 
-if (authClient is IRevocable revokeClient)
-{
-    await revokeClient.RevokeTokenAsync(token);
-    Console.WriteLine("Revoke operation is completed.");
-}
+await authClient.RevokeTokenAsync(token);
+Console.WriteLine("Revoke operation is completed.");
 ```
 
 ## Links
