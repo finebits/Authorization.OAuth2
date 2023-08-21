@@ -14,6 +14,8 @@ This is a .netstandard2 library that allows an application to support the OAuth 
 
 ## NuGet Packages
 
+The following packages are published from this repository:
+
 |Name|Latest version|Downloads|Code Coverage|
 |:-|:-:|:-:|:-:|
 | <sub> [![name](https://img.shields.io/badge/Finebits.Authorization.OAuth2-blue)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2) </sub> | <sub> [![latest version](https://img.shields.io/nuget/v/Finebits.Authorization.OAuth2?logo=nuget&label)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2) </sub> | <sub> [![downloads](https://img.shields.io/nuget/dt/Finebits.Authorization.OAuth2)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2) </sub> | <sub> ![Code coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-Finebits.Authorization.OAuth2-test-coverage.json&label=coverage) </sub> |
