@@ -8,7 +8,7 @@
 
 ## Description
 
-This package contains an authentication broker that can be used in client desktop applications.
+This package contains an authentication broker that can be used in desktop clients.
 
 ## Dependencies
 
