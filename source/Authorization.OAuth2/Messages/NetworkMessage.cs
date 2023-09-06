@@ -18,35 +18,36 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Network.RestClient;
 
 namespace Finebits.Authorization.OAuth2.Messages
 {
     internal class NetworkMessage<TContent>
-        : CommonMessage<JsonResponse<TContent>, FormUrlEncodedRequest<IFormUrlEncodedPayload>>
+        : CommonMessage<JsonResponse<TContent>, FormUrlEncodedRequest>
     {
         public override Uri Endpoint { get; }
         public override HttpMethod Method => HttpMethod.Post;
 
-        private readonly IFormUrlEncodedPayload _payload;
+        private readonly NameValueCollection _payload;
         private readonly IEnumerable<KeyValuePair<string, IEnumerable<string>>> _headers;
 
         public NetworkMessage(
             Uri endpoint,
-            IFormUrlEncodedPayload payload,
+            NameValueCollection payload,
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
         {
-            _payload = payload;
+            _payload = payload ?? new NameValueCollection();
             _headers = headers;
             Endpoint = endpoint;
         }
 
-        protected override FormUrlEncodedRequest<IFormUrlEncodedPayload> CreateRequest()
+        protected override FormUrlEncodedRequest CreateRequest()
         {
             HeaderCollection headers = null;
 
@@ -59,9 +60,8 @@ namespace Finebits.Authorization.OAuth2.Messages
                 );
             }
 
-            return new FormUrlEncodedRequest<IFormUrlEncodedPayload>
+            return new FormUrlEncodedRequest(_payload.AllKeys.Select(key => new KeyValuePair<string, string>(key, _payload[key])))
             {
-                Payload = _payload,
                 Headers = headers
             };
         }

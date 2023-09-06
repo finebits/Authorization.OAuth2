@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Finebits.Network.RestClient" Version="0.1.0-alpha" />
+    <PackageReference Include="Finebits.Network.RestClient" Version="0.2.2-alpha" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 

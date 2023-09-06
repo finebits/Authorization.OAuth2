@@ -16,12 +16,12 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
@@ -43,6 +43,6 @@ namespace Finebits.Authorization.OAuth2
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        protected abstract IFormUrlEncodedPayload GetRevokePayload(Token token);
+        protected abstract NameValueCollection GetRevokePayload(Token token);
     }
 }

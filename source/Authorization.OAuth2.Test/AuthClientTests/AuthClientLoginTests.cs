@@ -256,13 +256,12 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        //ToDo: should thrown HttpRequestException need fix RestClient
         var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
 
-        //var innerException = exception.InnerException as HttpRequestException;
-        //Assert.That(innerException, Is.Not.Null);
-        //Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        var innerException = exception.InnerException as HttpRequestException;
+        Assert.That(innerException, Is.Not.Null);
+        Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
 
     [Test]
@@ -273,7 +272,7 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }

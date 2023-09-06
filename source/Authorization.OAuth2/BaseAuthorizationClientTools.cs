@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
 using Finebits.Authorization.OAuth2.Messages;
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
@@ -38,7 +37,7 @@ namespace Finebits.Authorization.OAuth2
 
         protected Task<TContent> SendRequestAsync<TContent>(
             Uri endpoint,
-            IFormUrlEncodedPayload payload,
+            NameValueCollection payload,
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse

@@ -18,13 +18,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
-using Finebits.Authorization.OAuth2.RestClient;
 
 namespace Finebits.Authorization.OAuth2.Messages
 {
@@ -36,33 +36,34 @@ namespace Finebits.Authorization.OAuth2.Messages
 
         internal async Task<TContent> SendRequestAsync<TContent>(
             Uri endpoint,
-            IFormUrlEncodedPayload payload,
+            NameValueCollection payload,
             IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            var message = new NetworkMessage<TContent>(endpoint, payload, headers);
-
-            try
+            using (var message = new NetworkMessage<TContent>(endpoint, payload, headers))
             {
-                await SendAsync(message, cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                IInvalidResponse content = null;
-
-                if (message.Response != null)
+                try
                 {
-                    content = message.Response.Content;
+                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
                 }
-                throw new AuthorizationInvalidResponseException(content, ex);
-            }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    IInvalidResponse content = null;
 
-            return GetContent(message.Response);
+                    if (message.Response != null)
+                    {
+                        content = message.Response.Content;
+                    }
+                    throw new AuthorizationInvalidResponseException(content, ex);
+                }
+
+                return GetContent(message.Response);
+            }
         }
 
         internal async Task<TContent> SendRequestAsync<TContent>(
@@ -71,28 +72,29 @@ namespace Finebits.Authorization.OAuth2.Messages
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            var message = new EmptyNetworkMessage<TContent>(endpoint, headers);
-
-            try
+            using (var message = new EmptyNetworkMessage<TContent>(endpoint, headers))
             {
-                await SendAsync(message, cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                IInvalidResponse content = null;
-
-                if (message.Response != null)
+                try
                 {
-                    content = message.Response.Content;
+                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
                 }
-                throw new AuthorizationInvalidResponseException(content, ex);
-            }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    IInvalidResponse content = null;
 
-            return GetContent(message.Response);
+                    if (message.Response != null)
+                    {
+                        content = message.Response.Content;
+                    }
+                    throw new AuthorizationInvalidResponseException(content, ex);
+                }
+
+                return GetContent(message.Response);
+            }
         }
 
         private static T GetContent<T>(Network.RestClient.JsonResponse<T> response)
@@ -104,7 +106,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             }
 
             return string.IsNullOrEmpty(response.Content?.ErrorReason)
-                ? response.Content
+                ? (response.Content is ICloneable cloneable) ? (T)cloneable.Clone() : response.Content
                 : throw new AuthorizationInvalidResponseException(response.Content);
         }
     }

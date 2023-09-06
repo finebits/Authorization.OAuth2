@@ -17,12 +17,12 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Google
@@ -81,12 +81,12 @@ namespace Finebits.Authorization.OAuth2.Google
                 );
         }
 
-        protected override IFormUrlEncodedPayload GetRevokePayload(Token token)
+        protected override NameValueCollection GetRevokePayload(Token token)
         {
             return new RevokePayload()
             {
                 RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken
-            };
+            }.GetCollection();
         }
     }
 }
