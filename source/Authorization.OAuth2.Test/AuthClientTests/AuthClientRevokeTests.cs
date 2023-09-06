@@ -136,13 +136,12 @@ internal class AuthClientRevokeTests
         var revocableClient = client as IRevocable;
         Assert.That(revocableClient, Is.Not.Null);
 
-        //ToDo: should thrown HttpRequestException need fix RestClient
         var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await revocableClient.RevokeTokenAsync(CreateToken()).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        //var innerException = exception.InnerException as HttpRequestException;
-        //Assert.That(innerException, Is.Not.Null);
-        //Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        var innerException = exception.InnerException as HttpRequestException;
+        Assert.That(innerException, Is.Not.Null);
+        Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
 
     private static Types.Token CreateToken()

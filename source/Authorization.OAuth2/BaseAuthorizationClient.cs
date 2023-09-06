@@ -17,13 +17,13 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
@@ -158,7 +158,7 @@ namespace Finebits.Authorization.OAuth2
 
         protected abstract Task<Uri> GetAuthenticationEndpointAsync(string userId, object properties, CancellationToken cancellationToken);
 
-        protected virtual IFormUrlEncodedPayload GetTokenPayload(AuthenticationResult result, object properties)
+        protected virtual NameValueCollection GetTokenPayload(AuthenticationResult result, object properties)
         {
             if (properties is AuthProperties props)
             {
@@ -176,7 +176,7 @@ namespace Finebits.Authorization.OAuth2
                     Code = code,
                     CodeVerifier = props.CodeVerifier,
                     RedirectUri = Config.RedirectUri,
-                };
+                }.GetCollection();
             }
 
             throw new ArgumentException("The argument has an unexpected type.", nameof(properties));

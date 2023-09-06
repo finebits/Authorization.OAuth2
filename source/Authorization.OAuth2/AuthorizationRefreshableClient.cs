@@ -17,12 +17,12 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
@@ -58,14 +58,14 @@ namespace Finebits.Authorization.OAuth2
                 );
         }
 
-        protected virtual IFormUrlEncodedPayload GetRefreshPayload(Token token)
+        protected virtual NameValueCollection GetRefreshPayload(Token token)
         {
             return new RefreshPayload()
             {
                 ClientId = Config.ClientId,
                 ClientSecret = Config.ClientSecret,
                 RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken,
-            };
+            }.GetCollection();
         }
     }
 }

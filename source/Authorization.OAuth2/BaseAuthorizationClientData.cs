@@ -21,7 +21,6 @@ using System.Collections.Specialized;
 using System.Text.Json.Serialization;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 
 namespace Finebits.Authorization.OAuth2
 {
@@ -35,7 +34,7 @@ namespace Finebits.Authorization.OAuth2
             public string CodeVerifier { get; set; }
         }
 
-        protected class TokenPayload : IFormUrlEncodedPayload
+        protected class TokenPayload
         {
             public string ClientId { get; set; }
 

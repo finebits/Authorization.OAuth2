@@ -19,13 +19,12 @@
 using System.Collections.Specialized;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 
 namespace Finebits.Authorization.OAuth2
 {
     public abstract partial class AuthorizationClient : AuthorizationRefreshableClient, IRefreshable, IRevocable
     {
-        protected class RevokePayload : IFormUrlEncodedPayload
+        protected class RevokePayload
         {
             public string RefreshToken { get; set; }
 
