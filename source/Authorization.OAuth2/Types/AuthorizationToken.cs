@@ -29,7 +29,35 @@ namespace Finebits.Authorization.OAuth2.Types
             : base(accessToken, refreshToken, tokenType)
         {
             ExpiresIn = expiresIn;
-            Scope = scope;
+            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+        }
+
+        public AuthorizationToken(AuthorizationToken other)
+            : base(other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            ExpiresIn = other.ExpiresIn;
+            Scope = other.Scope;
+        }
+
+        public override void Update(Token other)
+        {
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            base.Update(other);
+
+            if (other is AuthorizationToken token)
+            {
+                ExpiresIn = token.ExpiresIn;
+                Scope = GetValueOrDefault(token.Scope, Scope);
+            }
         }
     }
 }

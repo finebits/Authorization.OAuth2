@@ -64,18 +64,11 @@ class Program
             var token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             PrintToken(token, "Login response");
 
-            var newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
+            var freshToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
             PrintToken(token, "Refresh response");
-            token = UpdateToken(token, newToken);
-
-            newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
-            PrintToken(token, "Refresh response");
-            token = UpdateToken(token, newToken);
+            token.Update(freshToken);
 
             await RevokeTokenAsync(authClient, token).ConfigureAwait(false);
-
-            newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
-            PrintToken(token, "Refresh response");
         }
         catch (AuthorizationBrokerResultException propEx)
         {
@@ -94,27 +87,6 @@ class Program
         {
             Console.WriteLine(ex.Message);
         }
-    }
-
-    private static AuthorizationToken UpdateToken(AuthorizationToken? oldToken, AuthorizationToken? newToken)
-    {
-        if (newToken is null)
-        {
-            throw new ArgumentNullException(nameof(newToken));
-        }
-
-        if (oldToken is null)
-        {
-            throw new ArgumentNullException(nameof(oldToken));
-        }
-
-        return new AuthorizationToken(
-                accessToken: newToken.AccessToken,
-                refreshToken: !string.IsNullOrEmpty(newToken.RefreshToken) ? newToken.RefreshToken : oldToken.RefreshToken,
-                tokenType: newToken.TokenType,
-                expiresIn: newToken.ExpiresIn,
-                scope: newToken.Scope
-            );
     }
 
     private static void PrintToken(Types.AuthorizationToken? authToken, string header)
