@@ -73,15 +73,10 @@ var authClient = new GoogleAuthClient(httpClient, new DesktopAuthenticationBroke
 var token = await authClient.LoginAsync();
 Console.WriteLine("Authorization operation is completed.");
 
-var result = await authClient.RefreshTokenAsync(token);
+var freshToken = await authClient.RefreshTokenAsync(token);
 Console.WriteLine("Refresh operation is completed.");
 
-token = new AuthorizationToken(accessToken: result.AccessToken,
-                               refreshToken: !string.IsNullOrEmpty(result.RefreshToken) ? result.RefreshToken : token.RefreshToken,
-                               tokenType: result.TokenType,
-                               expiresIn: result.ExpiresIn,
-                               scope: result.Scope
-                              );
+token.Update(freshToken);
 
 await authClient.RevokeTokenAsync(token);
 Console.WriteLine("Revoke operation is completed.");
