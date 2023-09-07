@@ -17,14 +17,15 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
+using Finebits.Network.RestClient;
 
 namespace Finebits.Authorization.OAuth2.Messages
 {
@@ -36,12 +37,13 @@ namespace Finebits.Authorization.OAuth2.Messages
 
         internal async Task<TContent> SendRequestAsync<TContent>(
             Uri endpoint,
+            HttpMethod method,
             NameValueCollection payload,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
+            HeaderCollection headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            using (var message = new NetworkMessage<TContent>(endpoint, payload, headers))
+            using (var message = new NetworkMessage<TContent>(endpoint, method, payload, headers))
             {
                 try
                 {
@@ -68,11 +70,12 @@ namespace Finebits.Authorization.OAuth2.Messages
 
         internal async Task<TContent> SendRequestAsync<TContent>(
             Uri endpoint,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
+            HttpMethod method,
+            HeaderCollection headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            using (var message = new EmptyNetworkMessage<TContent>(endpoint, headers))
+            using (var message = new EmptyNetworkMessage<TContent>(endpoint, method, headers))
             {
                 try
                 {
@@ -97,10 +100,45 @@ namespace Finebits.Authorization.OAuth2.Messages
             }
         }
 
+        internal async Task<Stream> SendRequestAsync(
+            Uri endpoint,
+            HttpMethod method,
+            HeaderCollection headers,
+            CancellationToken cancellationToken)
+        {
+            using (var message = new StreamNetworkMessage(endpoint, method, headers))
+            {
+                try
+                {
+                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (HttpRequestException ex)
+                {
+                    //ToDo: add multi-content to RestClient
+                    var emptyContent = new AuthorizationClient.EmptyContent();
+                    throw new AuthorizationInvalidResponseException(emptyContent, ex);
+                }
+                catch (Exception ex)
+                {
+                    throw new AuthorizationInvalidResponseException("Stream can't be load", ex);
+                }
+
+                var result = new MemoryStream();
+                message.Response?.Stream?.CopyTo(result);
+                result.Position = 0;
+
+                return result;
+            }
+        }
+
         private static T GetContent<T>(Network.RestClient.JsonResponse<T> response)
             where T : IInvalidResponse
         {
-            if (response is null || (response.Content == null && typeof(T) != typeof(BaseAuthorizationClient.EmptyContent)))
+            if (response is null || (response.Content == null && typeof(T) != typeof(AuthorizationClient.EmptyContent)))
             {
                 throw new AuthorizationEmptyResponseException("Response is empty.");
             }

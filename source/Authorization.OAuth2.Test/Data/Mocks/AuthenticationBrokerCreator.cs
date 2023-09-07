@@ -44,9 +44,9 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             {
                 NameValueCollection properties = new()
                 {
-                    { "error", "fake-error" },
-                    { "error_subcode", "fake-error-subcode" },
-                    { "error_description", "fake-error-description" }
+                    { "error", FakeConstant.Error },
+                    { "error_subcode", FakeConstant.ErrorSubcode },
+                    { "error_description", FakeConstant.ErrorDescription }
                 };
 
                 return new AuthenticationResult(properties);

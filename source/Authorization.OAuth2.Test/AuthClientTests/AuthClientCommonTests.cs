@@ -125,4 +125,61 @@ internal class AuthClientCommonTests
         Assert.That(client, Is.Not.Null);
         Assert.That(client is IRevocable, Is.False);
     }
+
+
+    [Test]
+    [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.ProfileReaderCaseData))]
+    public void ConvertIProfileReader_ProfileReaderClient_Success(Test.Data.AuthClientType clientType)
+    {
+        var mockHttpClient = new Mock<HttpClient>();
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        IAuthorizationClient? client = null;
+
+        Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
+        Assert.That(client, Is.Not.Null);
+        Assert.That(client is IProfileReader, Is.True);
+    }
+
+    [Test]
+    [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.NonProfileReaderCaseData))]
+    public void ConvertIProfileReader_NonProfileReaderClient_Fail(Test.Data.AuthClientType clientType)
+    {
+        var mockHttpClient = new Mock<HttpClient>();
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        IAuthorizationClient? client = null;
+
+        Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
+        Assert.That(client, Is.Not.Null);
+        Assert.That(client is IProfileReader, Is.False);
+    }
+
+    [Test]
+    [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.UserAvatarLoaderCaseData))]
+    public void ConvertIUserAvatarLoader_UserAvatarLoaderClient_Success(Test.Data.AuthClientType clientType)
+    {
+        var mockHttpClient = new Mock<HttpClient>();
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        IAuthorizationClient? client = null;
+
+        Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
+        Assert.That(client, Is.Not.Null);
+        Assert.That(client is IUserAvatarLoader, Is.True);
+    }
+
+    [Test]
+    [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.NonUserAvatarLoaderCaseData))]
+    public void ConvertIUserAvatarLoader_NonUserAvatarLoaderClient_Fail(Test.Data.AuthClientType clientType)
+    {
+        var mockHttpClient = new Mock<HttpClient>();
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        IAuthorizationClient? client = null;
+
+        Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
+        Assert.That(client, Is.Not.Null);
+        Assert.That(client is IUserAvatarLoader, Is.False);
+    }
 }

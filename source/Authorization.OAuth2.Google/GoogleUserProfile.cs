@@ -16,47 +16,22 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System.Collections.Specialized;
+using System;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 
-namespace Finebits.Authorization.OAuth2
+namespace Finebits.Authorization.OAuth2.Google
 {
-    public abstract partial class AuthorizationRefreshableClient : BaseAuthorizationClient, IRefreshable
+    public class GoogleUserProfile : IUserProfile, IUserAvatar
     {
-        protected class RefreshPayload
-        {
-            public string ClientId { get; set; }
+        public string Id { get; protected internal set; }
+        public string Email { get; protected internal set; }
+        public string DisplayName { get; protected internal set; }
+        public Uri Avatar { get; protected internal set; }
 
-            public string ClientSecret { get; set; }
-
-            public string RefreshToken { get; set; }
-
-            public string GrantType
-            {
-                get { return _grantType ?? RefreshTokenType; }
-                set { _grantType = value; }
-            }
-
-            public NameValueCollection GetCollection()
-            {
-                var result = new NameValueCollection
-                {
-                    {"grant_type", GrantType},
-                    {"client_id", ClientId},
-                    {"refresh_token", RefreshToken},
-                };
-
-                if (!string.IsNullOrEmpty(ClientSecret))
-                {
-                    result.Add("client_secret", ClientSecret);
-                }
-
-                return result;
-            }
-
-            private string _grantType;
-            private const string RefreshTokenType = "refresh_token";
-        }
+        public string Name { get; protected internal set; }
+        public string FamilyName { get; protected internal set; }
+        public bool IsEmailVerified { get; protected internal set; }
+        public string Locale { get; protected internal set; }
     }
 }

@@ -18,37 +18,75 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
+using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
 {
-    public abstract partial class BaseAuthorizationClient : IAuthorizationClient
+    public abstract partial class AuthorizationClient
     {
-        protected class AuthProperties
+        protected class RefreshableClient : IRefreshable
         {
-            public string State { get; set; }
-            public string CodeChallenge { get; set; }
-            public string CodeChallengeMethod { get; set; }
-            public string CodeVerifier { get; set; }
+            private readonly AuthorizationClient _client;
+            public Func<Token, NameValueCollection> RefreshPayloadCreator { get; set; }
+
+            public RefreshableClient(AuthorizationClient client)
+            {
+                _client = client;
+            }
+
+            public async Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
+            {
+                if (token is null)
+                {
+                    throw new ArgumentNullException(nameof(token));
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var response = await _client.SendRequestAsync<TokenContent>(
+                    endpoint: _client.Config.RefreshUri,
+                    method: HttpMethod.Post,
+                    token: token,
+                    payload: RefreshPayloadCreator?.Invoke(token) ?? GetDefaultRefreshPayload(token),
+                    headers: null,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                return new AuthorizationToken(
+                    response.AccessToken,
+                    response.RefreshToken,
+                    response.TokenType,
+                    TimeSpan.FromSeconds(response.ExpiresIn),
+                    response.Scope
+                    );
+            }
+
+            private NameValueCollection GetDefaultRefreshPayload(Token token)
+            {
+                return new RefreshPayload()
+                {
+                    ClientId = _client.Config.ClientId,
+                    ClientSecret = _client.Config.ClientSecret,
+                    RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken,
+                }.GetCollection();
+            }
         }
 
-        protected class TokenPayload
+        protected class RefreshPayload
         {
             public string ClientId { get; set; }
 
             public string ClientSecret { get; set; }
 
-            public string Code { get; set; }
-
-            public string CodeVerifier { get; set; }
-
-            public Uri RedirectUri { get; set; }
+            public string RefreshToken { get; set; }
 
             public string GrantType
             {
-                get { return _grantType ?? AuthorizationCodeType; }
+                get { return _grantType ?? RefreshTokenType; }
                 set { _grantType = value; }
             }
 
@@ -57,10 +95,8 @@ namespace Finebits.Authorization.OAuth2
                 var result = new NameValueCollection
                 {
                     {"grant_type", GrantType},
-                    {"code", Code},
                     {"client_id", ClientId},
-                    {"code_verifier", CodeVerifier},
-                    {"redirect_uri", RedirectUri.ToString()},
+                    {"refresh_token", RefreshToken},
                 };
 
                 if (!string.IsNullOrEmpty(ClientSecret))
@@ -72,41 +108,7 @@ namespace Finebits.Authorization.OAuth2
             }
 
             private string _grantType;
-            private const string AuthorizationCodeType = "authorization_code";
-        }
-
-        protected internal class EmptyContent : IInvalidResponse
-        {
-            [JsonInclude]
-            [JsonPropertyName("error_description")]
-            public string ErrorDescription { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("error")]
-            public string ErrorReason { get; private set; }
-        }
-
-        protected class TokenContent : EmptyContent
-        {
-            [JsonInclude]
-            [JsonPropertyName("access_token")]
-            public string AccessToken { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("refresh_token")]
-            public string RefreshToken { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("token_type")]
-            public string TokenType { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("expires_in")]
-            public ulong ExpiresIn { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("scope")]
-            public string Scope { get; private set; }
+            private const string RefreshTokenType = "refresh_token";
         }
     }
 }

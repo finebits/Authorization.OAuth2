@@ -16,24 +16,24 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System;
-
-namespace Finebits.Authorization.OAuth2.Google
+namespace Finebits.Authorization.OAuth2.Abstractions
 {
-    public class GoogleConfiguration : AuthConfiguration
+    public interface IMicrosoftInvalidResponse : IInvalidResponse
     {
-        private const string AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-        private const string TokenEndpoint = "https://www.googleapis.com/oauth2/v4/token";
-        private const string RefreshTokenEndpoint = "https://oauth2.googleapis.com/token";
-        private const string RevokeTokenEndpoint = "https://oauth2.googleapis.com/revoke";
-        private const string UserProfileEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo?alt=json";
+        IResponseError ResponseError { get; }
+    }
 
-        public GoogleConfiguration()
-            : this(new Uri(AuthorizationEndpoint), new Uri(TokenEndpoint), new Uri(RefreshTokenEndpoint), new Uri(RevokeTokenEndpoint), new Uri(UserProfileEndpoint))
-        { }
+    public interface IResponseError
+    {
+        string Code { get; }
+        string Message { get; }
+        IInnerError InnerError { get; }
+    }
 
-        public GoogleConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint, Uri revokeEndpoint, Uri userProfileEndpoint)
-            : base(authorizationEndpoint, tokenEndpoint, refreshEndpoint, revokeEndpoint, userProfileEndpoint)
-        { }
+    public interface IInnerError
+    {
+        string RequestDate { get; }
+        string RequestId { get; }
+        string ClientRequestId { get; }
     }
 }

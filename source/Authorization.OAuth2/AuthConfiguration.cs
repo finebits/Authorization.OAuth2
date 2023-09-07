@@ -27,6 +27,7 @@ namespace Finebits.Authorization.OAuth2
         public Uri TokenUri { get; protected set; }
         public Uri RefreshUri { get; protected set; }
         public Uri RevokeUri { get; protected set; }
+        public Uri UserProfileUri { get; protected set; }
 
         public string ClientId { get; set; }
 
@@ -36,12 +37,13 @@ namespace Finebits.Authorization.OAuth2
 
         public IReadOnlyCollection<string> ScopeList { get; set; }
 
-        public AuthConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint, Uri revokeEndpoint)
+        public AuthConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint, Uri revokeEndpoint, Uri userProfileEndpoint)
         {
             AuthorizationUri = authorizationEndpoint;
             TokenUri = tokenEndpoint;
             RefreshUri = refreshEndpoint;
             RevokeUri = revokeEndpoint;
+            UserProfileUri = userProfileEndpoint;
         }
 
         public string GetScope()

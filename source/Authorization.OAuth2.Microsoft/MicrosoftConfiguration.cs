@@ -22,9 +22,13 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 {
     public class MicrosoftConfiguration : AuthConfiguration
     {
-        //private const string RevokeTokenEndpoint = "https://graph.microsoft.com/v1.0/me/revokeSignInSessions";
+        private const string UserProfileEndpoint = "https://graph.microsoft.com/v1.0/me";
+        private const string UserAvatarEndpoint = "https://graph.microsoft.com/v1.0/me/photo/$value";
+
         private const string DefaultTenant = "common";
         public MicrosoftAuthPrompt Prompt { get; set; } = MicrosoftAuthPrompt.SelectAccount;
+
+        public Uri UserAvatarUri { get; protected set; }
 
         public MicrosoftConfiguration()
             : this(DefaultTenant)
@@ -34,9 +38,20 @@ namespace Finebits.Authorization.OAuth2.Microsoft
              : this(GetAuthorizationUri(tenant), GetTokenUri(tenant), GetRefreshUri(tenant))
         { }
 
-        public MicrosoftConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint)
-            : base(authorizationEndpoint, tokenEndpoint, refreshEndpoint, null)
-        { }
+        public MicrosoftConfiguration(
+            Uri authorizationEndpoint = null,
+            Uri tokenEndpoint = null,
+            Uri refreshEndpoint = null,
+            Uri userProfileEndpoint = null,
+            Uri userAvatarEndpoint = null)
+            : base(authorizationEndpoint ?? GetAuthorizationUri(DefaultTenant),
+                  tokenEndpoint ?? GetTokenUri(DefaultTenant),
+                  refreshEndpoint ?? GetRefreshUri(DefaultTenant),
+                  null,
+                  userProfileEndpoint ?? new Uri(UserProfileEndpoint))
+        {
+            UserAvatarUri = userAvatarEndpoint ?? new Uri(UserAvatarEndpoint);
+        }
 
         public static string ConvertPromptToString(MicrosoftAuthPrompt prompt)
         {
