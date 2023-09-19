@@ -46,6 +46,7 @@ dotnet add package Finebits.Authorization.OAuth2.Microsoft [--version <VERSION>]
 ### Example
 
 ```C#
+using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.AuthenticationBroker;
 using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Types;
@@ -56,11 +57,14 @@ if (!DesktopAuthenticationBroker.IsSupported)
     return;
 }
 
-using var httpClient = new HttpClient();
-var launcher = new WebBrowserLauncher();
-var redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
+using HttpClient httpClient = new();
+WebBrowserLauncher launcher = new();
+Uri redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
 
-var config = new GoogleConfiguration
+// Create <client_id> and <client_secret>
+// Add required scopes
+// Look at https://console.developers.google.com/apis/credentials
+GoogleConfiguration config = new()
 {
     ClientId = "<client-id>",
     ClientSecret = "<client-secret>",
@@ -68,18 +72,27 @@ var config = new GoogleConfiguration
     ScopeList = new[] { "<scope>", "..." }
 };
 
-var authClient = new GoogleAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
+GoogleAuthClient authClient = new(httpClient, new DesktopAuthenticationBroker(launcher), config);
 
-var token = await authClient.LoginAsync();
-Console.WriteLine("Authorization operation is completed.");
+// The result contains token parameters which can be used to send service requests.
+Token token = await authClient.LoginAsync();
 
-var freshToken = await authClient.RefreshTokenAsync(token);
-Console.WriteLine("Refresh operation is completed.");
+// The result contains fresh token parameters.
+Token freshToken = await authClient.RefreshTokenAsync(token);
 
 token.Update(freshToken);
 
+IUserProfile profile = await authClient.ReadProfileAsync(token);
+Console.WriteLine($"Name: {profile.DisplayName}");
+
+if (profile is IUserAvatar userAvatar)
+{
+    Console.WriteLine($"Avatar URI: {userAvatar.Avatar}");
+}
+
+Stream avatar = await authClient.LoadAvatarAsync(token);
+
 await authClient.RevokeTokenAsync(token);
-Console.WriteLine("Revoke operation is completed.");
 ```
 
 ## Links
