@@ -17,7 +17,6 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
-using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,45 +26,37 @@ using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
 {
-    public abstract partial class AuthorizationRefreshableClient : BaseAuthorizationClient, IRefreshable
+    public abstract partial class AuthorizationClient
     {
-        protected AuthorizationRefreshableClient(HttpClient httpClient, IAuthenticationBroker broker, AuthConfiguration config)
-            : base(httpClient, broker, config)
+        protected class ProfileReader<TContent> : IProfileReader
+            where TContent : IInvalidResponse
         {
-        }
+            private readonly AuthorizationClient _client;
+            public Func<TContent, IUserProfile> UserProfileCreator { get; set; }
 
-        public virtual async Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
-        {
-            if (token is null)
+            public ProfileReader(AuthorizationClient client)
             {
-                throw new ArgumentNullException(nameof(token));
+                _client = client;
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var response = await SendRequestAsync<TokenContent>(
-                endpoint: Config.RefreshUri,
-                payload: GetRefreshPayload(token),
-                headers: null,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
-
-            return new AuthorizationToken(
-                response.AccessToken,
-                response.RefreshToken,
-                response.TokenType,
-                TimeSpan.FromSeconds(response.ExpiresIn),
-                response.Scope
-                );
-        }
-
-        protected virtual NameValueCollection GetRefreshPayload(Token token)
-        {
-            return new RefreshPayload()
+            public async Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
             {
-                ClientId = Config.ClientId,
-                ClientSecret = Config.ClientSecret,
-                RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken,
-            }.GetCollection();
+                if (token is null)
+                {
+                    throw new ArgumentNullException(nameof(token));
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var response = await _client.SendRequestAsync<TContent>(
+                    endpoint: _client.Config.UserProfileUri,
+                    method: HttpMethod.Get,
+                    token: token,
+                    headers: null,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                return (UserProfileCreator?.Invoke(response)) ?? (response is IUserProfile profile ? profile : null);
+            }
         }
     }
 }

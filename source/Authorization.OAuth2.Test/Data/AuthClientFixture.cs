@@ -25,12 +25,18 @@ namespace Finebits.Authorization.OAuth2.Test.Data
         public static IEnumerable AuthClientFixtureData => CreateTestFixtureDataCollection(AuthClientCollection);
         public static IEnumerable RefreshableFixtureData => CreateTestFixtureDataCollection(RefreshableCollection);
         public static IEnumerable RevocableFixtureData => CreateTestFixtureDataCollection(RevocableCollection);
+        public static IEnumerable ProfileReaderFixtureData => CreateTestFixtureDataCollection(ProfileReaderCollection);
+        public static IEnumerable UserAvatarLoaderFixtureData => CreateTestFixtureDataCollection(UserAvatarLoaderCollection);
 
         public static IEnumerable AuthClientCaseData => CreateTestCaseDataCollection(AuthClientCollection);
         public static IEnumerable RefreshableCaseData => CreateTestCaseDataCollection(RefreshableCollection);
         public static IEnumerable NonRefreshableCaseData => CreateTestCaseDataCollection(AuthClientCollection.Except(RefreshableCollection));
         public static IEnumerable RevocableCaseData => CreateTestCaseDataCollection(RevocableCollection);
         public static IEnumerable IrrevocableCaseData => CreateTestCaseDataCollection(AuthClientCollection.Except(RevocableCollection));
+        public static IEnumerable ProfileReaderCaseData => CreateTestCaseDataCollection(ProfileReaderCollection);
+        public static IEnumerable NonProfileReaderCaseData => CreateTestCaseDataCollection(AuthClientCollection.Except(ProfileReaderCollection));
+        public static IEnumerable UserAvatarLoaderCaseData => CreateTestCaseDataCollection(UserAvatarLoaderCollection);
+        public static IEnumerable NonUserAvatarLoaderCaseData => CreateTestCaseDataCollection(AuthClientCollection.Except(UserAvatarLoaderCollection));
 
         private static IEnumerable<AuthClientType> AuthClientCollection
         {
@@ -55,6 +61,24 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             get
             {
                 yield return AuthClientType.Google;
+            }
+        }
+
+        private static IEnumerable<AuthClientType> ProfileReaderCollection
+        {
+            get
+            {
+                yield return AuthClientType.Google;
+                yield return AuthClientType.Microsoft;
+            }
+        }
+
+        private static IEnumerable<AuthClientType> UserAvatarLoaderCollection
+        {
+            get
+            {
+                yield return AuthClientType.Google;
+                yield return AuthClientType.Microsoft;
             }
         }
 

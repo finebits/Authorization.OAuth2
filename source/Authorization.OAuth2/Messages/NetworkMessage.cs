@@ -32,18 +32,20 @@ namespace Finebits.Authorization.OAuth2.Messages
         : CommonMessage<JsonResponse<TContent>, FormUrlEncodedRequest>
     {
         public override Uri Endpoint { get; }
-        public override HttpMethod Method => HttpMethod.Post;
+        public override HttpMethod Method { get; }
 
         private readonly NameValueCollection _payload;
-        private readonly IEnumerable<KeyValuePair<string, IEnumerable<string>>> _headers;
+        private readonly HeaderCollection _headers;
 
         public NetworkMessage(
             Uri endpoint,
+            HttpMethod method,
             NameValueCollection payload,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
+            HeaderCollection headers)
         {
             _payload = payload ?? new NameValueCollection();
             _headers = headers;
+            Method = method;
             Endpoint = endpoint;
         }
 
@@ -82,15 +84,17 @@ namespace Finebits.Authorization.OAuth2.Messages
         : CommonMessage<JsonResponse<TContent>, EmptyRequest>
     {
         public override Uri Endpoint { get; }
-        public override HttpMethod Method => HttpMethod.Post;
+        public override HttpMethod Method { get; }
 
-        private readonly IEnumerable<KeyValuePair<string, IEnumerable<string>>> _headers;
+        private readonly HeaderCollection _headers;
 
         public EmptyNetworkMessage(
             Uri endpoint,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
+            HttpMethod method,
+            HeaderCollection headers)
         {
             _headers = headers;
+            Method = method;
             Endpoint = endpoint;
         }
 
@@ -122,6 +126,49 @@ namespace Finebits.Authorization.OAuth2.Messages
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 }
             };
+        }
+    }
+
+    internal class StreamNetworkMessage
+        : CommonMessage<StreamResponse, EmptyRequest>
+    {
+        public override Uri Endpoint { get; }
+        public override HttpMethod Method { get; }
+
+        private readonly HeaderCollection _headers;
+
+        public StreamNetworkMessage(
+            Uri endpoint,
+            HttpMethod method,
+            HeaderCollection headers)
+        {
+            _headers = headers;
+            Method = method;
+            Endpoint = endpoint;
+        }
+
+        protected override EmptyRequest CreateRequest()
+        {
+            HeaderCollection headers = null;
+
+            if (_headers != null)
+            {
+                headers = new HeaderCollection
+                (
+                    headers: _headers,
+                    headerValidation: false
+                );
+            }
+
+            return new EmptyRequest
+            {
+                Headers = headers
+            };
+        }
+
+        protected override StreamResponse CreateResponse()
+        {
+            return new StreamResponse();
         }
     }
 }

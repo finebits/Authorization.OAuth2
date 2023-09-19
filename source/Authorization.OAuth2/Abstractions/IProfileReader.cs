@@ -16,24 +16,15 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Finebits.Authorization.OAuth2.Google
+using Finebits.Authorization.OAuth2.Types;
+
+namespace Finebits.Authorization.OAuth2.Abstractions
 {
-    public class GoogleConfiguration : AuthConfiguration
+    public interface IProfileReader
     {
-        private const string AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-        private const string TokenEndpoint = "https://www.googleapis.com/oauth2/v4/token";
-        private const string RefreshTokenEndpoint = "https://oauth2.googleapis.com/token";
-        private const string RevokeTokenEndpoint = "https://oauth2.googleapis.com/revoke";
-        private const string UserProfileEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo?alt=json";
-
-        public GoogleConfiguration()
-            : this(new Uri(AuthorizationEndpoint), new Uri(TokenEndpoint), new Uri(RefreshTokenEndpoint), new Uri(RevokeTokenEndpoint), new Uri(UserProfileEndpoint))
-        { }
-
-        public GoogleConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint, Uri revokeEndpoint, Uri userProfileEndpoint)
-            : base(authorizationEndpoint, tokenEndpoint, refreshEndpoint, revokeEndpoint, userProfileEndpoint)
-        { }
+        Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default);
     }
 }

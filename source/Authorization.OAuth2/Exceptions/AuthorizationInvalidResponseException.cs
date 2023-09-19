@@ -26,6 +26,7 @@ namespace Finebits.Authorization.OAuth2.Exceptions
     {
         public string ErrorDescription { get; private set; }
         public string ErrorReason { get; private set; }
+        public IInvalidResponse ResponseDetails { get; private set; }
 
         public static readonly string DefaultMessage = "Authorization cannot be done. The service response contains an error.";
 
@@ -40,32 +41,36 @@ namespace Finebits.Authorization.OAuth2.Exceptions
             : base(message, innerException)
         { }
 
-        public AuthorizationInvalidResponseException(IInvalidResponse content, string message, Exception innerException)
+        public AuthorizationInvalidResponseException(IInvalidResponse responseDetails, string message, Exception innerException)
             : base(message, innerException)
         {
-            ErrorReason = content?.ErrorReason;
-            ErrorDescription = content?.ErrorDescription;
+            ErrorReason = responseDetails?.ErrorReason;
+            ErrorDescription = responseDetails?.ErrorDescription;
+            ResponseDetails = responseDetails;
         }
 
-        public AuthorizationInvalidResponseException(IInvalidResponse content, string message)
+        public AuthorizationInvalidResponseException(IInvalidResponse responseDetails, string message)
             : base(message)
         {
-            ErrorReason = content?.ErrorReason;
-            ErrorDescription = content?.ErrorDescription;
+            ErrorReason = responseDetails?.ErrorReason;
+            ErrorDescription = responseDetails?.ErrorDescription;
+            ResponseDetails = responseDetails;
         }
 
-        public AuthorizationInvalidResponseException(IInvalidResponse content, Exception innerException)
+        public AuthorizationInvalidResponseException(IInvalidResponse responseDetails, Exception innerException)
             : base(DefaultMessage, innerException)
         {
-            ErrorReason = content?.ErrorReason;
-            ErrorDescription = content?.ErrorDescription;
+            ErrorReason = responseDetails?.ErrorReason;
+            ErrorDescription = responseDetails?.ErrorDescription;
+            ResponseDetails = responseDetails;
         }
 
-        public AuthorizationInvalidResponseException(IInvalidResponse content)
+        public AuthorizationInvalidResponseException(IInvalidResponse responseDetails)
             : base(DefaultMessage)
         {
-            ErrorReason = content?.ErrorReason;
-            ErrorDescription = content?.ErrorDescription;
+            ErrorReason = responseDetails?.ErrorReason;
+            ErrorDescription = responseDetails?.ErrorDescription;
+            ResponseDetails = responseDetails;
         }
     }
 }

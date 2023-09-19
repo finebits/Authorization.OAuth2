@@ -16,24 +16,19 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System;
+using Finebits.Authorization.OAuth2.Abstractions;
 
-namespace Finebits.Authorization.OAuth2.Google
+namespace Finebits.Authorization.OAuth2.Microsoft
 {
-    public class GoogleConfiguration : AuthConfiguration
+    public class MicrosoftUserProfile : IUserProfile
     {
-        private const string AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-        private const string TokenEndpoint = "https://www.googleapis.com/oauth2/v4/token";
-        private const string RefreshTokenEndpoint = "https://oauth2.googleapis.com/token";
-        private const string RevokeTokenEndpoint = "https://oauth2.googleapis.com/revoke";
-        private const string UserProfileEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo?alt=json";
+        public string Id { get; protected internal set; }
+        public string Email { get; protected internal set; }
+        public string DisplayName { get; protected internal set; }
 
-        public GoogleConfiguration()
-            : this(new Uri(AuthorizationEndpoint), new Uri(TokenEndpoint), new Uri(RefreshTokenEndpoint), new Uri(RevokeTokenEndpoint), new Uri(UserProfileEndpoint))
-        { }
-
-        public GoogleConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint, Uri revokeEndpoint, Uri userProfileEndpoint)
-            : base(authorizationEndpoint, tokenEndpoint, refreshEndpoint, revokeEndpoint, userProfileEndpoint)
-        { }
+        public string GivenName { get; set; }
+        public string Surname { get; set; }
+        public string UserPrincipalName { get; set; }
+        public string PreferredLanguage { get; set; }
     }
 }

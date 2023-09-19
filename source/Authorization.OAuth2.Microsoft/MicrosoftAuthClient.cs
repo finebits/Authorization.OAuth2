@@ -17,15 +17,17 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
+using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Microsoft
 {
-    public class MicrosoftAuthClient : AuthorizationRefreshableClient
+    public partial class MicrosoftAuthClient : AuthorizationClient, IRefreshable, IProfileReader, IUserAvatarLoader
     {
         protected MicrosoftConfiguration Configuration => Config as MicrosoftConfiguration;
 
@@ -64,6 +66,45 @@ namespace Finebits.Authorization.OAuth2.Microsoft
             }
 
             return Task.FromResult(new Uri(endpoint));
+        }
+
+        public Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
+        {
+            return new RefreshableClient(this).RefreshTokenAsync(token, cancellationToken);
+        }
+
+        public Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
+        {
+            return new ProfileReader<MicrosoftProfileContent>(this)
+            {
+                UserProfileCreator = (content) => new MicrosoftUserProfile
+                {
+                    Id = content.Id,
+                    Email = content.Mail,
+                    DisplayName = content.DisplayName,
+                    GivenName = content.GivenName,
+                    Surname = content.Surname,
+                    UserPrincipalName = content.UserPrincipalName,
+                    PreferredLanguage = content.PreferredLanguage
+                }
+            }.ReadProfileAsync(token, cancellationToken);
+        }
+
+        public async Task<Stream> LoadAvatarAsync(Token token, CancellationToken cancellationToken = default)
+        {
+            if (token is null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await SendRequestAsync(
+                 endpoint: Configuration.UserAvatarUri,
+                 method: HttpMethod.Get,
+                 token: token,
+                 headers: null,
+                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
