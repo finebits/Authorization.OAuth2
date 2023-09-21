@@ -148,4 +148,19 @@ internal class AuthClientRevokeTests
         Assert.That(innerException, Is.Not.Null);
         Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
+
+    [Test]
+    public void RevokeTokenAsync_HttpEmptyContent_Success()
+    {
+        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
+
+        var revocableClient = client as IRevocable;
+        Assert.That(revocableClient, Is.Not.Null);
+
+        Assert.DoesNotThrowAsync(async () => await revocableClient.RevokeTokenAsync(token).ConfigureAwait(false));
+    }
 }

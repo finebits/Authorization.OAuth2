@@ -68,7 +68,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             }
         }
 
-        internal async Task<TContent> SendRequestAsync<TContent>(
+        internal async Task<TContent> SendEmptyRequestAsync<TContent>(
             Uri endpoint,
             HttpMethod method,
             HeaderCollection headers,
@@ -100,13 +100,13 @@ namespace Finebits.Authorization.OAuth2.Messages
             }
         }
 
-        internal async Task<Stream> SendRequestAsync(
+        internal async Task<Stream> DownloadFileAsync<TError>(
             Uri endpoint,
             HttpMethod method,
             HeaderCollection headers,
             CancellationToken cancellationToken)
         {
-            using (var message = new StreamNetworkMessage(endpoint, method, headers))
+            using (var message = new StreamNetworkMessage<TError>(endpoint, method, headers))
             {
                 try
                 {
@@ -116,22 +116,28 @@ namespace Finebits.Authorization.OAuth2.Messages
                 {
                     throw;
                 }
-                catch (HttpRequestException ex)
-                {
-                    //ToDo: add multi-content to RestClient
-                    var emptyContent = new AuthorizationClient.EmptyContent();
-                    throw new AuthorizationInvalidResponseException(emptyContent, ex);
-                }
                 catch (Exception ex)
                 {
-                    throw new AuthorizationInvalidResponseException("Stream can't be load", ex);
+                    IInvalidResponse content = null;
+
+                    if (message.Response.PickedResponse is StreamNetworkMessage<TError>.ErrorResponse error &&
+                        error.Content is IInvalidResponse invalidResponse)
+                    {
+                        content = invalidResponse;
+                    }
+
+                    throw new AuthorizationInvalidResponseException(content, ex);
                 }
 
-                var result = new MemoryStream();
-                message.Response?.Stream?.CopyTo(result);
-                result.Position = 0;
+                if (message.Response.PickedResponse is StreamResponse streamResponse && streamResponse.Stream?.Length > 0)
+                {
+                    var result = new MemoryStream();
+                    streamResponse.Stream?.CopyTo(result);
+                    result.Position = 0;
+                    return result;
+                }
 
-                return result;
+                throw new AuthorizationDownloadFileException();
             }
         }
 
@@ -140,7 +146,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             if (response is null || (response.Content == null && typeof(T) != typeof(AuthorizationClient.EmptyContent)))
             {
-                throw new AuthorizationEmptyResponseException("Response is empty.");
+                throw new AuthorizationEmptyResponseException();
             }
 
             return string.IsNullOrEmpty(response.Content?.ErrorReason)

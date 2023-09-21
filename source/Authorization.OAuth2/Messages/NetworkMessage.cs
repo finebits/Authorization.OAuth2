@@ -129,9 +129,10 @@ namespace Finebits.Authorization.OAuth2.Messages
         }
     }
 
-    internal class StreamNetworkMessage
-        : CommonMessage<StreamResponse, EmptyRequest>
+    internal class StreamNetworkMessage<TError>
+        : CommonMessage<FlexibleResponse, EmptyRequest>
     {
+        public class ErrorResponse : JsonResponse<TError> { }
         public override Uri Endpoint { get; }
         public override HttpMethod Method { get; }
 
@@ -166,9 +167,19 @@ namespace Finebits.Authorization.OAuth2.Messages
             };
         }
 
-        protected override StreamResponse CreateResponse()
+        protected override FlexibleResponse CreateResponse()
         {
-            return new StreamResponse();
+            return new FlexibleResponse(new Response[]
+            {
+                new ErrorResponse()
+                {
+                    Options = new JsonSerializerOptions
+                    {
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                    }
+                },
+                new StreamResponse()
+            });
         }
     }
 }

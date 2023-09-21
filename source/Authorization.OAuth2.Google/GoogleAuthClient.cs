@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
+using Finebits.Authorization.OAuth2.Exceptions;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Google
@@ -132,11 +133,20 @@ namespace Finebits.Authorization.OAuth2.Google
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var profile = await ReadProfileAsync(token, cancellationToken).ConfigureAwait(false);
+            IUserProfile profile;
+
+            try
+            {
+                profile = await ReadProfileAsync(token, cancellationToken).ConfigureAwait(false);
+            }
+            catch (AuthorizationEmptyResponseException ex)
+            {
+                throw new AuthorizationDownloadFileException(AuthorizationDownloadFileException.DefaultMessage, ex);
+            }
 
             if (profile is GoogleUserProfile googleProfile && googleProfile.Avatar != null)
             {
-                return await SendRequestAsync(
+                return await DownloadFileAsync<EmptyContent>(
                     endpoint: googleProfile.Avatar,
                     method: HttpMethod.Get,
                     token: null,
@@ -144,7 +154,7 @@ namespace Finebits.Authorization.OAuth2.Google
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            return null;
+            throw new AuthorizationDownloadFileException();
         }
     }
 }

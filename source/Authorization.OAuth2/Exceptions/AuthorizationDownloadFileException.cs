@@ -20,19 +20,19 @@ using System;
 
 namespace Finebits.Authorization.OAuth2.Exceptions
 {
-    public sealed class AuthorizationEmptyResponseException : AuthorizationException
+    public sealed class AuthorizationDownloadFileException : AuthorizationException
     {
-        public static readonly string DefaultMessage = "The request failed with an empty response.";
+        public static readonly string DefaultMessage = "The file could not be downloaded.";
 
-        public AuthorizationEmptyResponseException()
+        public AuthorizationDownloadFileException()
             : this(DefaultMessage)
         { }
 
-        public AuthorizationEmptyResponseException(string message)
+        public AuthorizationDownloadFileException(string message)
             : base(message)
         { }
 
-        public AuthorizationEmptyResponseException(string message, Exception innerException)
+        public AuthorizationDownloadFileException(string message, Exception innerException)
             : base(message, innerException)
         { }
     }
