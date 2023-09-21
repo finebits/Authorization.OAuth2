@@ -16,26 +16,97 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
+using System;
 using System.Collections.Specialized;
+using System.Text.Json.Serialization;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 
 namespace Finebits.Authorization.OAuth2
 {
-    public abstract partial class AuthorizationClient : AuthorizationRefreshableClient, IRefreshable, IRevocable
+    public abstract partial class AuthorizationClient
     {
-        protected class RevokePayload : IFormUrlEncodedPayload
+        protected class AuthProperties
         {
-            public string RefreshToken { get; set; }
+            public string State { get; set; }
+            public string CodeChallenge { get; set; }
+            public string CodeChallengeMethod { get; set; }
+            public string CodeVerifier { get; set; }
+        }
+
+        protected class TokenPayload
+        {
+            public string ClientId { get; set; }
+
+            public string ClientSecret { get; set; }
+
+            public string Code { get; set; }
+
+            public string CodeVerifier { get; set; }
+
+            public Uri RedirectUri { get; set; }
+
+            public string GrantType
+            {
+                get { return _grantType ?? AuthorizationCodeType; }
+                set { _grantType = value; }
+            }
 
             public NameValueCollection GetCollection()
             {
-                return new NameValueCollection
+                var result = new NameValueCollection
                 {
-                    {"token", RefreshToken}
+                    {"grant_type", GrantType},
+                    {"code", Code},
+                    {"client_id", ClientId},
+                    {"code_verifier", CodeVerifier},
+                    {"redirect_uri", RedirectUri.ToString()},
                 };
+
+                if (!string.IsNullOrEmpty(ClientSecret))
+                {
+                    result.Add("client_secret", ClientSecret);
+                }
+
+                return result;
             }
+
+            private string _grantType;
+            private const string AuthorizationCodeType = "authorization_code";
+        }
+
+        protected internal class EmptyContent : IInvalidResponse
+        {
+            [JsonInclude]
+            [JsonPropertyName("error_description")]
+            public string ErrorDescription { get; private set; }
+
+            [JsonInclude]
+            [JsonPropertyName("error")]
+            public string ErrorReason { get; private set; }
+        }
+
+        protected class TokenContent : EmptyContent
+        {
+            [JsonInclude]
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; private set; } = string.Empty;
+
+            [JsonInclude]
+            [JsonPropertyName("refresh_token")]
+            public string RefreshToken { get; private set; } = string.Empty;
+
+            [JsonInclude]
+            [JsonPropertyName("token_type")]
+            public string TokenType { get; private set; } = string.Empty;
+
+            [JsonInclude]
+            [JsonPropertyName("expires_in")]
+            public ulong ExpiresIn { get; private set; } = 0;
+
+            [JsonInclude]
+            [JsonPropertyName("scope")]
+            public string Scope { get; private set; } = string.Empty;
         }
     }
 }

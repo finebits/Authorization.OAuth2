@@ -41,7 +41,7 @@ internal class DesktopAuthenticationBrokerTests
     [TestCase(null, null, "requestUri")]
     [TestCase(null, "https://callback", "requestUri")]
     [TestCase("https://request", null, "callbackUri")]
-    public void AuthenticateAsync_NullParam_Exception(string requestStringUri, string callbackStringUri, string paramName)
+    public void AuthenticateAsync_NullParam_Exception(string? requestStringUri, string? callbackStringUri, string paramName)
     {
         var broker = new DesktopAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
 

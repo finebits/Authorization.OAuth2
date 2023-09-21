@@ -17,46 +17,45 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Finebits.Authorization.OAuth2.Types
+using Finebits.Authorization.OAuth2.Abstractions;
+using Finebits.Authorization.OAuth2.Types;
+
+namespace Finebits.Authorization.OAuth2
 {
-    public class AuthorizationToken : Token
+    public abstract partial class AuthorizationClient
     {
-        public TimeSpan ExpiresIn { get; private set; }
-        public string Scope { get; private set; }
-
-        public AuthorizationToken(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope)
-            : base(accessToken, refreshToken, tokenType)
+        protected class ProfileReader<TContent> : IProfileReader
+            where TContent : IInvalidResponse
         {
-            ExpiresIn = expiresIn;
-            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
-        }
+            private readonly AuthorizationClient _client;
+            public Func<TContent, IUserProfile> UserProfileCreator { get; set; }
 
-        public AuthorizationToken(AuthorizationToken other)
-            : base(other)
-        {
-            if (other == null)
+            public ProfileReader(AuthorizationClient client)
             {
-                throw new ArgumentNullException(nameof(other));
+                _client = client;
             }
 
-            ExpiresIn = other.ExpiresIn;
-            Scope = other.Scope;
-        }
-
-        public override void Update(Token other)
-        {
-            if (other is null)
+            public async Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
             {
-                throw new ArgumentNullException(nameof(other));
-            }
+                if (token is null)
+                {
+                    throw new ArgumentNullException(nameof(token));
+                }
 
-            base.Update(other);
+                cancellationToken.ThrowIfCancellationRequested();
 
-            if (other is AuthorizationToken token)
-            {
-                ExpiresIn = token.ExpiresIn;
-                Scope = GetValueOrDefault(token.Scope, Scope);
+                var response = await _client.SendEmptyRequestAsync<TContent>(
+                    endpoint: _client.Config.UserProfileUri,
+                    method: HttpMethod.Get,
+                    token: token,
+                    headers: null,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                return (UserProfileCreator?.Invoke(response)) ?? (response is IUserProfile profile ? profile : null);
             }
         }
     }

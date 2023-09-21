@@ -18,6 +18,7 @@
 
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 
 using Moq;
 using Moq.Protected;
@@ -51,11 +52,11 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = "fake-access-token",
-                            token_type = "Bearer",
-                            expires_in = 3600,
-                            refresh_token = "fake-refresh-token",
-                            scope = "email-fake-scope profile-fake-scope",
+                            access_token = FakeConstant.Token.AccessToken,
+                            token_type = FakeConstant.Token.TokenType,
+                            expires_in = FakeConstant.Token.ExpiresIn,
+                            refresh_token = FakeConstant.Token.RefreshToken,
+                            scope = FakeConstant.Token.Scope,
                         }),
                 });
 
@@ -72,12 +73,12 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = "fake-access-token",
-                            token_type = "Bearer",
-                            expires_in = 3600,
-                            refresh_token = "fake-refresh-token",
-                            scope = "email-fake-scope profile-fake-scope",
-                            id_token = "fake-id-token",
+                            access_token = FakeConstant.Token.AccessToken,
+                            token_type = FakeConstant.Token.TokenType,
+                            expires_in = FakeConstant.Token.ExpiresIn,
+                            refresh_token = FakeConstant.Token.RefreshToken,
+                            scope = FakeConstant.Token.Scope,
+                            id_token = FakeConstant.Token.IdToken,
                         }),
                 });
 
@@ -92,12 +93,11 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = "fake-new-access-token",
-                            token_type = "Bearer",
-                            expires_in = 3600,
-                            refresh_token = "fake-new-refresh-token",
-                            scope = "email-fake-scope profile-fake-scope",
-
+                            access_token = FakeConstant.Token.NewAccessToken,
+                            token_type = FakeConstant.Token.TokenType,
+                            expires_in = FakeConstant.Token.ExpiresIn,
+                            refresh_token = FakeConstant.Token.NewRefreshToken,
+                            scope = FakeConstant.Token.Scope,
                         }),
                 });
 
@@ -114,11 +114,10 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = "fake-access-token",
-                            token_type = "Bearer",
-                            expires_in = 3600,
-                            refresh_token = "",
-                            scope = "email-fake-scope profile-fake-scope",
+                            access_token = FakeConstant.Token.NewAccessToken,
+                            token_type = FakeConstant.Token.TokenType,
+                            expires_in = FakeConstant.Token.ExpiresIn,
+                            scope = FakeConstant.Token.Scope,
                         }),
                 });
 
@@ -131,6 +130,68 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 {
                     StatusCode = HttpStatusCode.OK,
                     Content = JsonContent.Create(new { })
+                });
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
+                                               && rm.RequestUri.Host.Equals("google", StringComparison.Ordinal)
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = JsonContent.Create(
+                        new
+                        {
+                            sub = FakeConstant.UserProfile.Id,
+                            name = FakeConstant.UserProfile.Google.Name,
+                            given_name = FakeConstant.UserProfile.DisplayName,
+                            family_name = FakeConstant.UserProfile.Google.FamilyName,
+                            picture = FakeConstant.UserProfile.Google.Picture,
+                            email = FakeConstant.UserProfile.Email,
+                            email_verified = FakeConstant.UserProfile.Google.EmailVerified,
+                            locale = FakeConstant.UserProfile.Google.Locale
+                        }),
+                });
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
+                                               && rm.RequestUri.Host.Equals("microsoft", StringComparison.Ordinal)
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = JsonContent.Create(
+                        new
+                        {
+                            id = FakeConstant.UserProfile.Id,
+                            mail = FakeConstant.UserProfile.Email,
+                            displayName = FakeConstant.UserProfile.DisplayName,
+                            givenName = FakeConstant.UserProfile.Microsoft.GivenName,
+                            surname = FakeConstant.UserProfile.Microsoft.Surname,
+                            userPrincipalName = FakeConstant.UserProfile.Microsoft.UserPrincipalName,
+                            preferredLanguage = FakeConstant.UserProfile.Microsoft.PreferredLanguage,
+                            mobilePhone = FakeConstant.UserProfile.Microsoft.MobilePhone,
+                            jobTitle = FakeConstant.UserProfile.Microsoft.JobTitle,
+                            officeLocation = FakeConstant.UserProfile.Microsoft.OfficeLocation,
+                        }),
+                });
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
+                                               && rm.RequestUri.AbsolutePath.EndsWith("avatar-uri") == true),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(FakeConstant.UserProfile.Avatar))),
                 });
 
             return mock;
@@ -165,16 +226,47 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         public static Mock<HttpMessageHandler> CreateInvalidResponse()
         {
-            return Create(() => new HttpResponseMessage()
-            {
-                StatusCode = HttpStatusCode.BadRequest,
-                Content = JsonContent.Create(
-                    new
-                    {
-                        error = "fake-error",
-                        error_description = "fake-error-description",
-                    }),
-            });
+            var mock = new Mock<HttpMessageHandler>();
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Content = JsonContent.Create(
+                        new
+                        {
+                            error = FakeConstant.Error,
+                            error_description = FakeConstant.ErrorDescription,
+                        }),
+                });
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
+                                               && rm.RequestUri.Host.Equals("microsoft", StringComparison.Ordinal)
+                                               && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true ||
+                                                   rm.RequestUri.AbsolutePath.EndsWith("avatar-uri") == true)),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Content = JsonContent.Create(
+                        new
+                        {
+                            error = new
+                            {
+                                code = FakeConstant.Error,
+                                message = FakeConstant.ErrorDescription,
+                            }
+                        }),
+                });
+
+            return mock;
         }
 
         public static Mock<HttpMessageHandler> CreateEmptyResponse()

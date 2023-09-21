@@ -17,14 +17,15 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
-using Finebits.Authorization.OAuth2.RestClient;
+using Finebits.Network.RestClient;
 
 namespace Finebits.Authorization.OAuth2.Messages
 {
@@ -36,75 +37,120 @@ namespace Finebits.Authorization.OAuth2.Messages
 
         internal async Task<TContent> SendRequestAsync<TContent>(
             Uri endpoint,
-            IFormUrlEncodedPayload payload,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
+            HttpMethod method,
+            NameValueCollection payload,
+            HeaderCollection headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            var message = new NetworkMessage<TContent>(endpoint, payload, headers);
-
-            try
+            using (var message = new NetworkMessage<TContent>(endpoint, method, payload, headers))
             {
-                await SendAsync(message, cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                IInvalidResponse content = null;
-
-                if (message.Response != null)
+                try
                 {
-                    content = message.Response.Content;
+                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
                 }
-                throw new AuthorizationInvalidResponseException(content, ex);
-            }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    IInvalidResponse content = null;
 
-            return GetContent(message.Response);
+                    if (message.Response != null)
+                    {
+                        content = message.Response.Content;
+                    }
+                    throw new AuthorizationInvalidResponseException(content, ex);
+                }
+
+                return GetContent(message.Response);
+            }
         }
 
-        internal async Task<TContent> SendRequestAsync<TContent>(
+        internal async Task<TContent> SendEmptyRequestAsync<TContent>(
             Uri endpoint,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
+            HttpMethod method,
+            HeaderCollection headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            var message = new EmptyNetworkMessage<TContent>(endpoint, headers);
-
-            try
+            using (var message = new EmptyNetworkMessage<TContent>(endpoint, method, headers))
             {
-                await SendAsync(message, cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                IInvalidResponse content = null;
-
-                if (message.Response != null)
+                try
                 {
-                    content = message.Response.Content;
+                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
                 }
-                throw new AuthorizationInvalidResponseException(content, ex);
-            }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    IInvalidResponse content = null;
 
-            return GetContent(message.Response);
+                    if (message.Response != null)
+                    {
+                        content = message.Response.Content;
+                    }
+                    throw new AuthorizationInvalidResponseException(content, ex);
+                }
+
+                return GetContent(message.Response);
+            }
+        }
+
+        internal async Task<Stream> DownloadFileAsync<TError>(
+            Uri endpoint,
+            HttpMethod method,
+            HeaderCollection headers,
+            CancellationToken cancellationToken)
+        {
+            using (var message = new StreamNetworkMessage<TError>(endpoint, method, headers))
+            {
+                try
+                {
+                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    IInvalidResponse content = null;
+
+                    if (message.Response.PickedResponse is StreamNetworkMessage<TError>.ErrorResponse error &&
+                        error.Content is IInvalidResponse invalidResponse)
+                    {
+                        content = invalidResponse;
+                    }
+
+                    throw new AuthorizationInvalidResponseException(content, ex);
+                }
+
+                if (message.Response.PickedResponse is StreamResponse streamResponse && streamResponse.Stream?.Length > 0)
+                {
+                    var result = new MemoryStream();
+                    streamResponse.Stream?.CopyTo(result);
+                    result.Position = 0;
+                    return result;
+                }
+
+                throw new AuthorizationDownloadFileException();
+            }
         }
 
         private static T GetContent<T>(Network.RestClient.JsonResponse<T> response)
             where T : IInvalidResponse
         {
-            if (response is null || (response.Content == null && typeof(T) != typeof(BaseAuthorizationClient.EmptyContent)))
+            if (response is null || (response.Content == null && typeof(T) != typeof(AuthorizationClient.EmptyContent)))
             {
-                throw new AuthorizationEmptyResponseException("Response is empty.");
+                throw new AuthorizationEmptyResponseException();
             }
 
             return string.IsNullOrEmpty(response.Content?.ErrorReason)
-                ? response.Content
+                ? (response.Content is ICloneable cloneable) ? (T)cloneable.Clone() : response.Content
                 : throw new AuthorizationInvalidResponseException(response.Content);
         }
     }

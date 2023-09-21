@@ -49,10 +49,10 @@ internal class AuthClientLoginTests
         Assert.That(authToken, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(authToken.AccessToken, Is.Not.Null);
-            Assert.That(authToken.RefreshToken, Is.Not.Null);
-            Assert.That(authToken.TokenType, Is.EqualTo("Bearer"));
-            Assert.That(authToken.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(3600)));
+            Assert.That(authToken.AccessToken, Is.EqualTo(FakeConstant.Token.AccessToken));
+            Assert.That(authToken.RefreshToken, Is.EqualTo(FakeConstant.Token.RefreshToken));
+            Assert.That(authToken.TokenType, Is.EqualTo(FakeConstant.Token.TokenType));
+            Assert.That(authToken.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Token.ExpiresIn)));
 
             if (authToken is GoogleAuthorizationToken googleToken)
             {
@@ -74,10 +74,10 @@ internal class AuthClientLoginTests
         Assert.That(authToken, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(authToken.AccessToken, Is.Not.Null);
-            Assert.That(authToken.RefreshToken, Is.Not.Null);
-            Assert.That(authToken.TokenType, Is.EqualTo("Bearer"));
-            Assert.That(authToken.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(3600)));
+            Assert.That(authToken.AccessToken, Is.EqualTo(FakeConstant.Token.AccessToken));
+            Assert.That(authToken.RefreshToken, Is.EqualTo(FakeConstant.Token.RefreshToken));
+            Assert.That(authToken.TokenType, Is.EqualTo(FakeConstant.Token.TokenType));
+            Assert.That(authToken.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Token.ExpiresIn)));
         });
     }
 
@@ -162,10 +162,10 @@ internal class AuthClientLoginTests
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(exception.Error, Is.EqualTo("fake-error"));
-            Assert.That(exception.ErrorDescription, Is.EqualTo("fake-error-description"));
+            Assert.That(exception.Error, Is.EqualTo(FakeConstant.Error));
+            Assert.That(exception.ErrorDescription, Is.EqualTo(FakeConstant.ErrorDescription));
             Assert.That(exception.Properties, Is.Not.Null);
-            Assert.That(exception.Properties["error_subcode"], Is.EqualTo("fake-error-subcode"));
+            Assert.That(exception.Properties["error_subcode"], Is.EqualTo(FakeConstant.ErrorSubcode));
             Assert.That(exception.InnerException, Is.Null);
         });
     }
@@ -256,13 +256,12 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        //ToDo: should thrown HttpRequestException need fix RestClient
         var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
 
-        //var innerException = exception.InnerException as HttpRequestException;
-        //Assert.That(innerException, Is.Not.Null);
-        //Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        var innerException = exception.InnerException as HttpRequestException;
+        Assert.That(innerException, Is.Not.Null);
+        Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
 
     [Test]
@@ -273,7 +272,7 @@ internal class AuthClientLoginTests
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await client.LoginAsync().ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }

@@ -60,11 +60,12 @@ internal class AuthClientRevokeTests
         var mockAuthBroker = new Mock<IAuthenticationBroker>();
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
 
         var revocableClient = client as IRevocable;
         Assert.That(revocableClient, Is.Not.Null);
 
-        Assert.DoesNotThrowAsync(async () => await revocableClient.RevokeTokenAsync(CreateToken()).ConfigureAwait(false));
+        Assert.DoesNotThrowAsync(async () => await revocableClient.RevokeTokenAsync(token).ConfigureAwait(false));
     }
 
     [Test]
@@ -75,12 +76,13 @@ internal class AuthClientRevokeTests
         var mockAuthBroker = new Mock<IAuthenticationBroker>();
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
 
         var revocableClient = client as IRevocable;
         Assert.That(revocableClient, Is.Not.Null);
 
         cts.Cancel();
-        var exception = Assert.CatchAsync<OperationCanceledException>(async () => await revocableClient.RevokeTokenAsync(CreateToken(), cts.Token).ConfigureAwait(false));
+        var exception = Assert.CatchAsync<OperationCanceledException>(async () => await revocableClient.RevokeTokenAsync(token, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
@@ -92,11 +94,12 @@ internal class AuthClientRevokeTests
         var mockAuthBroker = new Mock<IAuthenticationBroker>();
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
 
         var revocableClient = client as IRevocable;
         Assert.That(revocableClient, Is.Not.Null);
 
-        var exception = Assert.CatchAsync<OperationCanceledException>(async () => await revocableClient.RevokeTokenAsync(CreateToken(), cts.Token).ConfigureAwait(false));
+        var exception = Assert.CatchAsync<OperationCanceledException>(async () => await revocableClient.RevokeTokenAsync(token, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
@@ -107,11 +110,12 @@ internal class AuthClientRevokeTests
         var mockAuthBroker = new Mock<IAuthenticationBroker>();
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
 
         var revocableClient = client as IRevocable;
         Assert.That(revocableClient, Is.Not.Null);
 
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await revocableClient.RevokeTokenAsync(CreateToken()).ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await revocableClient.RevokeTokenAsync(token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
@@ -132,23 +136,31 @@ internal class AuthClientRevokeTests
         var mockAuthBroker = new Mock<IAuthenticationBroker>();
         var config = Test.Data.AuthCreator.CreateConfig(AuthType);
         var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
 
         var revocableClient = client as IRevocable;
         Assert.That(revocableClient, Is.Not.Null);
 
-        //ToDo: should thrown HttpRequestException need fix RestClient
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await revocableClient.RevokeTokenAsync(CreateToken()).ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await revocableClient.RevokeTokenAsync(token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        //var innerException = exception.InnerException as HttpRequestException;
-        //Assert.That(innerException, Is.Not.Null);
-        //Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        var innerException = exception.InnerException as HttpRequestException;
+        Assert.That(innerException, Is.Not.Null);
+        Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
 
-    private static Types.Token CreateToken()
+    [Test]
+    public void RevokeTokenAsync_HttpEmptyContent_Success()
     {
-        return new Types.Token(accessToken: "fake-access-token",
-                               refreshToken: "fake-refresh-token",
-                               tokenType: "Bearer");
+        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
+
+        var revocableClient = client as IRevocable;
+        Assert.That(revocableClient, Is.Not.Null);
+
+        Assert.DoesNotThrowAsync(async () => await revocableClient.RevokeTokenAsync(token).ConfigureAwait(false));
     }
 }

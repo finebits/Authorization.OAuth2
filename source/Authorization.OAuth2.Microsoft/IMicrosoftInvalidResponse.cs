@@ -16,32 +16,24 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Finebits.Network.RestClient;
-
-//ToDo: Move to RestClient
-namespace Finebits.Authorization.OAuth2.RestClient
+namespace Finebits.Authorization.OAuth2.Abstractions
 {
-    public interface IFormUrlEncodedPayload
+    public interface IMicrosoftInvalidResponse : IInvalidResponse
     {
-        NameValueCollection GetCollection();
+        IResponseError ResponseError { get; }
     }
 
-    internal class FormUrlEncodedRequest<TFormUrlEncodedPayload> : Request
-        where TFormUrlEncodedPayload : IFormUrlEncodedPayload
+    public interface IResponseError
     {
-        public IFormUrlEncodedPayload Payload { get; set; }
+        string Code { get; }
+        string Message { get; }
+        IInnerError InnerError { get; }
+    }
 
-        protected override Task<HttpContent> CreateContentAsync(CancellationToken cancellationToken)
-        {
-            var collection = Payload.GetCollection();
-            return Task.FromResult<HttpContent>(new FormUrlEncodedContent(collection.AllKeys.Select(key => new KeyValuePair<string, string>(key, collection[key]))));
-        }
+    public interface IInnerError
+    {
+        string RequestDate { get; }
+        string RequestId { get; }
+        string ClientRequestId { get; }
     }
 }

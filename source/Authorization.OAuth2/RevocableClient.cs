@@ -17,55 +17,50 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Finebits.Authorization.OAuth2.Abstractions;
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2
 {
-    public abstract partial class AuthorizationRefreshableClient : BaseAuthorizationClient, IRefreshable
+    public abstract partial class AuthorizationClient
     {
-        protected AuthorizationRefreshableClient(HttpClient httpClient, IAuthenticationBroker broker, AuthConfiguration config)
-            : base(httpClient, broker, config)
+        protected class RevocableClient : IRevocable
         {
-        }
+            private readonly AuthorizationClient _client;
+            public Func<Token, NameValueCollection> RevokePayloadCreator { get; set; }
 
-        public virtual async Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
-        {
-            if (token is null)
+            public RevocableClient(AuthorizationClient client)
             {
-                throw new ArgumentNullException(nameof(token));
+                _client = client;
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var response = await SendRequestAsync<TokenContent>(
-                endpoint: Config.RefreshUri,
-                payload: GetRefreshPayload(token),
-                headers: null,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
-
-            return new AuthorizationToken(
-                response.AccessToken,
-                response.RefreshToken,
-                response.TokenType,
-                TimeSpan.FromSeconds(response.ExpiresIn),
-                response.Scope
-                );
-        }
-
-        protected virtual IFormUrlEncodedPayload GetRefreshPayload(Token token)
-        {
-            return new RefreshPayload()
+            public virtual async Task RevokeTokenAsync(Token token, CancellationToken cancellationToken = default)
             {
-                ClientId = Config.ClientId,
-                ClientSecret = Config.ClientSecret,
-                RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken,
-            };
+                if (token is null)
+                {
+                    throw new ArgumentNullException(nameof(token));
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await _client.SendRequestAsync<EmptyContent>(
+                    endpoint: _client.Config.RevokeUri,
+                    method: HttpMethod.Post,
+                    token: token,
+                    payload: RevokePayloadCreator?.Invoke(token) ?? GetDefaultRevokePayload(token),
+                    headers: null,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
+            private static NameValueCollection GetDefaultRevokePayload(Token _)
+            {
+                return new NameValueCollection();
+            }
         }
     }
 }

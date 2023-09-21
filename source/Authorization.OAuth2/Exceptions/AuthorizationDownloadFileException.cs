@@ -18,22 +18,22 @@
 
 using System;
 
-namespace Finebits.Authorization.OAuth2.Google
+namespace Finebits.Authorization.OAuth2.Exceptions
 {
-    public class GoogleConfiguration : AuthConfiguration
+    public sealed class AuthorizationDownloadFileException : AuthorizationException
     {
-        private const string AuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-        private const string TokenEndpoint = "https://www.googleapis.com/oauth2/v4/token";
-        private const string RefreshTokenEndpoint = "https://oauth2.googleapis.com/token";
-        private const string RevokeTokenEndpoint = "https://oauth2.googleapis.com/revoke";
-        private const string UserProfileEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo?alt=json";
+        public static readonly string DefaultMessage = "The file could not be downloaded.";
 
-        public GoogleConfiguration()
-            : this(new Uri(AuthorizationEndpoint), new Uri(TokenEndpoint), new Uri(RefreshTokenEndpoint), new Uri(RevokeTokenEndpoint), new Uri(UserProfileEndpoint))
+        public AuthorizationDownloadFileException()
+            : this(DefaultMessage)
         { }
 
-        public GoogleConfiguration(Uri authorizationEndpoint, Uri tokenEndpoint, Uri refreshEndpoint, Uri revokeEndpoint, Uri userProfileEndpoint)
-            : base(authorizationEndpoint, tokenEndpoint, refreshEndpoint, revokeEndpoint, userProfileEndpoint)
+        public AuthorizationDownloadFileException(string message)
+            : base(message)
+        { }
+
+        public AuthorizationDownloadFileException(string message, Exception innerException)
+            : base(message, innerException)
         { }
     }
 }

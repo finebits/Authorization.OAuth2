@@ -22,7 +22,10 @@ namespace Finebits.Authorization.OAuth2.Exceptions
 {
     public sealed class AuthorizationEmptyResponseException : AuthorizationException
     {
+        public static readonly string DefaultMessage = "The request failed with an empty response.";
+
         public AuthorizationEmptyResponseException()
+            : this(DefaultMessage)
         { }
 
         public AuthorizationEmptyResponseException(string message)

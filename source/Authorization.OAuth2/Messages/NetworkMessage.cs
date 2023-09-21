@@ -18,35 +18,38 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Finebits.Authorization.OAuth2.RestClient;
 using Finebits.Network.RestClient;
 
 namespace Finebits.Authorization.OAuth2.Messages
 {
     internal class NetworkMessage<TContent>
-        : CommonMessage<JsonResponse<TContent>, FormUrlEncodedRequest<IFormUrlEncodedPayload>>
+        : CommonMessage<JsonResponse<TContent>, FormUrlEncodedRequest>
     {
         public override Uri Endpoint { get; }
-        public override HttpMethod Method => HttpMethod.Post;
+        public override HttpMethod Method { get; }
 
-        private readonly IFormUrlEncodedPayload _payload;
-        private readonly IEnumerable<KeyValuePair<string, IEnumerable<string>>> _headers;
+        private readonly NameValueCollection _payload;
+        private readonly HeaderCollection _headers;
 
         public NetworkMessage(
             Uri endpoint,
-            IFormUrlEncodedPayload payload,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
+            HttpMethod method,
+            NameValueCollection payload,
+            HeaderCollection headers)
         {
-            _payload = payload;
+            _payload = payload ?? new NameValueCollection();
             _headers = headers;
+            Method = method;
             Endpoint = endpoint;
         }
 
-        protected override FormUrlEncodedRequest<IFormUrlEncodedPayload> CreateRequest()
+        protected override FormUrlEncodedRequest CreateRequest()
         {
             HeaderCollection headers = null;
 
@@ -59,9 +62,8 @@ namespace Finebits.Authorization.OAuth2.Messages
                 );
             }
 
-            return new FormUrlEncodedRequest<IFormUrlEncodedPayload>
+            return new FormUrlEncodedRequest(_payload.AllKeys.Select(key => new KeyValuePair<string, string>(key, _payload[key])))
             {
-                Payload = _payload,
                 Headers = headers
             };
         }
@@ -82,15 +84,17 @@ namespace Finebits.Authorization.OAuth2.Messages
         : CommonMessage<JsonResponse<TContent>, EmptyRequest>
     {
         public override Uri Endpoint { get; }
-        public override HttpMethod Method => HttpMethod.Post;
+        public override HttpMethod Method { get; }
 
-        private readonly IEnumerable<KeyValuePair<string, IEnumerable<string>>> _headers;
+        private readonly HeaderCollection _headers;
 
         public EmptyNetworkMessage(
             Uri endpoint,
-            IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
+            HttpMethod method,
+            HeaderCollection headers)
         {
             _headers = headers;
+            Method = method;
             Endpoint = endpoint;
         }
 
@@ -122,6 +126,60 @@ namespace Finebits.Authorization.OAuth2.Messages
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 }
             };
+        }
+    }
+
+    internal class StreamNetworkMessage<TError>
+        : CommonMessage<FlexibleResponse, EmptyRequest>
+    {
+        public class ErrorResponse : JsonResponse<TError> { }
+        public override Uri Endpoint { get; }
+        public override HttpMethod Method { get; }
+
+        private readonly HeaderCollection _headers;
+
+        public StreamNetworkMessage(
+            Uri endpoint,
+            HttpMethod method,
+            HeaderCollection headers)
+        {
+            _headers = headers;
+            Method = method;
+            Endpoint = endpoint;
+        }
+
+        protected override EmptyRequest CreateRequest()
+        {
+            HeaderCollection headers = null;
+
+            if (_headers != null)
+            {
+                headers = new HeaderCollection
+                (
+                    headers: _headers,
+                    headerValidation: false
+                );
+            }
+
+            return new EmptyRequest
+            {
+                Headers = headers
+            };
+        }
+
+        protected override FlexibleResponse CreateResponse()
+        {
+            return new FlexibleResponse(new Response[]
+            {
+                new ErrorResponse()
+                {
+                    Options = new JsonSerializerOptions
+                    {
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                    }
+                },
+                new StreamResponse()
+            });
         }
     }
 }

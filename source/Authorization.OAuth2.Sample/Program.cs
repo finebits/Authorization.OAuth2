@@ -18,15 +18,12 @@
 
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.AuthenticationBroker;
-using Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
-using Finebits.Authorization.OAuth2.Google;
-using Finebits.Authorization.OAuth2.Microsoft;
 using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Sample;
 
-class Program
+partial class Program
 {
     private static async Task Main(string[] _)
     {
@@ -64,18 +61,16 @@ class Program
             var token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             PrintToken(token, "Login response");
 
-            var newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
+            var freshToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
             PrintToken(token, "Refresh response");
-            token = UpdateToken(token, newToken);
+            token.Update(freshToken);
 
-            newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
-            PrintToken(token, "Refresh response");
-            token = UpdateToken(token, newToken);
+            var profile = await ReadProfileAsync(authClient, token).ConfigureAwait(false);
+            PrintProfile(profile, "User profile");
+
+            await LoadUserAvatarAsync(authClient, token, "./avatar.jpg").ConfigureAwait(false);
 
             await RevokeTokenAsync(authClient, token).ConfigureAwait(false);
-
-            newToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
-            PrintToken(token, "Refresh response");
         }
         catch (AuthorizationBrokerResultException propEx)
         {
@@ -84,6 +79,20 @@ class Program
                 AuthorizationInvalidBrokerResultException:
                 Error: {propEx.Error}
                 ErrorDescription: {propEx.ErrorDescription}
+                """);
+        }
+        catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse)
+        {
+            Console.WriteLine($"""
+
+                AuthorizationInvalidResponseException(IMicrosoftInvalidResponse):
+                Error: {microsoftResponse.ErrorReason}
+                ErrorDescription: {microsoftResponse.ErrorDescription}
+                Code: {microsoftResponse.ResponseError.Code}
+                Message: {microsoftResponse.ResponseError.Message}
+                RequestDate: {microsoftResponse.ResponseError.InnerError.RequestDate}
+                RequestId: {microsoftResponse.ResponseError.InnerError.RequestId}
+                ClientRequestId: {microsoftResponse.ResponseError.InnerError.ClientRequestId}
                 """);
         }
         catch (AuthorizationException authEx) when (authEx.InnerException is not null)
@@ -96,32 +105,11 @@ class Program
         }
     }
 
-    private static AuthorizationToken UpdateToken(AuthorizationToken? oldToken, AuthorizationToken? newToken)
-    {
-        if (newToken is null)
-        {
-            throw new ArgumentNullException(nameof(newToken));
-        }
-
-        if (oldToken is null)
-        {
-            throw new ArgumentNullException(nameof(oldToken));
-        }
-
-        return new AuthorizationToken(
-                accessToken: newToken.AccessToken,
-                refreshToken: !string.IsNullOrEmpty(newToken.RefreshToken) ? newToken.RefreshToken : oldToken.RefreshToken,
-                tokenType: newToken.TokenType,
-                expiresIn: newToken.ExpiresIn,
-                scope: newToken.Scope
-            );
-    }
-
     private static void PrintToken(Types.AuthorizationToken? authToken, string header)
     {
         if (authToken is null)
         {
-            Console.WriteLine($" {header}: authToken is null");
+            Console.WriteLine($"{header}: null");
             return;
         }
 
@@ -133,12 +121,28 @@ class Program
                 TokenType: {authToken.TokenType ?? "null"}
                 ExpiresIn: {authToken.ExpiresIn}
                 Scope: {authToken.Scope ?? "null"}
-                """);
 
-        if (authToken is GoogleAuthorizationToken googleToken)
+                """);
+    }
+
+    private static void PrintProfile(IUserProfile? profile, string header)
+    {
+        if (profile is null)
         {
-            Console.WriteLine($"IdToken: {googleToken.IdToken[0..8]}...");
+            Console.WriteLine($"{header}: null");
+            return;
         }
+
+        Console.WriteLine($"""
+
+                {header}:
+                {nameof(IUserProfile.Id)}: {profile.Id}
+                {nameof(IUserProfile.Email)}: {profile.Email}
+                {nameof(IUserProfile.DisplayName)}: {profile.DisplayName}
+                {nameof(IUserAvatar.Avatar)}: {((profile is IUserAvatar avatar) ? avatar.Avatar : "link is missing")}
+                {((profile is IUserAvatarLoader) ? "Avatar can be loaded" : string.Empty)}
+
+                """);
     }
 
     private static async Task<Types.AuthorizationToken?> RefreshTokenAsync(IAuthorizationClient client, Token token)
@@ -167,56 +171,43 @@ class Program
         }
     }
 
-    private static IAuthorizationClient GetGoogleAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
+    private static async Task<IUserProfile?> ReadProfileAsync(IAuthorizationClient client, Token token)
     {
-        // Create <client_id> and <client_secret>: https://console.developers.google.com/apis/credentials
-        // You can add additional scopes if necessary.
-        var config = new GoogleConfiguration
+        IUserProfile? profile = null;
+
+        if (token is null)
         {
-            ClientId = "<client_id>",
-            ClientSecret = "<client_secret>",
-            RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
-                "profile",
-                "email",
-            }
-        };
-        return new GoogleAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
+            throw new ArgumentNullException(nameof(token));
+        }
+
+        if (client is IProfileReader profileReader)
+        {
+            profile = await profileReader.ReadProfileAsync(token).ConfigureAwait(false);
+            Console.WriteLine("Read Profile operation is completed.");
+        }
+
+        return profile;
     }
 
-    private static IAuthorizationClient GetMicrosoftAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
+    private static async Task LoadUserAvatarAsync(IAuthorizationClient client, Token token, string name)
     {
-        // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
-        // Create <client_id>: https://portal.azure.com/
-        // You can add additional scopes if necessary.
-        var config = new MicrosoftConfiguration
+        if (token is null)
         {
-            ClientId = "<client_id>",
-            RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
-                "offline_access",
-                "https://graph.microsoft.com/.default",
-            }
-        };
-        return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
-    }
+            throw new ArgumentNullException(nameof(token));
+        }
 
-    private static IAuthorizationClient GetOffice365AuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
-    {
-        // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
-        // Create <client_id>: https://portal.azure.com/
-        // You can add additional scopes if necessary.
-        var config = new MicrosoftConfiguration
+        if (name is null)
         {
-            ClientId = "<client_id>",
-            RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
-                "offline_access",
-            }
-        };
-        return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
+            throw new ArgumentNullException(nameof(name));
+        }
+
+        if (client is IUserAvatarLoader avatarLoader)
+        {
+            using var avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
+            using var fileAvatar = new FileStream(name, FileMode.OpenOrCreate, FileAccess.Write);
+
+            fileAvatar.SetLength(0);
+            await avatar.CopyToAsync(fileAvatar).ConfigureAwait(false);
+        }
     }
 }
