@@ -151,4 +151,21 @@ internal class AuthClientRefreshTests
         Assert.That(innerException, Is.Not.Null);
         Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
+
+    [Test]
+    public void RefreshTokenAsync_HttpEmptyContent_Exception()
+    {
+        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
+
+        var refreshClient = client as IRefreshable;
+        Assert.That(refreshClient, Is.Not.Null);
+
+        var exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await refreshClient.RefreshTokenAsync(token).ConfigureAwait(false));
+
+        Assert.That(exception, Is.Not.Null);
+    }
 }

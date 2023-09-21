@@ -21,6 +21,7 @@ using System.Net;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Exceptions;
+using Finebits.Authorization.OAuth2.Microsoft;
 using Finebits.Authorization.OAuth2.Test.Data.Mocks;
 
 using Moq;
@@ -123,15 +124,14 @@ internal class AuthClientLoadAvatarTests
 
         var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await userAvatarLoader.LoadAvatarAsync(token).ConfigureAwait(false));
 
-        // ToDo: uncomment after fix RestClient
-        //Assert.That(exception, Is.Not.Null);
-        //Assert.Multiple(() =>
-        //{
-        //    Assert.That(exception.ErrorReason, Is.EqualTo(FakeConstant.Error));
-        //    Assert.That(exception.ErrorDescription, Is.EqualTo(FakeConstant.ErrorDescription));
-        //    Assert.That(exception.ResponseDetails, Is.Not.Null);
-        //    Assert.That(exception.ResponseDetails is IMicrosoftInvalidResponse, client is MicrosoftAuthClient ? Is.True : Is.False);
-        //});
+        Assert.That(exception, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(exception.ErrorReason, Is.EqualTo(FakeConstant.Error));
+            Assert.That(exception.ErrorDescription, Is.EqualTo(FakeConstant.ErrorDescription));
+            Assert.That(exception.ResponseDetails, Is.Not.Null);
+            Assert.That(exception.ResponseDetails is IMicrosoftInvalidResponse, client is MicrosoftAuthClient ? Is.True : Is.False);
+        });
 
         var innerException = exception.InnerException as HttpRequestException;
         Assert.That(innerException, Is.Not.Null);
@@ -156,5 +156,22 @@ internal class AuthClientLoadAvatarTests
         var innerException = exception.InnerException as HttpRequestException;
         Assert.That(innerException, Is.Not.Null);
         Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+    }
+
+    [Test]
+    public void LoadAvatarAsync_HttpEmptyContent_Exception()
+    {
+        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        var mockAuthBroker = new Mock<IAuthenticationBroker>();
+        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        var token = Test.Data.AuthCreator.CreateFakeToken();
+
+        var userAvatarLoader = client as IUserAvatarLoader;
+        Assert.That(userAvatarLoader, Is.Not.Null);
+
+        var exception = Assert.ThrowsAsync<AuthorizationDownloadFileException>(async () => await userAvatarLoader.LoadAvatarAsync(token).ConfigureAwait(false));
+
+        Assert.That(exception, Is.Not.Null);
     }
 }

@@ -24,7 +24,18 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 {
     public partial class MicrosoftAuthClient
     {
-        protected class MicrosoftProfileContent : IMicrosoftInvalidResponse, IInvalidResponse
+        protected class MicrosoftEmptyContent : IMicrosoftInvalidResponse, IInvalidResponse
+        {
+            [JsonInclude]
+            [JsonPropertyName("error")]
+            public ResponseError Error { get; private set; }
+
+            public string ErrorDescription => Error?.Message;
+            public string ErrorReason => Error?.Code;
+            public IResponseError ResponseError => Error;
+        }
+
+        protected class MicrosoftProfileContent : MicrosoftEmptyContent, IMicrosoftInvalidResponse, IInvalidResponse
         {
             [JsonInclude]
             [JsonPropertyName("id")]
@@ -65,14 +76,6 @@ namespace Finebits.Authorization.OAuth2.Microsoft
             [JsonInclude]
             [JsonPropertyName("officeLocation")]
             public string OfficeLocation { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("error")]
-            public ResponseError Error { get; private set; }
-
-            public string ErrorDescription => Error?.Message;
-            public string ErrorReason => Error?.Code;
-            public IResponseError ResponseError => Error;
         }
 
         protected class ResponseError : IResponseError

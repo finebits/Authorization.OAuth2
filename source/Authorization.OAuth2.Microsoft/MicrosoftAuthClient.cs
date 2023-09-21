@@ -99,7 +99,7 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await SendRequestAsync(
+            return await DownloadFileAsync<MicrosoftEmptyContent>(
                  endpoint: Configuration.UserAvatarUri,
                  method: HttpMethod.Get,
                  token: token,

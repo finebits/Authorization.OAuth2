@@ -52,7 +52,7 @@ namespace Finebits.Authorization.OAuth2
             return client.SendRequestAsync<TContent>(endpoint, method, payload, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
-        protected Task<TContent> SendRequestAsync<TContent>(
+        protected Task<TContent> SendEmptyRequestAsync<TContent>(
             Uri endpoint,
             HttpMethod method,
             Token token,
@@ -61,10 +61,10 @@ namespace Finebits.Authorization.OAuth2
             where TContent : IInvalidResponse
         {
             var client = new NetworkClient(HttpClient);
-            return client.SendRequestAsync<TContent>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
+            return client.SendEmptyRequestAsync<TContent>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
-        protected Task<Stream> SendRequestAsync(
+        protected Task<Stream> DownloadFileAsync<TError>(
             Uri endpoint,
             HttpMethod method,
             Token token,
@@ -72,7 +72,7 @@ namespace Finebits.Authorization.OAuth2
             CancellationToken cancellationToken)
         {
             var client = new NetworkClient(HttpClient);
-            return client.SendRequestAsync(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
+            return client.DownloadFileAsync<TError>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
         protected static (string method, string verifier, string challenge) GenerateCodeChallengeSHA256()
