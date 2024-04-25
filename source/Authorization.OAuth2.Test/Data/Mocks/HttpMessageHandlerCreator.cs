@@ -205,7 +205,6 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                         {
                             PropertyNameCaseInsensitive = true,
                         }),
-                    
                 });
 
             mock.Protected()
