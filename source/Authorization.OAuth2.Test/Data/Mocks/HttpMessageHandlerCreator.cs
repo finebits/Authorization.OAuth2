@@ -186,6 +186,32 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
+                                               && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = JsonContent.Create(
+                        inputValue: new
+                        {
+                            Id = FakeConstant.UserProfile.Id,
+                            EmailAddress = FakeConstant.UserProfile.Email,
+                            DisplayName = FakeConstant.UserProfile.DisplayName,
+                            Alias = FakeConstant.UserProfile.Outlook.Alias,
+                            MailboxGuid = FakeConstant.UserProfile.Outlook.MailboxGuid,
+                        },
+                        options: new System.Text.Json.JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true,
+                        }),
+                    
+                });
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.AbsolutePath.EndsWith("avatar-uri") == true),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
@@ -251,6 +277,27 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                                                && rm.RequestUri.Host.Equals("microsoft", StringComparison.Ordinal)
                                                && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true ||
                                                    rm.RequestUri.AbsolutePath.EndsWith("avatar-uri") == true)),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Content = JsonContent.Create(
+                        new
+                        {
+                            error = new
+                            {
+                                code = FakeConstant.Error,
+                                message = FakeConstant.ErrorDescription,
+                            }
+                        }),
+                });
+
+            mock.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
+                                               && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
+                                               && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true)),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {

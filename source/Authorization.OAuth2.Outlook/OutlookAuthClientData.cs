@@ -20,11 +20,11 @@ using System.Text.Json.Serialization;
 
 using Finebits.Authorization.OAuth2.Abstractions;
 
-namespace Finebits.Authorization.OAuth2.Microsoft
+namespace Finebits.Authorization.OAuth2.Outlook
 {
-    public partial class MicrosoftAuthClient
+    public partial class OutlookAuthClient
     {
-        protected class MicrosoftEmptyContent : IMicrosoftInvalidResponse, IInvalidResponse
+        protected class OutlookEmptyContent : IOutlookInvalidResponse, IInvalidResponse
         {
             [JsonInclude]
             [JsonPropertyName("error")]
@@ -32,53 +32,33 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 
             public string ErrorDescription => Error?.Message;
             public string ErrorReason => Error?.Code;
-            public IMicrosoftResponseError ResponseError => Error;
+            public IOutlookResponseError ResponseError => Error;
         }
 
-        protected class MicrosoftProfileContent : MicrosoftEmptyContent, IMicrosoftInvalidResponse, IInvalidResponse
+        protected class OutlookProfileContent : OutlookEmptyContent, IOutlookInvalidResponse, IInvalidResponse
         {
             [JsonInclude]
-            [JsonPropertyName("id")]
+            [JsonPropertyName("Id")]
             public string Id { get; private set; }
 
             [JsonInclude]
-            [JsonPropertyName("mail")]
+            [JsonPropertyName("EmailAddress")]
             public string Mail { get; private set; }
 
             [JsonInclude]
-            [JsonPropertyName("displayName")]
+            [JsonPropertyName("DisplayName")]
             public string DisplayName { get; private set; }
 
             [JsonInclude]
-            [JsonPropertyName("givenName")]
-            public string GivenName { get; private set; }
+            [JsonPropertyName("Alias")]
+            public string Alias { get; private set; }
 
             [JsonInclude]
-            [JsonPropertyName("surname")]
-            public string Surname { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("userPrincipalName")]
-            public string UserPrincipalName { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("preferredLanguage")]
-            public string PreferredLanguage { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("mobilePhone")]
-            public string MobilePhone { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("jobTitle")]
-            public string JobTitle { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("officeLocation")]
-            public string OfficeLocation { get; private set; }
+            [JsonPropertyName("MailboxGuid")]
+            public string MailboxGuid { get; private set; }
         }
 
-        protected class ResponseError : IMicrosoftResponseError
+        protected class ResponseError : IOutlookResponseError
         {
             [JsonInclude]
             [JsonPropertyName("code")]
@@ -92,22 +72,22 @@ namespace Finebits.Authorization.OAuth2.Microsoft
             [JsonPropertyName("innerError")]
             public InnerError InnerErrorInformation { get; private set; }
 
-            public IMicrosoftInnerError InnerError => InnerErrorInformation;
+            public IOutlookInnerError InnerError => InnerErrorInformation;
         }
 
-        protected class InnerError : IMicrosoftInnerError
+        protected class InnerError : IOutlookInnerError
         {
             [JsonInclude]
             [JsonPropertyName("date")]
             public string RequestDate { get; private set; }
 
             [JsonInclude]
-            [JsonPropertyName("request-id")]
+            [JsonPropertyName("requestId")]
             public string RequestId { get; private set; }
 
             [JsonInclude]
-            [JsonPropertyName("client-request-id")]
-            public string ClientRequestId { get; private set; }
+            [JsonPropertyName("errorUrl")]
+            public string ErrorUrl { get; private set; }
         }
     }
 }

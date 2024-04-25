@@ -16,24 +16,17 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-namespace Finebits.Authorization.OAuth2.Abstractions
+using Finebits.Authorization.OAuth2.Abstractions;
+
+namespace Finebits.Authorization.OAuth2.Outlook
 {
-    public interface IMicrosoftInvalidResponse : IInvalidResponse
+    public class OutlookUserProfile : IUserProfile
     {
-        IMicrosoftResponseError ResponseError { get; }
-    }
+        public string Id { get; protected internal set; }
+        public string Email { get; protected internal set; }
+        public string DisplayName { get; protected internal set; }
 
-    public interface IMicrosoftResponseError
-    {
-        string Code { get; }
-        string Message { get; }
-        IMicrosoftInnerError InnerError { get; }
-    }
-
-    public interface IMicrosoftInnerError
-    {
-        string RequestDate { get; }
-        string RequestId { get; }
-        string ClientRequestId { get; }
+        public string Alias { get; set; }
+        public string MailboxGuid { get; set; }
     }
 }

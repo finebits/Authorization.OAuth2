@@ -64,6 +64,12 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 public const string OfficeLocation = "fake-officeLocation";
             }
 
+            public struct Outlook
+            {
+                public const string Alias = "fake-Alias";
+                public const string MailboxGuid = "fake-MailboxGuid";
+            }
+
             public const string Avatar = "fake-avatar-stream";
         }
     }
