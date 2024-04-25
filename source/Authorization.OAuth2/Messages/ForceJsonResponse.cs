@@ -16,24 +16,39 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-namespace Finebits.Authorization.OAuth2.Abstractions
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Finebits.Network.RestClient;
+
+namespace Finebits.Authorization.OAuth2.Messages
 {
-    public interface IMicrosoftInvalidResponse : IInvalidResponse
+    public class ForceJsonResponse<TContent> : JsonResponse<TContent>
     {
-        IMicrosoftResponseError ResponseError { get; }
-    }
+        protected override async Task<bool> ReadContentAsync(HttpContent content, CancellationToken cancellationToken)
+        {
+            if (content == null)
+            {
+                return false;
+            }
 
-    public interface IMicrosoftResponseError
-    {
-        string Code { get; }
-        string Message { get; }
-        IMicrosoftInnerError InnerError { get; }
-    }
+            return await TryReadJson(content, cancellationToken).ConfigureAwait(false);
+        }
 
-    public interface IMicrosoftInnerError
-    {
-        string RequestDate { get; }
-        string RequestId { get; }
-        string ClientRequestId { get; }
+        private async Task<bool> TryReadJson(HttpContent content, CancellationToken cancellationToken)
+        {
+            try
+            {
+                Content = await content.ReadFromJsonAsync<TContent>(Options, cancellationToken).ConfigureAwait(false);
+                return true;
+            }
+            catch (JsonException)
+            { }
+
+            return false;
+        }
     }
 }

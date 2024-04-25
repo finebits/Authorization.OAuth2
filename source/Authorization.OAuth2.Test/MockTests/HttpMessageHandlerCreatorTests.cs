@@ -31,6 +31,7 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://any")]
     [TestCase("http://google")]
     [TestCase("http://microsoft")]
+    [TestCase("http://outlook")]
     public async Task CreateSuccess_TokenRequest_OK(string uri)
     {
         using var request = new HttpRequestMessage
@@ -58,6 +59,7 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://any")]
     [TestCase("http://google")]
     [TestCase("http://microsoft")]
+    [TestCase("http://outlook")]
     public async Task CreateSuccess_RefreshRequest_OK(string uri)
     {
         using var request = new HttpRequestMessage

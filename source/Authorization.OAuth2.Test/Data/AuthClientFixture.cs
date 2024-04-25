@@ -44,6 +44,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 yield return AuthClientType.Google;
                 yield return AuthClientType.Microsoft;
+                yield return AuthClientType.Outlook;
             }
         }
 
@@ -53,6 +54,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 yield return AuthClientType.Google;
                 yield return AuthClientType.Microsoft;
+                yield return AuthClientType.Outlook;
             }
         }
 
@@ -70,6 +72,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 yield return AuthClientType.Google;
                 yield return AuthClientType.Microsoft;
+                yield return AuthClientType.Outlook;
             }
         }
 

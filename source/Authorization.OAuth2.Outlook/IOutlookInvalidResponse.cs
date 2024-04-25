@@ -18,22 +18,22 @@
 
 namespace Finebits.Authorization.OAuth2.Abstractions
 {
-    public interface IMicrosoftInvalidResponse : IInvalidResponse
+    public interface IOutlookInvalidResponse : IInvalidResponse
     {
-        IMicrosoftResponseError ResponseError { get; }
+        IOutlookResponseError ResponseError { get; }
     }
 
-    public interface IMicrosoftResponseError
+    public interface IOutlookResponseError
     {
         string Code { get; }
         string Message { get; }
-        IMicrosoftInnerError InnerError { get; }
+        IOutlookInnerError InnerError { get; }
     }
 
-    public interface IMicrosoftInnerError
+    public interface IOutlookInnerError
     {
         string RequestDate { get; }
         string RequestId { get; }
-        string ClientRequestId { get; }
+        string ErrorUrl { get; }
     }
 }

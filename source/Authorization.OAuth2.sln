@@ -20,6 +20,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.Google
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.AuthenticationBroker.Desktop", "Authorization.OAuth2.AuthenticationBroker.Desktop\Authorization.OAuth2.AuthenticationBroker.Desktop.csproj", "{5367CE50-F1B3-4A44-8C35-7712DB7E077C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.OAuth2.Outlook", "Authorization.OAuth2.Outlook\Authorization.OAuth2.Outlook.csproj", "{4418942D-125E-4FD6-908A-5F4E37378424}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A754AB9E-2217-4827-80E3-DA755DF05F71} = {A754AB9E-2217-4827-80E3-DA755DF05F71}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +55,10 @@ Global
 		{5367CE50-F1B3-4A44-8C35-7712DB7E077C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5367CE50-F1B3-4A44-8C35-7712DB7E077C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5367CE50-F1B3-4A44-8C35-7712DB7E077C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4418942D-125E-4FD6-908A-5F4E37378424}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4418942D-125E-4FD6-908A-5F4E37378424}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4418942D-125E-4FD6-908A-5F4E37378424}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4418942D-125E-4FD6-908A-5F4E37378424}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

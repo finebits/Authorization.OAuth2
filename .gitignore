@@ -7,6 +7,8 @@ source/Authorization.OAuth2.AuthenticationBroker.Desktop/bin/
 source/Authorization.OAuth2.AuthenticationBroker.Desktop/obj/
 source/Authorization.OAuth2.Google/bin/
 source/Authorization.OAuth2.Google/obj/
+source/Authorization.OAuth2.Outlook/bin/
+source/Authorization.OAuth2.Outlook/obj/
 source/Authorization.OAuth2.Microsoft/bin/
 source/Authorization.OAuth2.Microsoft/obj/
 source/Authorization.OAuth2.Sample/bin/
