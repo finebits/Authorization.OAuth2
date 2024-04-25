@@ -77,6 +77,7 @@ jobs:
           - './source/Authorization.OAuth2/Authorization.OAuth2.csproj'
           - './source/Authorization.OAuth2.Google/Authorization.OAuth2.Google.csproj'
           - './source/Authorization.OAuth2.Microsoft/Authorization.OAuth2.Microsoft.csproj'
+          - './source/Authorization.OAuth2.Outlook/Authorization.OAuth2.Outlook.csproj'
           - './source/Authorization.OAuth2.AuthenticationBroker.Desktop/Authorization.OAuth2.AuthenticationBroker.Desktop.csproj'
     runs-on: ubuntu-latest
 
