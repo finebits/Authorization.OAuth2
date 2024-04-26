@@ -22,6 +22,7 @@ The following packages are published from this repository:
 | <sub> [![name](https://img.shields.io/badge/Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop-blue)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop) </sub> | <sub> [![latest version](https://img.shields.io/nuget/v/Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop?logo=nuget&label)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop) </sub> | <sub> [![downloads](https://img.shields.io/nuget/dt/Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop) </sub> | <sub> ![Code coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop-test-coverage.json&label=coverage) </sub> |
 | <sub> [![name](https://img.shields.io/badge/Finebits.Authorization.OAuth2.Google-blue)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Google) </sub> | <sub> [![latest version](https://img.shields.io/nuget/v/Finebits.Authorization.OAuth2.Google?logo=nuget&label)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Google) </sub> | <sub> [![downloads](https://img.shields.io/nuget/dt/Finebits.Authorization.OAuth2.Google)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Google) </sub> | <sub> ![Code coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-Finebits.Authorization.OAuth2.Google-test-coverage.json&label=coverage) </sub> |
 | <sub> [![name](https://img.shields.io/badge/Finebits.Authorization.OAuth2.Microsoft-blue)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Microsoft) </sub> | <sub> [![latest version](https://img.shields.io/nuget/v/Finebits.Authorization.OAuth2.Microsoft?logo=nuget&label)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Microsoft) </sub> | <sub> [![downloads](https://img.shields.io/nuget/dt/Finebits.Authorization.OAuth2.Microsoft)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Microsoft) </sub> | <sub> ![Code coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-Finebits.Authorization.OAuth2.Microsoft-test-coverage.json&label=coverage) </sub> |
+| <sub> [![name](https://img.shields.io/badge/Finebits.Authorization.OAuth2.Outlook-blue)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Outlook) </sub> | <sub> [![latest version](https://img.shields.io/nuget/v/Finebits.Authorization.OAuth2.Outlook?logo=nuget&label)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Outlook) </sub> | <sub> [![downloads](https://img.shields.io/nuget/dt/Finebits.Authorization.OAuth2.Outlook)](https://www.nuget.org/packages/Finebits.Authorization.OAuth2.Outlook) </sub> | <sub> ![Code coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-Finebits.Authorization.OAuth2.Outlook-test-coverage.json&label=coverage) </sub> |
 
 ## Usage
 
@@ -41,6 +42,7 @@ dotnet add package Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop [-
 # and add required packages
 dotnet add package Finebits.Authorization.OAuth2.Google [--version <VERSION>] [--prerelease]
 dotnet add package Finebits.Authorization.OAuth2.Microsoft [--version <VERSION>] [--prerelease]
+dotnet add package Finebits.Authorization.OAuth2.Outlook [--version <VERSION>] [--prerelease]
 ```
 
 ### Example
@@ -102,4 +104,8 @@ await authClient.RevokeTokenAsync(token);
   - [OAuth 2.0 for Mobile & Desktop Apps](https://developers.google.com/identity/protocols/oauth2/native-app)
 - Microsoft:
   - [OAuth 2.0 authorization code flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow)
+  - [Register an application with the Microsoft identity platform](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+- Outlook:
+  - [Compare Microsoft Graph and Outlook REST API endpoints](https://learn.microsoft.com/en-us/outlook/rest/compare-graph)
+  - [Authenticate an IMAP, POP or SMTP connection using OAuth](https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth)
   - [Register an application with the Microsoft identity platform](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)

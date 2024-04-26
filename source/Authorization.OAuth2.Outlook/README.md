@@ -8,7 +8,7 @@
 
 ## Description
 
-This package contains the authorization client for the Outlook services.
+This package contains the authorization client for the Outlook service.
 
 ## Dependencies
 
