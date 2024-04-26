@@ -21,7 +21,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>OAuth2;Authorization;Office365;Outlook</PackageTags>
+    <PackageTags>OAuth2;Authorization;Outlook</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
