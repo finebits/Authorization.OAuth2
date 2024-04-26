@@ -154,8 +154,7 @@ partial class Program
                 AuthorizationException:
                 Message: {authEx.Message}
                 InnerException.Message: {authEx.InnerException.Message}
-                """
-            );
+                """);
             Console.ForegroundColor = color;
         }
         catch (Exception ex)
