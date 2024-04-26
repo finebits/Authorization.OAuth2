@@ -16,6 +16,8 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
+using System;
+
 namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IOutlookInvalidResponse : IInvalidResponse
@@ -34,6 +36,6 @@ namespace Finebits.Authorization.OAuth2.Abstractions
     {
         string RequestDate { get; }
         string RequestId { get; }
-        string ErrorUrl { get; }
+        Uri ErrorUrl { get; }
     }
 }

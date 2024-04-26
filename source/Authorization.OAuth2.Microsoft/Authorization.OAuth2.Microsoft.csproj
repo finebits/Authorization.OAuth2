@@ -15,13 +15,13 @@
 
     <Product>OAuth2 Client (netstandard2.0)</Product>
     <Description>This package contains the authorization client for the Microsoft services.</Description>
-    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+    <Copyright>© 2024 Finibits. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>OAuth2;Authorization;Microsoft;Graph;Office365;Outlook;OneDrive</PackageTags>
+    <PackageTags>OAuth2;Authorization;Microsoft;Graph;OneDrive</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
