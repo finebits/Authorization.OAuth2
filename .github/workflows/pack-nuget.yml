@@ -40,7 +40,6 @@ on:
     types: [published]
 
 env:
-  artifact-name: Finebits.Authorization.OAuth2
   project: ./source/Authorization.OAuth2.sln
   test-project: ./source/Authorization.OAuth2.sln
   configuration: Release
@@ -85,6 +84,15 @@ jobs:
       nuget-project: ${{ matrix.nuget-project }}
 
     steps:
+    - name: Artifact name
+      id: artifact-name
+      shell: bash
+      run: |
+        project="${{ env.nuget-project }}"
+        filename=$(basename -- $project)
+        name=${filename%.*}
+        echo "artifact-name=$name" >> $GITHUB_OUTPUT
+      
     - name: Checkout
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
@@ -109,5 +117,6 @@ jobs:
         certificate: ${{ env.certificate }}
         certificate-password: ${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}
       env:
+        artifact-name: "${{ steps.artifact-name.outputs.artifact-name }}"
         certificate: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
         nuget-apikey: ${{ secrets.NUGET_APIKEY }}
