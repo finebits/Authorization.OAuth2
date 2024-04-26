@@ -16,6 +16,7 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
+using System;
 using System.Text.Json.Serialization;
 
 using Finebits.Authorization.OAuth2.Abstractions;
@@ -87,7 +88,9 @@ namespace Finebits.Authorization.OAuth2.Outlook
 
             [JsonInclude]
             [JsonPropertyName("errorUrl")]
-            public string ErrorUrl { get; private set; }
+            public string ErrorLink { get; private set; }
+
+            public Uri ErrorUrl => Uri.TryCreate(ErrorLink, UriKind.RelativeOrAbsolute, out Uri uri) ? uri : null;
         }
     }
 }

@@ -80,6 +80,7 @@ partial class Program
         }
         catch (AuthorizationBrokerResultException propEx)
         {
+            ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
@@ -87,9 +88,11 @@ partial class Program
                 Error: {propEx.Error}
                 ErrorDescription: {propEx.ErrorDescription}
                 """);
+            Console.ForegroundColor = color;
         }
         catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse)
         {
+            ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
@@ -105,9 +108,11 @@ partial class Program
                 Message: {responseException.Message}
                 InnerException.Message: {responseException.InnerException?.Message}
                 """);
+            Console.ForegroundColor = color;
         }
         catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse)
         {
+            ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
@@ -123,9 +128,11 @@ partial class Program
                 Message: {responseException.Message}
                 InnerException.Message: {responseException.InnerException?.Message}
                 """);
+            Console.ForegroundColor = color;
         }
         catch (AuthorizationInvalidResponseException responseException)
         {
+            ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
@@ -136,9 +143,11 @@ partial class Program
                 Message: {responseException.Message}
                 InnerException.Message: {responseException.InnerException?.Message}
                 """);
+            Console.ForegroundColor = color;
         }
         catch (AuthorizationException authEx) when (authEx.InnerException is not null)
         {
+            ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
@@ -146,15 +155,19 @@ partial class Program
                 Message: {authEx.Message}
                 InnerException.Message: {authEx.InnerException.Message}
                 """);
+            Console.ForegroundColor = color;
         }
         catch (Exception ex)
         {
+            ConsoleColor color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
                 Exception:
                 Message: {ex.Message}
                 """);
+
+            Console.ForegroundColor = color;
         }
     }
 

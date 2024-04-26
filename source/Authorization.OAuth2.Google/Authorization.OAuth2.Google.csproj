@@ -15,7 +15,7 @@
 
     <Product>OAuth2 Client (netstandard2.0)</Product>
     <Description>This package contains the authorization client for the Google services.</Description>
-    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+    <Copyright>© 2024 Finibits. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
