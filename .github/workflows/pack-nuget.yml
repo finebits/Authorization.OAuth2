@@ -97,7 +97,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Pack
-      uses: finebits/github-actions/pack-nuget@v1.2.0
+      uses: finebits/github-actions/pack-nuget@v1.2.1
       with:
         project: ${{ env.nuget-project }}
         configuration: ${{ env.configuration }}
