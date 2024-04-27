@@ -15,13 +15,13 @@
 
     <Product>OAuth2 Client (netstandard2.0)</Product>
     <Description>This package contains the authorization client for the Google services.</Description>
-    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+    <Copyright>© 2024 Finibits. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>OAuth2;Authorization;Google;Gmail,GoogleDrive</PackageTags>
+    <PackageTags>OAuth2;Authorization;Google;Gmail;GoogleDrive</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
@@ -49,7 +49,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

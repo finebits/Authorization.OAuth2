@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -31,6 +31,7 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://any")]
     [TestCase("http://google")]
     [TestCase("http://microsoft")]
+    [TestCase("http://outlook")]
     public async Task CreateSuccess_TokenRequest_OK(string uri)
     {
         using var request = new HttpRequestMessage
@@ -58,6 +59,7 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://any")]
     [TestCase("http://google")]
     [TestCase("http://microsoft")]
+    [TestCase("http://outlook")]
     public async Task CreateSuccess_RefreshRequest_OK(string uri)
     {
         using var request = new HttpRequestMessage

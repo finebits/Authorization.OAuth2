@@ -16,22 +16,39 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
-using Finebits.Authorization.OAuth2.Abstractions;
+using Finebits.Network.RestClient;
 
-namespace Finebits.Authorization.OAuth2.Google
+namespace Finebits.Authorization.OAuth2.Messages
 {
-    public class GoogleUserProfile : IUserProfile, IUserAvatar
+    public class ForceJsonResponse<TContent> : JsonResponse<TContent>
     {
-        public string Id { get; protected internal set; }
-        public string Email { get; protected internal set; }
-        public string DisplayName { get; protected internal set; }
-        public Uri Avatar { get; protected internal set; }
+        protected override async Task<bool> ReadContentAsync(HttpContent content, CancellationToken cancellationToken)
+        {
+            if (content == null)
+            {
+                return false;
+            }
 
-        public string Name { get; protected internal set; }
-        public string FamilyName { get; protected internal set; }
-        public bool IsEmailVerified { get; protected internal set; }
-        public string Locale { get; protected internal set; }
+            return await TryReadJson(content, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task<bool> TryReadJson(HttpContent content, CancellationToken cancellationToken)
+        {
+            try
+            {
+                Content = await content.ReadFromJsonAsync<TContent>(Options, cancellationToken).ConfigureAwait(false);
+                return true;
+            }
+            catch (JsonException)
+            { }
+
+            return false;
+        }
     }
 }

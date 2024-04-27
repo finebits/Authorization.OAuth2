@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -62,6 +62,12 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 public const string MobilePhone = "fake-mobilePhone";
                 public const string JobTitle = "fake-jobTitle";
                 public const string OfficeLocation = "fake-officeLocation";
+            }
+
+            public struct Outlook
+            {
+                public const string Alias = "fake-Alias";
+                public const string MailboxGuid = "fake-MailboxGuid";
             }
 
             public const string Avatar = "fake-avatar-stream";

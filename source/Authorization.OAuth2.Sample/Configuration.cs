@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -21,6 +21,7 @@ using Finebits.Authorization.OAuth2.AuthenticationBroker;
 using Finebits.Authorization.OAuth2.AuthenticationBroker.Abstractions;
 using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Microsoft;
+using Finebits.Authorization.OAuth2.Outlook;
 
 namespace Finebits.Authorization.OAuth2.Sample;
 
@@ -62,20 +63,21 @@ partial class Program
         return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
 
-    private static IAuthorizationClient GetOffice365AuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
+    private static IAuthorizationClient GetOutlookAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
     {
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
         // You can add additional scopes if necessary.
-        var config = new MicrosoftConfiguration
+        var config = new OutlookConfiguration
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
             ScopeList = new[]
             {
                 "offline_access",
+                "https://outlook.office.com/.default"
             }
         };
-        return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
+        return new OutlookAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
 }

@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -19,6 +19,7 @@
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Microsoft;
+using Finebits.Authorization.OAuth2.Outlook;
 using Finebits.Authorization.OAuth2.Test.Data.Mocks;
 
 namespace Finebits.Authorization.OAuth2.Test.Data
@@ -26,7 +27,8 @@ namespace Finebits.Authorization.OAuth2.Test.Data
     enum AuthClientType
     {
         Google,
-        Microsoft
+        Microsoft,
+        Outlook
     }
 
     internal class AuthCreator
@@ -37,6 +39,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 AuthClientType.Microsoft => CreateMicrosoftAuthClient(httpClient, broker, config),
                 AuthClientType.Google => CreateGoogleAuthClient(httpClient, broker, config),
+                AuthClientType.Outlook => CreateOutlookAuthClient(httpClient, broker, config),
                 _ => throw new NotImplementedException(),
             };
         }
@@ -51,12 +54,18 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             return new MicrosoftAuthClient(httpClient, broker, config as MicrosoftConfiguration);
         }
 
+        internal static IAuthorizationClient CreateOutlookAuthClient(HttpClient? httpClient, IAuthenticationBroker? broker, AuthConfiguration? config)
+        {
+            return new OutlookAuthClient(httpClient, broker, config as OutlookConfiguration);
+        }
+
         internal static AuthConfiguration CreateConfig(AuthClientType type)
         {
             return type switch
             {
                 AuthClientType.Microsoft => CreateMicrosoftConfig(),
                 AuthClientType.Google => CreateGoogleConfig(),
+                AuthClientType.Outlook => CreateOutlookConfig(),
                 _ => throw new NotImplementedException(),
             };
         }
@@ -91,6 +100,22 @@ namespace Finebits.Authorization.OAuth2.Test.Data
                 new Uri(host, "avatar-uri"))
             {
                 ClientId = "fake-microsoft-client-id",
+                RedirectUri = new Uri("https://redirect"),
+                ScopeList = new[] { "fake-scope" }
+            };
+        }
+
+        internal static AuthConfiguration CreateOutlookConfig()
+        {
+            var host = new Uri("https://outlook");
+
+            return new OutlookConfiguration(
+                new Uri(host, "auth-uri"),
+                new Uri(host, "token-uri"),
+                new Uri(host, "refresh-uri"),
+                new Uri(host, "profile-uri"))
+            {
+                ClientId = "fake-outlook-client-id",
                 RedirectUri = new Uri("https://redirect"),
                 ScopeList = new[] { "fake-scope" }
             };

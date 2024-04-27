@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -29,7 +29,7 @@ using Finebits.Network.RestClient;
 namespace Finebits.Authorization.OAuth2.Messages
 {
     internal class NetworkMessage<TContent>
-        : CommonMessage<JsonResponse<TContent>, FormUrlEncodedRequest>
+        : CommonMessage<ForceJsonResponse<TContent>, FormUrlEncodedRequest>
     {
         public override Uri Endpoint { get; }
         public override HttpMethod Method { get; }
@@ -68,9 +68,9 @@ namespace Finebits.Authorization.OAuth2.Messages
             };
         }
 
-        protected override JsonResponse<TContent> CreateResponse()
+        protected override ForceJsonResponse<TContent> CreateResponse()
         {
-            return new JsonResponse<TContent>
+            return new ForceJsonResponse<TContent>
             {
                 Options = new JsonSerializerOptions
                 {
@@ -81,7 +81,7 @@ namespace Finebits.Authorization.OAuth2.Messages
     }
 
     internal class EmptyNetworkMessage<TContent>
-        : CommonMessage<JsonResponse<TContent>, EmptyRequest>
+        : CommonMessage<ForceJsonResponse<TContent>, EmptyRequest>
     {
         public override Uri Endpoint { get; }
         public override HttpMethod Method { get; }
@@ -117,9 +117,9 @@ namespace Finebits.Authorization.OAuth2.Messages
             };
         }
 
-        protected override JsonResponse<TContent> CreateResponse()
+        protected override ForceJsonResponse<TContent> CreateResponse()
         {
-            return new JsonResponse<TContent>
+            return new ForceJsonResponse<TContent>
             {
                 Options = new JsonSerializerOptions
                 {
@@ -132,7 +132,7 @@ namespace Finebits.Authorization.OAuth2.Messages
     internal class StreamNetworkMessage<TError>
         : CommonMessage<FlexibleResponse, EmptyRequest>
     {
-        public class ErrorResponse : JsonResponse<TError> { }
+        public class ErrorResponse : ForceJsonResponse<TError> { }
         public override Uri Endpoint { get; }
         public override HttpMethod Method { get; }
 

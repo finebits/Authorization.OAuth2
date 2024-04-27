@@ -1,28 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Finebits.Authorization.OAuth2.AuthenticationBroker</RootNamespace>
-    <AssemblyName>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</AssemblyName>
-
+    <RootNamespace>Finebits.Authorization.OAuth2.Outlook</RootNamespace>
+    <AssemblyName>Finebits.Authorization.OAuth2.Outlook</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
 
-    <PackageId>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</PackageId>
-    <Title>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</Title>
+    <PackageId>Finebits.Authorization.OAuth2.Outlook</PackageId>
+    <Title>Finebits.Authorization.OAuth2.Outlook</Title>
 
     <Authors>Finebits</Authors>
     <Company>Finebits</Company>
 
-    <Product>AuthenticationBroker Desktop (netstandard2.0)</Product>
-    <Description>This package contains an authentication broker that can be used in desktop clients.</Description>
+    <Product>OAuth2 Client (netstandard2.0)</Product>
+    <Description>This package contains the authorization client for the Outlook service.</Description>
     <Copyright>© 2024 Finibits. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>OAuth2;Authorization;Broker</PackageTags>
+    <PackageTags>OAuth2;Authorization;Outlook</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 

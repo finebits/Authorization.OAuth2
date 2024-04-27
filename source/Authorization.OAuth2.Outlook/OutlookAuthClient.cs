@@ -17,7 +17,6 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,13 +24,13 @@ using System.Threading.Tasks;
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.Types;
 
-namespace Finebits.Authorization.OAuth2.Microsoft
+namespace Finebits.Authorization.OAuth2.Outlook
 {
-    public partial class MicrosoftAuthClient : AuthorizationClient, IRefreshable, IProfileReader, IUserAvatarLoader
+    public partial class OutlookAuthClient : AuthorizationClient, IRefreshable, IProfileReader
     {
-        protected MicrosoftConfiguration Configuration => Config as MicrosoftConfiguration;
+        protected OutlookConfiguration Configuration => Config as OutlookConfiguration;
 
-        public MicrosoftAuthClient(HttpClient httpClient, IAuthenticationBroker broker, MicrosoftConfiguration config)
+        public OutlookAuthClient(HttpClient httpClient, IAuthenticationBroker broker, OutlookConfiguration config)
             : base(httpClient, broker, config)
         { }
 
@@ -60,9 +59,9 @@ namespace Finebits.Authorization.OAuth2.Microsoft
                 endpoint += $"&login_hint={userId}";
             }
 
-            if (Configuration.Prompt != MicrosoftAuthPrompt.None)
+            if (Configuration.Prompt != OutlookAuthPrompt.None)
             {
-                endpoint += $"&prompt={MicrosoftConfiguration.ConvertPromptToString(Configuration.Prompt)}";
+                endpoint += $"&prompt={OutlookConfiguration.ConvertPromptToString(Configuration.Prompt)}";
             }
 
             return Task.FromResult(new Uri(endpoint));
@@ -75,36 +74,17 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 
         public Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
         {
-            return new ProfileReader<MicrosoftProfileContent>(this)
+            return new ProfileReader<OutlookProfileContent>(this)
             {
-                UserProfileCreator = (content) => new MicrosoftUserProfile
+                UserProfileCreator = (content) => new OutlookUserProfile
                 {
                     Id = content.Id,
                     Email = content.Mail,
                     DisplayName = content.DisplayName,
-                    GivenName = content.GivenName,
-                    Surname = content.Surname,
-                    UserPrincipalName = content.UserPrincipalName,
-                    PreferredLanguage = content.PreferredLanguage
+                    Alias = content.Alias,
+                    MailboxGuid = content.MailboxGuid,
                 }
             }.ReadProfileAsync(token, cancellationToken);
-        }
-
-        public async Task<Stream> LoadAvatarAsync(Token token, CancellationToken cancellationToken = default)
-        {
-            if (token is null)
-            {
-                throw new ArgumentNullException(nameof(token));
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return await DownloadFileAsync<MicrosoftEmptyContent>(
-                 endpoint: Configuration.UserAvatarUri,
-                 method: HttpMethod.Get,
-                 token: token,
-                 headers: null,
-                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

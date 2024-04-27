@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -20,17 +20,17 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IMicrosoftInvalidResponse : IInvalidResponse
     {
-        IResponseError ResponseError { get; }
+        IMicrosoftResponseError ResponseError { get; }
     }
 
-    public interface IResponseError
+    public interface IMicrosoftResponseError
     {
         string Code { get; }
         string Message { get; }
-        IInnerError InnerError { get; }
+        IMicrosoftInnerError InnerError { get; }
     }
 
-    public interface IInnerError
+    public interface IMicrosoftInnerError
     {
         string RequestDate { get; }
         string RequestId { get; }

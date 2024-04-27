@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -44,6 +44,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 yield return AuthClientType.Google;
                 yield return AuthClientType.Microsoft;
+                yield return AuthClientType.Outlook;
             }
         }
 
@@ -53,6 +54,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 yield return AuthClientType.Google;
                 yield return AuthClientType.Microsoft;
+                yield return AuthClientType.Outlook;
             }
         }
 
@@ -70,6 +72,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 yield return AuthClientType.Google;
                 yield return AuthClientType.Microsoft;
+                yield return AuthClientType.Outlook;
             }
         }
 

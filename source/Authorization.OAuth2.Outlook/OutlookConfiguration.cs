@@ -18,50 +18,44 @@
 
 using System;
 
-namespace Finebits.Authorization.OAuth2.Microsoft
+namespace Finebits.Authorization.OAuth2.Outlook
 {
-    public class MicrosoftConfiguration : AuthConfiguration
+    public class OutlookConfiguration : AuthConfiguration
     {
-        private const string UserProfileEndpoint = "https://graph.microsoft.com/v1.0/me";
-        private const string UserAvatarEndpoint = "https://graph.microsoft.com/v1.0/me/photo/$value";
+        private const string UserProfileEndpoint = "https://outlook.office.com/api/v2.0/me";
 
         private const string DefaultTenant = "common";
-        public MicrosoftAuthPrompt Prompt { get; set; } = MicrosoftAuthPrompt.SelectAccount;
+        public OutlookAuthPrompt Prompt { get; set; } = OutlookAuthPrompt.SelectAccount;
 
-        public Uri UserAvatarUri { get; protected set; }
-
-        public MicrosoftConfiguration()
+        public OutlookConfiguration()
             : this(DefaultTenant)
         { }
 
-        public MicrosoftConfiguration(string tenant)
+        public OutlookConfiguration(string tenant)
              : this(GetAuthorizationUri(tenant), GetTokenUri(tenant), GetRefreshUri(tenant))
         { }
 
-        public MicrosoftConfiguration(
+        public OutlookConfiguration(
             Uri authorizationEndpoint = null,
             Uri tokenEndpoint = null,
             Uri refreshEndpoint = null,
-            Uri userProfileEndpoint = null,
-            Uri userAvatarEndpoint = null)
+            Uri userProfileEndpoint = null)
             : base(authorizationEndpoint ?? GetAuthorizationUri(DefaultTenant),
                   tokenEndpoint ?? GetTokenUri(DefaultTenant),
                   refreshEndpoint ?? GetRefreshUri(DefaultTenant),
                   null,
                   userProfileEndpoint ?? new Uri(UserProfileEndpoint))
-        {
-            UserAvatarUri = userAvatarEndpoint ?? new Uri(UserAvatarEndpoint);
-        }
+        { }
 
-        public static string ConvertPromptToString(MicrosoftAuthPrompt prompt)
+        public static string ConvertPromptToString(OutlookAuthPrompt prompt)
         {
             switch (prompt)
             {
-                case MicrosoftAuthPrompt.Login:
+                case OutlookAuthPrompt.Login:
                     return "login";
-                case MicrosoftAuthPrompt.Consent:
+                case OutlookAuthPrompt.Consent:
                     return "consent";
-                case MicrosoftAuthPrompt.SelectAccount:
+                case OutlookAuthPrompt.SelectAccount:
                     return "select_account";
             }
 
@@ -84,7 +78,7 @@ namespace Finebits.Authorization.OAuth2.Microsoft
         }
     }
 
-    public enum MicrosoftAuthPrompt
+    public enum OutlookAuthPrompt
     {
         None,
         Login,

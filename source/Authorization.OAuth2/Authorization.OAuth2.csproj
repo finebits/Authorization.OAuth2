@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -15,7 +15,7 @@
 
     <Product>OAuth2 Client (netstandard2.0)</Product>
     <Description>This package contains shared code for other Finebits.Authorization.OAuth2 packages.</Description>
-    <Copyright>© 2023 Finibits. All rights reserved.</Copyright>
+    <Copyright>© 2024 Finibits. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/finebits/Authorization.OAuth2</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
@@ -49,7 +49,7 @@
 
   <ItemGroup>
     <PackageReference Include="Finebits.Network.RestClient" Version="0.3.0-alpha" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

@@ -18,20 +18,24 @@
 
 using System;
 
-using Finebits.Authorization.OAuth2.Abstractions;
-
-namespace Finebits.Authorization.OAuth2.Google
+namespace Finebits.Authorization.OAuth2.Abstractions
 {
-    public class GoogleUserProfile : IUserProfile, IUserAvatar
+    public interface IOutlookInvalidResponse : IInvalidResponse
     {
-        public string Id { get; protected internal set; }
-        public string Email { get; protected internal set; }
-        public string DisplayName { get; protected internal set; }
-        public Uri Avatar { get; protected internal set; }
+        IOutlookResponseError ResponseError { get; }
+    }
 
-        public string Name { get; protected internal set; }
-        public string FamilyName { get; protected internal set; }
-        public bool IsEmailVerified { get; protected internal set; }
-        public string Locale { get; protected internal set; }
+    public interface IOutlookResponseError
+    {
+        string Code { get; }
+        string Message { get; }
+        IOutlookInnerError InnerError { get; }
+    }
+
+    public interface IOutlookInnerError
+    {
+        string RequestDate { get; }
+        string RequestId { get; }
+        Uri ErrorUrl { get; }
     }
 }

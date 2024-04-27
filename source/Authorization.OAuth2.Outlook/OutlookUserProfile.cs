@@ -16,22 +16,17 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
-using System;
-
 using Finebits.Authorization.OAuth2.Abstractions;
 
-namespace Finebits.Authorization.OAuth2.Google
+namespace Finebits.Authorization.OAuth2.Outlook
 {
-    public class GoogleUserProfile : IUserProfile, IUserAvatar
+    public class OutlookUserProfile : IUserProfile
     {
         public string Id { get; protected internal set; }
         public string Email { get; protected internal set; }
         public string DisplayName { get; protected internal set; }
-        public Uri Avatar { get; protected internal set; }
 
-        public string Name { get; protected internal set; }
-        public string FamilyName { get; protected internal set; }
-        public bool IsEmailVerified { get; protected internal set; }
-        public string Locale { get; protected internal set; }
+        public string Alias { get; set; }
+        public string MailboxGuid { get; set; }
     }
 }

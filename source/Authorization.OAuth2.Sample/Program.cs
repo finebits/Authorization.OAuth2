@@ -1,6 +1,6 @@
 ﻿// ---------------------------------------------------------------------------- //
 //                                                                              //
-//   Copyright 2023 Finebits (https://finebits.com/)                            //
+//   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
 //   Licensed under the Apache License, Version 2.0 (the "License"),            //
 //   you may not use this file except in compliance with the License.           //
@@ -44,7 +44,7 @@ partial class Program
 
                 1. Google
                 2. Microsoft
-                3. Office365
+                3. Outlook
 
                 Select option (default is 1): 
                 """);
@@ -52,37 +52,48 @@ partial class Program
             var authClient = Console.ReadLine() switch
             {
                 "2" => GetMicrosoftAuthClient(httpClient, launcher, redirectURI),
-                "3" => GetOffice365AuthClient(httpClient, launcher, redirectURI),
+                "3" => GetOutlookAuthClient(httpClient, launcher, redirectURI),
                 _ => GetGoogleAuthClient(httpClient, launcher, redirectURI),
             };
 
             using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
 
             var token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
+            Console.WriteLine();
+            WriteResultLine("Login operation is completed.");
             PrintToken(token, "Login response");
 
+            Console.WriteLine();
             var freshToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
             PrintToken(token, "Refresh response");
             token.Update(freshToken);
 
+            Console.WriteLine();
             var profile = await ReadProfileAsync(authClient, token).ConfigureAwait(false);
             PrintProfile(profile, "User profile");
 
+            Console.WriteLine();
             await LoadUserAvatarAsync(authClient, token, "./avatar.jpg").ConfigureAwait(false);
 
+            Console.WriteLine();
             await RevokeTokenAsync(authClient, token).ConfigureAwait(false);
         }
         catch (AuthorizationBrokerResultException propEx)
         {
+            ConsoleColor color = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
                 AuthorizationInvalidBrokerResultException:
                 Error: {propEx.Error}
                 ErrorDescription: {propEx.ErrorDescription}
                 """);
+            Console.ForegroundColor = color;
         }
         catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse)
         {
+            ConsoleColor color = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"""
 
                 AuthorizationInvalidResponseException(IMicrosoftInvalidResponse):
@@ -93,55 +104,116 @@ partial class Program
                 RequestDate: {microsoftResponse.ResponseError.InnerError.RequestDate}
                 RequestId: {microsoftResponse.ResponseError.InnerError.RequestId}
                 ClientRequestId: {microsoftResponse.ResponseError.InnerError.ClientRequestId}
+
+                Message: {responseException.Message}
+                InnerException.Message: {responseException.InnerException?.Message}
                 """);
+            Console.ForegroundColor = color;
+        }
+        catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse)
+        {
+            ConsoleColor color = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"""
+
+                AuthorizationInvalidResponseException(IOutlookInvalidResponse):
+                Error: {outlookResponse.ErrorReason}
+                ErrorDescription: {outlookResponse.ErrorDescription}
+                Code: {outlookResponse.ResponseError.Code}
+                Message: {outlookResponse.ResponseError.Message}
+                RequestDate: {outlookResponse.ResponseError.InnerError.RequestDate}
+                RequestId: {outlookResponse.ResponseError.InnerError.RequestId}
+                ErrorUrl: {outlookResponse.ResponseError.InnerError.ErrorUrl}
+
+                Message: {responseException.Message}
+                InnerException.Message: {responseException.InnerException?.Message}
+                """);
+            Console.ForegroundColor = color;
+        }
+        catch (AuthorizationInvalidResponseException responseException)
+        {
+            ConsoleColor color = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"""
+
+                AuthorizationInvalidResponseException:
+                Error: {responseException.ErrorReason}
+                ErrorDescription: {responseException.ErrorDescription}
+
+                Message: {responseException.Message}
+                InnerException.Message: {responseException.InnerException?.Message}
+                """);
+            Console.ForegroundColor = color;
         }
         catch (AuthorizationException authEx) when (authEx.InnerException is not null)
         {
-            Console.WriteLine(authEx.InnerException.Message);
+            ConsoleColor color = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"""
+
+                AuthorizationException:
+                Message: {authEx.Message}
+                InnerException.Message: {authEx.InnerException.Message}
+                """);
+            Console.ForegroundColor = color;
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            ConsoleColor color = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"""
+
+                Exception:
+                Message: {ex.Message}
+                """);
+
+            Console.ForegroundColor = color;
         }
     }
 
     private static void PrintToken(Types.AuthorizationToken? authToken, string header)
     {
+        ConsoleColor color = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+
         if (authToken is null)
         {
             Console.WriteLine($"{header}: null");
             return;
         }
 
-        Console.WriteLine($"""
+        Console.WriteLine($"{header}:");
 
-                {header}:
+        Console.ForegroundColor = color;
+        Console.WriteLine($"""
                 AccessToken: {authToken.AccessToken[0..8]}...
                 RefreshToken: {authToken.RefreshToken[0..8]}...
                 TokenType: {authToken.TokenType ?? "null"}
                 ExpiresIn: {authToken.ExpiresIn}
                 Scope: {authToken.Scope ?? "null"}
-
                 """);
     }
 
     private static void PrintProfile(IUserProfile? profile, string header)
     {
+        ConsoleColor color = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+
         if (profile is null)
         {
             Console.WriteLine($"{header}: null");
             return;
         }
 
-        Console.WriteLine($"""
+        Console.WriteLine($"{header}:");
 
-                {header}:
+        Console.ForegroundColor = color;
+
+        Console.WriteLine($"""
                 {nameof(IUserProfile.Id)}: {profile.Id}
                 {nameof(IUserProfile.Email)}: {profile.Email}
                 {nameof(IUserProfile.DisplayName)}: {profile.DisplayName}
                 {nameof(IUserAvatar.Avatar)}: {((profile is IUserAvatar avatar) ? avatar.Avatar : "link is missing")}
-                {((profile is IUserAvatarLoader) ? "Avatar can be loaded" : string.Empty)}
-
                 """);
     }
 
@@ -150,7 +222,7 @@ partial class Program
         if (client is IRefreshable refreshClient)
         {
             var result = await refreshClient.RefreshTokenAsync(token).ConfigureAwait(false);
-            Console.WriteLine("Refresh operation is completed.");
+            WriteResultLine("Refresh operation is completed.");
             return result;
         }
 
@@ -167,7 +239,7 @@ partial class Program
         if (client is IRevocable revokeClient)
         {
             await revokeClient.RevokeTokenAsync(token).ConfigureAwait(false);
-            Console.WriteLine("Revoke operation is completed.");
+            WriteResultLine("Revoke operation is completed.");
         }
     }
 
@@ -183,7 +255,7 @@ partial class Program
         if (client is IProfileReader profileReader)
         {
             profile = await profileReader.ReadProfileAsync(token).ConfigureAwait(false);
-            Console.WriteLine("Read Profile operation is completed.");
+            WriteResultLine("Read Profile operation is completed.");
         }
 
         return profile;
@@ -208,6 +280,15 @@ partial class Program
 
             fileAvatar.SetLength(0);
             await avatar.CopyToAsync(fileAvatar).ConfigureAwait(false);
+            WriteResultLine("Load Avatar operation is completed.");
         }
+    }
+
+    private static void WriteResultLine(string text)
+    {
+        ConsoleColor color = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(text);
+        Console.ForegroundColor = color;
     }
 }
