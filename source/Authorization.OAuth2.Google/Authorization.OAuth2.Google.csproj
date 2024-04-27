@@ -21,7 +21,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <PackageTags>OAuth2;Authorization;Google;Gmail,GoogleDrive</PackageTags>
+    <PackageTags>OAuth2;Authorization;Google;Gmail;GoogleDrive</PackageTags>
 
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
