@@ -34,13 +34,13 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
             }
 
             return uri.IsAbsoluteUri && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
-                ? Task.FromResult(StartProcess(uri.ToString()))
+                ? Task.FromResult(StartProcess(uri.AbsoluteUri))
                 : Task.FromResult(false);
         }
 
         protected static bool StartProcess(string fileName)
         {
-            using (var process = Process.Start(new ProcessStartInfo { FileName = fileName, UseShellExecute = true }))
+            using (var process = Process.Start(new ProcessStartInfo(fileName) { UseShellExecute = true }))
             {
                 return process != null;
             }
