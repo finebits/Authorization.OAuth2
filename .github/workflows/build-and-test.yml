@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-#   Copyright 2023 Finebits (https://finebits.com)                             #
+#   Copyright 2023-2024 Finebits (https://finebits.com)                        #
 #                                                                              #
 #   Licensed under the Apache License, Version 2.0 (the "License");            #
 #   you may not use this file except in compliance with the License.           #
@@ -93,7 +93,7 @@ jobs:
 
     - name: Generate test coverage badge
       if: ${{ runner.os == 'Linux' && env.gist-id != '' && env.gist-auth-token != '' }}
-      uses: finebits/github-actions/badges/coverlet-coverage-badge@v1.5.1
+      uses: finebits/github-actions/badges/coverlet-coverage-badge@4a126d80a11c5fdc83ce884d3d23dffb30bc4495 # v2.0.0
       with:
         label: "coverage"
         report-root: "${{ env.test-report-root }}/**/"

@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-#   Copyright 2023 Finebits (https://finebits.com)                             #
+#   Copyright 2023-2024 Finebits (https://finebits.com)                        #
 #                                                                              #
 #   Licensed under the Apache License, Version 2.0 (the "License");            #
 #   you may not use this file except in compliance with the License.           #
@@ -105,7 +105,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Pack
-      uses: finebits/github-actions/pack-nuget@v1.5.1
+      uses: finebits/github-actions/package/nuget/pack@4a126d80a11c5fdc83ce884d3d23dffb30bc4495 # v2.0.0
       with:
         project: ${{ env.nuget-project }}
         configuration: ${{ env.configuration }}
