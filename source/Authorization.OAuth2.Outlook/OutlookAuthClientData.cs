@@ -36,29 +36,6 @@ namespace Finebits.Authorization.OAuth2.Outlook
             public IOutlookResponseError ResponseError => Error;
         }
 
-        protected class OutlookProfileContent : OutlookEmptyContent, IOutlookInvalidResponse, IInvalidResponse
-        {
-            [JsonInclude]
-            [JsonPropertyName("Id")]
-            public string Id { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("EmailAddress")]
-            public string Mail { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("DisplayName")]
-            public string DisplayName { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("Alias")]
-            public string Alias { get; private set; }
-
-            [JsonInclude]
-            [JsonPropertyName("MailboxGuid")]
-            public string MailboxGuid { get; private set; }
-        }
-
         protected class ResponseError : IOutlookResponseError
         {
             [JsonInclude]
