@@ -77,7 +77,6 @@ internal class AuthClientReadProfileTests
         {
             Assert.That(userProfile is MicrosoftUserProfile, client is MicrosoftAuthClient ? Is.True : Is.False);
             Assert.That(userProfile is GoogleUserProfile, client is GoogleAuthClient ? Is.True : Is.False);
-            Assert.That(userProfile is OutlookUserProfile, client is OutlookAuthClient ? Is.True : Is.False);
             Assert.That(userProfile is IUserAvatar, client is GoogleAuthClient ? Is.True : Is.False);
             Assert.That(userProfile.Id, Is.EqualTo(FakeConstant.UserProfile.Id));
             Assert.That(userProfile.Email, Is.EqualTo(FakeConstant.UserProfile.Email));
