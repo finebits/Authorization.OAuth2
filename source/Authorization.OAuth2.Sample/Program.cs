@@ -60,7 +60,7 @@ partial class Program
 
             var token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             Console.WriteLine();
-            WriteResultLine("Login operation is completed.");
+            WriteColorLine("Login operation is completed.", ConsoleColor.Green);
             PrintToken(token, "Login response");
 
             Console.WriteLine();
@@ -78,113 +78,21 @@ partial class Program
             Console.WriteLine();
             await RevokeTokenAsync(authClient, token).ConfigureAwait(false);
         }
-        catch (AuthorizationBrokerResultException propEx)
+        catch (Exception exception)
         {
-            ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"""
-
-                AuthorizationInvalidBrokerResultException:
-                Error: {propEx.Error}
-                ErrorDescription: {propEx.ErrorDescription}
-                """);
-            Console.ForegroundColor = color;
-        }
-        catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse)
-        {
-            ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"""
-
-                AuthorizationInvalidResponseException(IMicrosoftInvalidResponse):
-                Error: {microsoftResponse.ErrorReason}
-                ErrorDescription: {microsoftResponse.ErrorDescription}
-                Code: {microsoftResponse.ResponseError.Code}
-                Message: {microsoftResponse.ResponseError.Message}
-                RequestDate: {microsoftResponse.ResponseError.InnerError.RequestDate}
-                RequestId: {microsoftResponse.ResponseError.InnerError.RequestId}
-                ClientRequestId: {microsoftResponse.ResponseError.InnerError.ClientRequestId}
-
-                Message: {responseException.Message}
-                InnerException.Message: {responseException.InnerException?.Message}
-                """);
-            Console.ForegroundColor = color;
-        }
-        catch (AuthorizationInvalidResponseException responseException) when (responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse)
-        {
-            ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"""
-
-                AuthorizationInvalidResponseException(IOutlookInvalidResponse):
-                Error: {outlookResponse.ErrorReason}
-                ErrorDescription: {outlookResponse.ErrorDescription}
-                Code: {outlookResponse.ResponseError.Code}
-                Message: {outlookResponse.ResponseError.Message}
-                RequestDate: {outlookResponse.ResponseError.InnerError.RequestDate}
-                RequestId: {outlookResponse.ResponseError.InnerError.RequestId}
-                ErrorUrl: {outlookResponse.ResponseError.InnerError.ErrorUrl}
-
-                Message: {responseException.Message}
-                InnerException.Message: {responseException.InnerException?.Message}
-                """);
-            Console.ForegroundColor = color;
-        }
-        catch (AuthorizationInvalidResponseException responseException)
-        {
-            ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"""
-
-                AuthorizationInvalidResponseException:
-                Error: {responseException.ErrorReason}
-                ErrorDescription: {responseException.ErrorDescription}
-
-                Message: {responseException.Message}
-                InnerException.Message: {responseException.InnerException?.Message}
-                """);
-            Console.ForegroundColor = color;
-        }
-        catch (AuthorizationException authEx) when (authEx.InnerException is not null)
-        {
-            ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"""
-
-                AuthorizationException:
-                Message: {authEx.Message}
-                InnerException.Message: {authEx.InnerException.Message}
-                """);
-            Console.ForegroundColor = color;
-        }
-        catch (Exception ex)
-        {
-            ConsoleColor color = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"""
-
-                Exception:
-                Message: {ex.Message}
-                """);
-
-            Console.ForegroundColor = color;
+            WriteError(exception);
         }
     }
 
     private static void PrintToken(Types.AuthorizationToken? authToken, string header)
     {
-        ConsoleColor color = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Yellow;
-
         if (authToken is null)
         {
-            Console.WriteLine($"{header}: null");
             return;
         }
 
-        Console.WriteLine($"{header}:");
+        Console.WriteLine($"{header}:", ConsoleColor.Yellow);
 
-        Console.ForegroundColor = color;
         Console.WriteLine($"""
                 AccessToken: {authToken.AccessToken[0..8]}...
                 RefreshToken: {authToken.RefreshToken[0..8]}...
@@ -196,18 +104,12 @@ partial class Program
 
     private static void PrintProfile(IUserProfile? profile, string header)
     {
-        ConsoleColor color = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Yellow;
-
         if (profile is null)
         {
-            Console.WriteLine($"{header}: null");
             return;
         }
 
-        Console.WriteLine($"{header}:");
-
-        Console.ForegroundColor = color;
+        Console.WriteLine($"{header}:", ConsoleColor.Yellow);
 
         Console.WriteLine($"""
                 {nameof(IUserProfile.Id)}: {profile.Id}
@@ -222,8 +124,12 @@ partial class Program
         if (client is IRefreshable refreshClient)
         {
             var result = await refreshClient.RefreshTokenAsync(token).ConfigureAwait(false);
-            WriteResultLine("Refresh operation is completed.");
+            WriteColorLine("Refresh operation is completed.", ConsoleColor.Green);
             return result;
+        }
+        else
+        {
+            WriteColorLine("Refresh operation unavailable.", ConsoleColor.Yellow);
         }
 
         return null;
@@ -239,7 +145,11 @@ partial class Program
         if (client is IRevocable revokeClient)
         {
             await revokeClient.RevokeTokenAsync(token).ConfigureAwait(false);
-            WriteResultLine("Revoke operation is completed.");
+            WriteColorLine("Revoke operation is completed.", ConsoleColor.Green);
+        }
+        else
+        {
+            WriteColorLine("Revoke operation unavailable.", ConsoleColor.Yellow);
         }
     }
 
@@ -255,7 +165,11 @@ partial class Program
         if (client is IProfileReader profileReader)
         {
             profile = await profileReader.ReadProfileAsync(token).ConfigureAwait(false);
-            WriteResultLine("Read Profile operation is completed.");
+            WriteColorLine("Read Profile operation is completed.", ConsoleColor.Green);
+        }
+        else
+        {
+            WriteColorLine("Read Profile operation unavailable.", ConsoleColor.Yellow);
         }
 
         return profile;
@@ -275,20 +189,117 @@ partial class Program
 
         if (client is IUserAvatarLoader avatarLoader)
         {
-            using var avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
-            using var fileAvatar = new FileStream(name, FileMode.OpenOrCreate, FileAccess.Write);
+            try
+            {
+                using var avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
+                using var fileAvatar = new FileStream(name, FileMode.OpenOrCreate, FileAccess.Write);
 
-            fileAvatar.SetLength(0);
-            await avatar.CopyToAsync(fileAvatar).ConfigureAwait(false);
-            WriteResultLine("Load Avatar operation is completed.");
+                fileAvatar.SetLength(0);
+                await avatar.CopyToAsync(fileAvatar).ConfigureAwait(false);
+                WriteColorLine("Load Avatar operation is completed.", ConsoleColor.Green);
+            }
+            catch (AuthorizationException exception)
+            {
+                WriteError(exception, ConsoleColor.Yellow);
+            }
+        }
+        else
+        {
+            WriteColorLine("Load Avatar operation unavailable.", ConsoleColor.Yellow);
         }
     }
 
-    private static void WriteResultLine(string text)
+    private static void WriteError(Exception exception, ConsoleColor color = ConsoleColor.Red)
     {
-        ConsoleColor color = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine(text);
-        Console.ForegroundColor = color;
+        switch (exception)
+        {
+            case AuthorizationBrokerResultException brokerException:
+                {
+                    WriteColorLine($"""
+
+                        AuthorizationInvalidBrokerResultException:
+                        Error: {brokerException.Error}
+                        ErrorDescription: {brokerException.ErrorDescription}
+                        """, color);
+                }
+                break;
+            case AuthorizationInvalidResponseException responseException when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse):
+                {
+                    WriteColorLine($"""
+
+                        AuthorizationInvalidResponseException(IMicrosoftInvalidResponse):
+                        Error: {microsoftResponse.ErrorReason}
+                        ErrorDescription: {microsoftResponse.ErrorDescription}
+                        Code: {microsoftResponse.ResponseError.Code}
+                        Message: {microsoftResponse.ResponseError.Message}
+                        RequestDate: {microsoftResponse.ResponseError.InnerError.RequestDate}
+                        RequestId: {microsoftResponse.ResponseError.InnerError.RequestId}
+                        ClientRequestId: {microsoftResponse.ResponseError.InnerError.ClientRequestId}
+
+                        Message: {responseException.Message}
+                        InnerException.Message: {responseException.InnerException?.Message}
+                        """, color);
+                }
+                break;
+            case AuthorizationInvalidResponseException responseException when (responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse):
+                {
+                    WriteColorLine($"""
+
+                        AuthorizationInvalidResponseException(IOutlookInvalidResponse):
+                        Error: {outlookResponse.ErrorReason}
+                        ErrorDescription: {outlookResponse.ErrorDescription}
+                        Code: {outlookResponse.ResponseError.Code}
+                        Message: {outlookResponse.ResponseError.Message}
+                        RequestDate: {outlookResponse.ResponseError.InnerError.RequestDate}
+                        RequestId: {outlookResponse.ResponseError.InnerError.RequestId}
+                        ErrorUrl: {outlookResponse.ResponseError.InnerError.ErrorUrl}
+
+                        Message: {responseException.Message}
+                        InnerException.Message: {responseException.InnerException?.Message}
+                        """, color);
+                }
+                break;
+            case (AuthorizationInvalidResponseException responseException):
+                {
+                    WriteColorLine($"""
+
+                        AuthorizationInvalidResponseException:
+                        Error: {responseException.ErrorReason}
+                        ErrorDescription: {responseException.ErrorDescription}
+
+                        Message: {responseException.Message}
+                        InnerException.Message: {responseException.InnerException?.Message}
+                        """, color);
+                }
+                break;
+            case (AuthorizationException authException) when (authException.InnerException is not null):
+                {
+                    WriteColorLine($"""
+
+                        AuthorizationException:
+                        Message: {authException.Message}
+                        InnerException.Message: {authException.InnerException.Message}
+                        """, color);
+                }
+                break;
+            case (Exception ex):
+                {
+                    WriteColorLine($"""
+
+                        Exception:
+                        Message: {ex.Message}
+                        """, color);
+                }
+                break;
+        }
     }
+
+    private static void WriteColorLine(string text, ConsoleColor color)
+    {
+        ConsoleColor defaultColor = Console.ForegroundColor;
+        Console.ForegroundColor = color;
+        Console.WriteLine(text);
+        Console.ForegroundColor = defaultColor;
+    }
+
 }
