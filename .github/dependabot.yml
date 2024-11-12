@@ -8,6 +8,9 @@ updates:
     directory: "/source/"                           # Path to '*.sln' directory
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "build"
+      include: "scope"
     reviewers:
       - "al-kau"
       - "ValeraFinebits"
@@ -24,6 +27,9 @@ updates:
     directory: "/"                                  # Path to '.gitmodules' directory
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "build"
+      include: "scope"
     reviewers:
       - "al-kau"
       - "ValeraFinebits"
@@ -39,6 +45,9 @@ updates:
     reviewers:
       - "al-kau"
       - "ValeraFinebits"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
     groups:
       Common-actions:
         patterns:
