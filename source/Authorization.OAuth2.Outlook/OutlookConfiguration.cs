@@ -22,8 +22,6 @@ namespace Finebits.Authorization.OAuth2.Outlook
 {
     public class OutlookConfiguration : AuthConfiguration
     {
-        private const string UserProfileEndpoint = "https://outlook.office.com/api/v2.0/me";
-
         private const string DefaultTenant = "common";
         public OutlookAuthPrompt Prompt { get; set; } = OutlookAuthPrompt.SelectAccount;
 
@@ -38,13 +36,11 @@ namespace Finebits.Authorization.OAuth2.Outlook
         public OutlookConfiguration(
             Uri authorizationEndpoint = null,
             Uri tokenEndpoint = null,
-            Uri refreshEndpoint = null,
-            Uri userProfileEndpoint = null)
+            Uri refreshEndpoint = null)
             : base(authorizationEndpoint ?? GetAuthorizationUri(DefaultTenant),
                   tokenEndpoint ?? GetTokenUri(DefaultTenant),
                   refreshEndpoint ?? GetRefreshUri(DefaultTenant),
-                  null,
-                  userProfileEndpoint ?? new Uri(UserProfileEndpoint))
+                  null, null)
         { }
 
         public static string ConvertPromptToString(OutlookAuthPrompt prompt)

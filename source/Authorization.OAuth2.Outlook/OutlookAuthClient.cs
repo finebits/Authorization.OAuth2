@@ -26,7 +26,7 @@ using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Outlook
 {
-    public partial class OutlookAuthClient : AuthorizationClient, IRefreshable, IProfileReader
+    public partial class OutlookAuthClient : AuthorizationClient, IRefreshable
     {
         protected OutlookConfiguration Configuration => Config as OutlookConfiguration;
 
