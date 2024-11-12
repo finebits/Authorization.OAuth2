@@ -71,20 +71,5 @@ namespace Finebits.Authorization.OAuth2.Outlook
         {
             return new RefreshableClient(this).RefreshTokenAsync(token, cancellationToken);
         }
-
-        public Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
-        {
-            return new ProfileReader<OutlookProfileContent>(this)
-            {
-                UserProfileCreator = (content) => new OutlookUserProfile
-                {
-                    Id = content.Id,
-                    Email = content.Mail,
-                    DisplayName = content.DisplayName,
-                    Alias = content.Alias,
-                    MailboxGuid = content.MailboxGuid,
-                }
-            }.ReadProfileAsync(token, cancellationToken);
-        }
     }
 }
