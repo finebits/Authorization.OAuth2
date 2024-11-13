@@ -24,6 +24,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Authorization.OAuth2.AuthenticationBroker.Desktop\Authorization.OAuth2.AuthenticationBroker.Desktop.csproj" />
     <ProjectReference Include="..\Authorization.OAuth2.Google\Authorization.OAuth2.Google.csproj" />
     <ProjectReference Include="..\Authorization.OAuth2.Microsoft\Authorization.OAuth2.Microsoft.csproj" />
