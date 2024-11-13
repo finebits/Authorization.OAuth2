@@ -50,6 +50,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Authorization.OAuth2\Authorization.OAuth2.csproj" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
   </ItemGroup>
 
 </Project>
