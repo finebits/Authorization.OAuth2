@@ -17,7 +17,6 @@
 // ---------------------------------------------------------------------------- //
 
 using System;
-using System.Collections.Specialized;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -62,54 +61,50 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (HttpListener httpListener = new HttpListener())
+            using HttpListener httpListener = new();
+            const int ERROR_OPERATION_ABORTED = 995;
+            try
             {
-                const int ERROR_OPERATION_ABORTED = 995;
-                try
-                {
-                    httpListener.Prefixes.Add(callbackUri.ToString());
-                    httpListener.Start();
+                httpListener.Prefixes.Add(callbackUri.ToString());
+                httpListener.Start();
 
-                    if (!await _launcher.LaunchAsync(requestUri).ConfigureAwait(false))
-                    {
-                        throw new InvalidOperationException($"The web browser cannot be launched.");
-                    }
-
-                    using (CancellationTokenRegistration ctr = cancellationToken.Register(() => httpListener.Stop()))
-                    {
-                        HttpListenerContext context = await httpListener.GetContextAsync().ConfigureAwait(false);
-
-                        HttpListenerResponse response = context.Response;
-                        byte[] buffer = Encoding.UTF8.GetBytes(ResponseString);
-                        response.ContentLength64 = buffer.Length;
-                        using (System.IO.Stream responseOutput = response.OutputStream)
-                        {
-                            responseOutput.Write(buffer, 0, buffer.Length);
-                        }
-
-                        return new AuthenticationResult(context?.Request?.QueryString ?? new NameValueCollection());
-                    }
-                }
-                catch (HttpListenerException exHttpListener) when (exHttpListener.ErrorCode == ERROR_OPERATION_ABORTED &&
-                                                                   cancellationToken.IsCancellationRequested)
+                if (!await _launcher.LaunchAsync(requestUri).ConfigureAwait(false))
                 {
-                    throw new OperationCanceledException(cancellationToken);
+                    throw new InvalidOperationException($"The web browser cannot be launched.");
                 }
-                catch (InvalidOperationException) when (cancellationToken.IsCancellationRequested)
+
+                using CancellationTokenRegistration ctr = cancellationToken.Register(httpListener.Stop);
+                HttpListenerContext context = await httpListener.GetContextAsync().ConfigureAwait(false);
+
+                HttpListenerResponse response = context.Response;
+                byte[] buffer = Encoding.UTF8.GetBytes(ResponseString);
+                response.ContentLength64 = buffer.Length;
+                using (System.IO.Stream responseOutput = response.OutputStream)
                 {
-                    throw new OperationCanceledException(cancellationToken);
+                    responseOutput.Write(buffer, 0, buffer.Length);
                 }
-                finally
-                {
-                    httpListener.Stop();
-                    httpListener.Close();
-                }
+
+                return new AuthenticationResult(context?.Request?.QueryString ?? []);
+            }
+            catch (HttpListenerException exHttpListener) when (exHttpListener.ErrorCode == ERROR_OPERATION_ABORTED &&
+                                                               cancellationToken.IsCancellationRequested)
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+            catch (InvalidOperationException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+            finally
+            {
+                httpListener.Stop();
+                httpListener.Close();
             }
         }
 
         public static int GetRandomUnusedPort()
         {
-            TcpListener listener = new TcpListener(IPAddress.Loopback, IPEndPoint.MinPort);
+            TcpListener listener = new(IPAddress.Loopback, IPEndPoint.MinPort);
             try
             {
                 listener.Start();

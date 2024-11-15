@@ -43,7 +43,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             NameValueCollection payload,
             HeaderCollection headers)
         {
-            _payload = payload ?? new NameValueCollection();
+            _payload = payload ?? [];
             _headers = headers;
             Method = method;
             Endpoint = endpoint;
@@ -53,7 +53,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             HeaderCollection headers = null;
 
-            if (_headers != null)
+            if (_headers is not null)
             {
                 headers = new HeaderCollection
                 (
@@ -102,7 +102,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             HeaderCollection headers = null;
 
-            if (_headers != null)
+            if (_headers is not null)
             {
                 headers = new HeaderCollection
                 (
@@ -152,7 +152,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             HeaderCollection headers = null;
 
-            if (_headers != null)
+            if (_headers is not null)
             {
                 headers = new HeaderCollection
                 (
@@ -167,19 +167,30 @@ namespace Finebits.Authorization.OAuth2.Messages
             };
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "StreamResponse is disposed by FlexibleResponse")]
         protected override FlexibleResponse CreateResponse()
         {
-            return new FlexibleResponse(new Response[]
+            StreamResponse streamResponse = new();
+
+            try
             {
-                new ErrorResponse()
-                {
-                    Options = new JsonSerializerOptions
-                    {
-                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    }
-                },
-                new StreamResponse()
-            });
+                return new FlexibleResponse(
+                            [
+                                new ErrorResponse()
+                                {
+                                    Options = new JsonSerializerOptions
+                                    {
+                                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                                    }
+                                },
+                                streamResponse
+                            ]);
+            }
+            catch
+            {
+                streamResponse.Dispose();
+                throw;
+            }
         }
     }
 }

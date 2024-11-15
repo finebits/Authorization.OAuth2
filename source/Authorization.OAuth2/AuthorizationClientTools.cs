@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            NetworkClient client = new NetworkClient(HttpClient);
+            NetworkClient client = new(HttpClient);
             return client.SendRequestAsync<TContent>(endpoint, method, payload, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
@@ -60,7 +60,7 @@ namespace Finebits.Authorization.OAuth2
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            NetworkClient client = new NetworkClient(HttpClient);
+            NetworkClient client = new(HttpClient);
             return client.SendEmptyRequestAsync<TContent>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
@@ -71,7 +71,7 @@ namespace Finebits.Authorization.OAuth2
             HeaderCollection headers,
             CancellationToken cancellationToken)
         {
-            NetworkClient client = new NetworkClient(HttpClient);
+            NetworkClient client = new(HttpClient);
             return client.DownloadFileAsync<TError>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
@@ -116,11 +116,11 @@ namespace Finebits.Authorization.OAuth2
                 return headers;
             }
 
-            HeaderCollection result = new HeaderCollection(headers ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
-            HeaderCollection authorizationHeader = new HeaderCollection(new[]
-            {
+            HeaderCollection result = new(headers ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
+            HeaderCollection authorizationHeader = new(
+            [
                 ("Authorization", new System.Net.Http.Headers.AuthenticationHeaderValue(token.TokenType, token.AccessToken).ToString())
-            });
+            ]);
 
             return new HeaderCollection(result.Union(authorizationHeader));
         }

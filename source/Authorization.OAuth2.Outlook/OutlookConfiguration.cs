@@ -45,19 +45,14 @@ namespace Finebits.Authorization.OAuth2.Outlook
 
         public static string ConvertPromptToString(OutlookAuthPrompt prompt)
         {
-            switch (prompt)
+            return prompt switch
             {
-                case OutlookAuthPrompt.Login:
-                    return "login";
-                case OutlookAuthPrompt.Consent:
-                    return "consent";
-                case OutlookAuthPrompt.SelectAccount:
-                    return "select_account";
-                case OutlookAuthPrompt.None:
-                    return "none";
-                default:
-                    return "none";
-            }
+                OutlookAuthPrompt.Login => "login",
+                OutlookAuthPrompt.Consent => "consent",
+                OutlookAuthPrompt.SelectAccount => "select_account",
+                OutlookAuthPrompt.None => "none",
+                _ => "none",
+            };
         }
 
         private static Uri GetAuthorizationUri(string tenant)

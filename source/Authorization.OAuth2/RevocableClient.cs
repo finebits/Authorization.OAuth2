@@ -59,7 +59,7 @@ namespace Finebits.Authorization.OAuth2
 
             private static NameValueCollection GetDefaultRevokePayload(Token _)
             {
-                return new NameValueCollection();
+                return [];
             }
         }
     }

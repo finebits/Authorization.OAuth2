@@ -92,7 +92,7 @@ namespace Finebits.Authorization.OAuth2
 
             public NameValueCollection GetCollection()
             {
-                NameValueCollection result = new NameValueCollection
+                NameValueCollection result = new()
                 {
                     {"grant_type", GrantType},
                     {"client_id", ClientId},

@@ -55,19 +55,14 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 
         public static string ConvertPromptToString(MicrosoftAuthPrompt prompt)
         {
-            switch (prompt)
+            return prompt switch
             {
-                case MicrosoftAuthPrompt.Login:
-                    return "login";
-                case MicrosoftAuthPrompt.Consent:
-                    return "consent";
-                case MicrosoftAuthPrompt.SelectAccount:
-                    return "select_account";
-                case MicrosoftAuthPrompt.None:
-                    return "none";
-                default:
-                    return "none";
-            }
+                MicrosoftAuthPrompt.Login => "login",
+                MicrosoftAuthPrompt.Consent => "consent",
+                MicrosoftAuthPrompt.SelectAccount => "select_account",
+                MicrosoftAuthPrompt.None => "none",
+                _ => "none",
+            };
         }
 
         private static Uri GetAuthorizationUri(string tenant)

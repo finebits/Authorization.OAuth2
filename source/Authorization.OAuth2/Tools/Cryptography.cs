@@ -25,16 +25,14 @@ namespace Finebits.Authorization.OAuth2.Tools
     {
         public static byte[] GetHashSha256(byte[] input)
         {
-            using (SHA256 sha = SHA256.Create())
-            {
-                return sha.ComputeHash(input);
-            }
+            using SHA256 sha = SHA256.Create();
+            return sha.ComputeHash(input);
         }
 
         public static byte[] GetRandomValues(uint length)
         {
             byte[] buffer = new byte[length];
-            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
+            using (RNGCryptoServiceProvider crypto = new())
             {
                 crypto.GetBytes(buffer);
             }
