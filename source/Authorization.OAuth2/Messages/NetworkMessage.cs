@@ -43,7 +43,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             NameValueCollection payload,
             HeaderCollection headers)
         {
-            _payload = payload ?? new NameValueCollection();
+            _payload = payload ?? [];
             _headers = headers;
             Method = method;
             Endpoint = endpoint;

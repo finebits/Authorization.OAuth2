@@ -85,7 +85,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
                     responseOutput.Write(buffer, 0, buffer.Length);
                 }
 
-                return new AuthenticationResult(context?.Request?.QueryString ?? new NameValueCollection());
+                return new AuthenticationResult(context?.Request?.QueryString ?? []);
             }
             catch (HttpListenerException exHttpListener) when (exHttpListener.ErrorCode == ERROR_OPERATION_ABORTED &&
                                                                cancellationToken.IsCancellationRequested)
