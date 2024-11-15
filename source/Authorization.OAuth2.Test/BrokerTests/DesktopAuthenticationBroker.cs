@@ -44,7 +44,7 @@ internal class DesktopAuthenticationBrokerTests
     [TestCase("https://request", null, "callbackUri")]
     public void AuthenticateAsync_NullParam_Exception(Uri? requestUri, Uri? callbackUri, string paramName)
     {
-        DesktopAuthenticationBroker broker = new DesktopAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
+        DesktopAuthenticationBroker broker = new(new Mock<IWebBrowserLauncher>().Object);
 
         ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await broker.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
 
@@ -55,10 +55,10 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void AuthenticateAsync_NonLaunched_Exception()
     {
-        Mock<IWebBrowserLauncher> mockLauncher = new Mock<IWebBrowserLauncher>();
+        Mock<IWebBrowserLauncher> mockLauncher = new();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(false));
 
-        DesktopAuthenticationBroker broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        DesktopAuthenticationBroker broker = new(mockLauncher.Object);
         Uri callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         InvalidOperationException? exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), callback).ConfigureAwait(false));
@@ -69,11 +69,11 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void AuthenticateAsync_CancellationToken_Exception()
     {
-        using CancellationTokenSource cts = new CancellationTokenSource();
-        Mock<IWebBrowserLauncher> mockLauncher = new Mock<IWebBrowserLauncher>();
+        using CancellationTokenSource cts = new();
+        Mock<IWebBrowserLauncher> mockLauncher = new();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        DesktopAuthenticationBroker broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        DesktopAuthenticationBroker broker = new(mockLauncher.Object);
         Uri callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.Cancel();
@@ -87,11 +87,11 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void AuthenticateAsync_CancellationTokenDelay_Exception()
     {
-        using CancellationTokenSource cts = new CancellationTokenSource();
-        Mock<IWebBrowserLauncher> mockLauncher = new Mock<IWebBrowserLauncher>();
+        using CancellationTokenSource cts = new();
+        Mock<IWebBrowserLauncher> mockLauncher = new();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        DesktopAuthenticationBroker broker = new DesktopAuthenticationBroker(mockLauncher.Object);
+        DesktopAuthenticationBroker broker = new(mockLauncher.Object);
         Uri callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.CancelAfter(500);

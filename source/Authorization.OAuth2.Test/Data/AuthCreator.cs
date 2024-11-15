@@ -72,7 +72,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         internal static AuthConfiguration CreateGoogleConfig()
         {
-            Uri host = new Uri("https://google");
+            Uri host = new("https://google");
 
             return new GoogleConfiguration(
                 new Uri(host, "auth-uri"),
@@ -90,7 +90,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         internal static AuthConfiguration CreateMicrosoftConfig()
         {
-            Uri host = new Uri("https://microsoft");
+            Uri host = new("https://microsoft");
 
             return new MicrosoftConfiguration(
                 new Uri(host, "auth-uri"),
@@ -107,7 +107,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         internal static AuthConfiguration CreateOutlookConfig()
         {
-            Uri host = new Uri("https://outlook");
+            Uri host = new("https://outlook");
 
             return new OutlookConfiguration(
                 new Uri(host, "auth-uri"),

@@ -35,14 +35,14 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://outlook")]
     public async Task CreateSuccess_TokenRequest_OK(Uri uri)
     {
-        using HttpRequestMessage request = new HttpRequestMessage
+        using HttpRequestMessage request = new()
         {
             RequestUri = new Uri(uri, "token-uri"),
             Method = HttpMethod.Get,
         };
 
         Moq.Mock<HttpMessageHandler> creator = HttpMessageHandlerCreator.CreateSuccess();
-        using HttpClient httpClient = new HttpClient(creator.Object);
+        using HttpClient httpClient = new(creator.Object);
         using HttpResponseMessage responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
 
         Assert.That(responseMessage, Is.Not.Null);
@@ -63,14 +63,14 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://outlook")]
     public async Task CreateSuccess_RefreshRequest_OK(Uri uri)
     {
-        using HttpRequestMessage request = new HttpRequestMessage
+        using HttpRequestMessage request = new()
         {
             RequestUri = new Uri(uri, "refresh-uri"),
             Method = HttpMethod.Get,
         };
 
         Moq.Mock<HttpMessageHandler> creator = HttpMessageHandlerCreator.CreateSuccess();
-        using HttpClient httpClient = new HttpClient(creator.Object);
+        using HttpClient httpClient = new(creator.Object);
         using HttpResponseMessage responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
 
         Assert.That(responseMessage, Is.Not.Null);
@@ -87,14 +87,14 @@ internal class HttpMessageHandlerCreatorTests
     [Test]
     public async Task CreateSuccess_SendRequest_Fail()
     {
-        using HttpRequestMessage request = new HttpRequestMessage
+        using HttpRequestMessage request = new()
         {
             RequestUri = new Uri("http://any/any"),
             Method = HttpMethod.Get,
         };
 
         Moq.Mock<HttpMessageHandler> creator = HttpMessageHandlerCreator.CreateSuccess();
-        using HttpClient httpClient = new HttpClient(creator.Object);
+        using HttpClient httpClient = new(creator.Object);
         using HttpResponseMessage responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
 
         Assert.That(responseMessage, Is.Not.Null);
@@ -110,14 +110,14 @@ internal class HttpMessageHandlerCreatorTests
     [Test]
     public async Task CreateInvalidResponse_SendRequest_BadRequest()
     {
-        using HttpRequestMessage request = new HttpRequestMessage
+        using HttpRequestMessage request = new()
         {
             RequestUri = new Uri("http://any-uri"),
             Method = HttpMethod.Get,
         };
 
         Moq.Mock<HttpMessageHandler> creator = HttpMessageHandlerCreator.CreateInvalidResponse();
-        using HttpClient httpClient = new HttpClient(creator.Object);
+        using HttpClient httpClient = new(creator.Object);
         using HttpResponseMessage responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
 
         Assert.That(responseMessage, Is.Not.Null);
@@ -134,14 +134,14 @@ internal class HttpMessageHandlerCreatorTests
     [Test]
     public async Task CreateEmptyResponse_SendRequest_EmptyContent()
     {
-        using HttpRequestMessage request = new HttpRequestMessage
+        using HttpRequestMessage request = new()
         {
             RequestUri = new Uri("http://any-uri"),
             Method = HttpMethod.Get,
         };
 
         Moq.Mock<HttpMessageHandler> creator = HttpMessageHandlerCreator.CreateEmptyResponse();
-        using HttpClient httpClient = new HttpClient(creator.Object);
+        using HttpClient httpClient = new(creator.Object);
         using HttpResponseMessage responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
 
         Assert.That(responseMessage, Is.Not.Null);
@@ -157,14 +157,14 @@ internal class HttpMessageHandlerCreatorTests
     [Test]
     public async Task CreateHttpError_SendRequest_BadRequestEmptyContent()
     {
-        using HttpRequestMessage request = new HttpRequestMessage
+        using HttpRequestMessage request = new()
         {
             RequestUri = new Uri("http://any-uri"),
             Method = HttpMethod.Get,
         };
 
         Moq.Mock<HttpMessageHandler> creator = HttpMessageHandlerCreator.CreateHttpError();
-        using HttpClient httpClient = new HttpClient(creator.Object);
+        using HttpClient httpClient = new(creator.Object);
         using HttpResponseMessage responseMessage = await httpClient.SendAsync(request).ConfigureAwait(false);
 
         Assert.That(responseMessage, Is.Not.Null);

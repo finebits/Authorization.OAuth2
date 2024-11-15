@@ -43,8 +43,8 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_NullParam_Exception()
     {
-        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        Mock<HttpClient> mockHttpClient = new();
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, mockHttpClient.Object, mockAuthBroker.Object, config);
 
@@ -58,8 +58,8 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_CorrectRequest_Success()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
         Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
@@ -79,9 +79,9 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_CancellationToken_Exception()
     {
-        using CancellationTokenSource cts = new CancellationTokenSource();
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        using CancellationTokenSource cts = new();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
         Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
@@ -97,9 +97,9 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_RequestCancellationToken_Exception()
     {
-        using CancellationTokenSource cts = new CancellationTokenSource();
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateCancellationToken(cts).Object);
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        using CancellationTokenSource cts = new();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateCancellationToken(cts).Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
         Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
@@ -114,8 +114,8 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_HttpInvalidResponse_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateInvalidResponse().Object);
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateInvalidResponse().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
         Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
@@ -142,8 +142,8 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_HttpBadRequest_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateHttpError().Object);
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateHttpError().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
         Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
@@ -162,8 +162,8 @@ internal class AuthClientLoadAvatarTests
     [Test]
     public void LoadAvatarAsync_HttpEmptyContent_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
-        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
         Types.Token token = Test.Data.AuthCreator.CreateFakeToken();

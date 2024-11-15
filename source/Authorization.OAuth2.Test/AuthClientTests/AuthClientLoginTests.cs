@@ -40,7 +40,7 @@ internal class AuthClientLoginTests
     [Test]
     public async Task LoginAsync_CorrectRequest_Success()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -65,7 +65,7 @@ internal class AuthClientLoginTests
     [Test]
     public async Task LoginAsync_UserName_Success()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -85,7 +85,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_EmptyName_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -99,7 +99,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_NullName_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -113,8 +113,8 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_CancellationToken_Exception()
     {
-        using CancellationTokenSource cts = new CancellationTokenSource();
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using CancellationTokenSource cts = new();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -128,8 +128,8 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_RequestCancellationToken_Exception()
     {
-        using CancellationTokenSource cts = new CancellationTokenSource();
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateCancellationToken(cts).Object);
+        using CancellationTokenSource cts = new();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateCancellationToken(cts).Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -141,7 +141,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_CancelAuthentication_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateCanceledBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -153,7 +153,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_AuthenticationError_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateInvalidDataBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -174,7 +174,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_AuthenticationEmpty_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateEmptyDataBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -188,7 +188,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_AuthenticationWrongProperty_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateWrongDataBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -202,7 +202,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_AuthenticationMissingProperty_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateMissingDataBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -216,7 +216,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_AuthenticationInnerException_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateThrowExceptionBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -230,7 +230,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_HttpInvalidResponse_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateInvalidResponse().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateInvalidResponse().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -252,7 +252,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_HttpBadRequest_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateHttpError().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateHttpError().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
@@ -268,7 +268,7 @@ internal class AuthClientLoginTests
     [Test]
     public void LoginAsync_HttpEmptyContent_Exception()
     {
-        using HttpClient httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
         Moq.Mock<Abstractions.IAuthenticationBroker> mockAuthBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
