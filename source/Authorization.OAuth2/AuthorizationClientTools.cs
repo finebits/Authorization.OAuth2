@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            var client = new NetworkClient(HttpClient);
+            NetworkClient client = new NetworkClient(HttpClient);
             return client.SendRequestAsync<TContent>(endpoint, method, payload, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
@@ -60,7 +60,7 @@ namespace Finebits.Authorization.OAuth2
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            var client = new NetworkClient(HttpClient);
+            NetworkClient client = new NetworkClient(HttpClient);
             return client.SendEmptyRequestAsync<TContent>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
@@ -71,7 +71,7 @@ namespace Finebits.Authorization.OAuth2
             HeaderCollection headers,
             CancellationToken cancellationToken)
         {
-            var client = new NetworkClient(HttpClient);
+            NetworkClient client = new NetworkClient(HttpClient);
             return client.DownloadFileAsync<TError>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
         }
 
@@ -79,10 +79,10 @@ namespace Finebits.Authorization.OAuth2
         {
             const string method = "S256";
 
-            var verifier = Tools.Cryptography.GenerateRandomString(64);
+            string verifier = Tools.Cryptography.GenerateRandomString(64);
 
-            var buffer = Encoding.UTF8.GetBytes(verifier);
-            var hash = Tools.Cryptography.GetHashSha256(buffer);
+            byte[] buffer = Encoding.UTF8.GetBytes(verifier);
+            byte[] hash = Tools.Cryptography.GetHashSha256(buffer);
             string challenge = Tools.Cryptography.ConvertToBase64UrlEncode(hash, true);
 
             return (method, verifier, challenge);
@@ -102,7 +102,7 @@ namespace Finebits.Authorization.OAuth2
 
         protected static string GetPropertyValue(NameValueCollection nameValueCollection, string propertyName)
         {
-            var properties = nameValueCollection ?? throw new AuthorizationPropertiesException();
+            NameValueCollection properties = nameValueCollection ?? throw new AuthorizationPropertiesException();
             return properties[propertyName] ?? throw new AuthorizationPropertiesException(null, propertyName);
         }
 
@@ -113,8 +113,8 @@ namespace Finebits.Authorization.OAuth2
                 return headers;
             }
 
-            var result = new HeaderCollection(headers ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
-            var authorizationHeader = new HeaderCollection(new[]
+            HeaderCollection result = new HeaderCollection(headers ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
+            HeaderCollection authorizationHeader = new HeaderCollection(new[]
             {
                 ("Authorization", new System.Net.Http.Headers.AuthenticationHeaderValue(token.TokenType, token.AccessToken).ToString())
             });

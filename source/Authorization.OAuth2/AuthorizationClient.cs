@@ -79,16 +79,16 @@ namespace Finebits.Authorization.OAuth2
         public virtual async Task<AuthorizationToken> StartLoginAsync(string userId, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var properties = await PrepareAsync(userId, cancellationToken).ConfigureAwait(false);
+            object properties = await PrepareAsync(userId, cancellationToken).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var requestUri = await GetAuthenticationEndpointAsync(userId, properties, cancellationToken).ConfigureAwait(false);
+            Uri requestUri = await GetAuthenticationEndpointAsync(userId, properties, cancellationToken).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var callbackUri = await GetCallbackUriAsync(properties, cancellationToken).ConfigureAwait(false);
+            Uri callbackUri = await GetCallbackUriAsync(properties, cancellationToken).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await AuthenticateAsync(requestUri, callbackUri, cancellationToken).ConfigureAwait(false);
+            AuthenticationResult result = await AuthenticateAsync(requestUri, callbackUri, cancellationToken).ConfigureAwait(false);
 
             ThrowIfAuthenticationUnsuccessful(result);
 
@@ -98,8 +98,8 @@ namespace Finebits.Authorization.OAuth2
 
         protected virtual Task<object> PrepareAsync(string userId, CancellationToken cancellationToken)
         {
-            var state = GenerateState();
-            var (method, verifier, challenge) = GenerateCodeChallengeSHA256();
+            string state = GenerateState();
+            (string method, string verifier, string challenge) = GenerateCodeChallengeSHA256();
 
             return Task.FromResult<object>(new AuthProperties()
             {
@@ -117,7 +117,7 @@ namespace Finebits.Authorization.OAuth2
 
         protected virtual async Task<AuthorizationToken> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
-            var response = await SendRequestAsync<TokenContent>(
+            TokenContent response = await SendRequestAsync<TokenContent>(
                 endpoint: Config.TokenUri,
                 method: HttpMethod.Post,
                 token: null,
@@ -141,9 +141,9 @@ namespace Finebits.Authorization.OAuth2
                 throw new AuthorizationEmptyResponseException("The result of the authentication operation is empty.", new ArgumentNullException(nameof(result)));
             }
 
-            var properties = result.Properties;
+            NameValueCollection properties = result.Properties;
 
-            var error = properties?.Get("error");
+            string error = properties?.Get("error");
             if (!string.IsNullOrEmpty(error))
             {
                 throw new AuthorizationBrokerResultException(
@@ -169,7 +169,7 @@ namespace Finebits.Authorization.OAuth2
                     throw new AuthorizationPropertiesException("A property has an unexpected value.", AuthStatePropertyName);
                 }
 
-                var code = GetAuthCode(result);
+                string code = GetAuthCode(result);
 
                 return new TokenPayload()
                 {

@@ -54,7 +54,7 @@ namespace Finebits.Authorization.OAuth2
 
             public NameValueCollection GetCollection()
             {
-                var result = new NameValueCollection
+                NameValueCollection result = new NameValueCollection
                 {
                     {"grant_type", GrantType},
                     {"code", Code},

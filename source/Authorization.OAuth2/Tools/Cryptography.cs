@@ -34,7 +34,7 @@ namespace Finebits.Authorization.OAuth2.Tools
         public static byte[] GetRandomValues(uint length)
         {
             byte[] buffer = new byte[length];
-            using (var crypto = new RNGCryptoServiceProvider())
+            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
             {
                 crypto.GetBytes(buffer);
             }
@@ -44,7 +44,7 @@ namespace Finebits.Authorization.OAuth2.Tools
 
         public static string ConvertToBase64UrlEncode(byte[] buffer, bool noPadding)
         {
-            var base64 = Convert.ToBase64String(buffer);
+            string base64 = Convert.ToBase64String(buffer);
 
             // Converts base64 to base64url.
             base64 = base64.Replace("+", "-");
@@ -61,7 +61,7 @@ namespace Finebits.Authorization.OAuth2.Tools
 
         public static string GenerateRandomString(uint length)
         {
-            var data = GetRandomValues(length);
+            byte[] data = GetRandomValues(length);
             return ConvertToBase64UrlEncode(data, true);
         }
     }

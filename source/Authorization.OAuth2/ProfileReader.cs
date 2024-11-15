@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var response = await _client.SendEmptyRequestAsync<TContent>(
+                TContent response = await _client.SendEmptyRequestAsync<TContent>(
                     endpoint: _client.Config.UserProfileUri,
                     method: HttpMethod.Get,
                     token: token,

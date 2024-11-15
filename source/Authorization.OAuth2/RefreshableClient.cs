@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var response = await _client.SendRequestAsync<TokenContent>(
+                TokenContent response = await _client.SendRequestAsync<TokenContent>(
                     endpoint: _client.Config.RefreshUri,
                     method: HttpMethod.Post,
                     token: token,
@@ -92,7 +92,7 @@ namespace Finebits.Authorization.OAuth2
 
             public NameValueCollection GetCollection()
             {
-                var result = new NameValueCollection
+                NameValueCollection result = new NameValueCollection
                 {
                     {"grant_type", GrantType},
                     {"client_id", ClientId},
