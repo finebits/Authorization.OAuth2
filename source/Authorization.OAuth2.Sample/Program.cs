@@ -29,8 +29,8 @@ partial class Program
     {
         try
         {
-            using HttpClient httpClient = new HttpClient();
-            WebBrowserLauncher launcher = new WebBrowserLauncher();
+            using HttpClient httpClient = new();
+            WebBrowserLauncher launcher = new();
             Uri redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
 
             Console.WriteLine("Welcome to OAuth2.Sample.");
@@ -56,7 +56,7 @@ partial class Program
                 _ => GetGoogleAuthClient(httpClient, launcher, redirectURI),
             };
 
-            using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            using CancellationTokenSource cts = new(TimeSpan.FromMinutes(5));
 
             AuthorizationToken token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             Console.WriteLine();
@@ -192,7 +192,7 @@ partial class Program
             try
             {
                 using Stream avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
-                using FileStream fileAvatar = new FileStream(name, FileMode.OpenOrCreate, FileAccess.Write);
+                using FileStream fileAvatar = new(name, FileMode.OpenOrCreate, FileAccess.Write);
 
                 fileAvatar.SetLength(0);
                 await avatar.CopyToAsync(fileAvatar).ConfigureAwait(false);

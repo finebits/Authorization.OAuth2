@@ -31,7 +31,7 @@ partial class Program
     {
         // Create <client_id> and <client_secret>: https://console.developers.google.com/apis/credentials
         // You can add additional scopes if necessary.
-        GoogleConfiguration config = new GoogleConfiguration
+        GoogleConfiguration config = new()
         {
             ClientId = "<client_id>",
             ClientSecret = "<client_secret>",
@@ -50,7 +50,7 @@ partial class Program
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
         // You can add additional scopes if necessary.
-        MicrosoftConfiguration config = new MicrosoftConfiguration
+        MicrosoftConfiguration config = new()
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
@@ -68,7 +68,7 @@ partial class Program
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
         // You can add additional scopes if necessary.
-        OutlookConfiguration config = new OutlookConfiguration
+        OutlookConfiguration config = new()
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
