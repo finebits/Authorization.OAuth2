@@ -86,8 +86,8 @@ namespace Finebits.Authorization.OAuth2
 
             public string GrantType
             {
-                get { return _grantType ?? RefreshTokenType; }
-                set { _grantType = value; }
+                get => _grantType ?? RefreshTokenType;
+                set => _grantType = value;
             }
 
             public NameValueCollection GetCollection()
