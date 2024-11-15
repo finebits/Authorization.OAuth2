@@ -214,18 +214,18 @@ partial class Program
         switch (exception)
         {
             case AuthorizationBrokerResultException brokerException:
-                {
-                    WriteColorLine($"""
+            {
+                WriteColorLine($"""
 
                         AuthorizationInvalidBrokerResultException:
                         Error: {brokerException.Error}
                         ErrorDescription: {brokerException.ErrorDescription}
                         """, color);
-                }
                 break;
+            }
             case AuthorizationInvalidResponseException responseException when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse):
-                {
-                    WriteColorLine($"""
+            {
+                WriteColorLine($"""
 
                         AuthorizationInvalidResponseException(IMicrosoftInvalidResponse):
                         Error: {microsoftResponse.ErrorReason}
@@ -239,11 +239,11 @@ partial class Program
                         Message: {responseException.Message}
                         InnerException.Message: {responseException.InnerException?.Message}
                         """, color);
-                }
                 break;
+            }
             case AuthorizationInvalidResponseException responseException when (responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse):
-                {
-                    WriteColorLine($"""
+            {
+                WriteColorLine($"""
 
                         AuthorizationInvalidResponseException(IOutlookInvalidResponse):
                         Error: {outlookResponse.ErrorReason}
@@ -257,11 +257,11 @@ partial class Program
                         Message: {responseException.Message}
                         InnerException.Message: {responseException.InnerException?.Message}
                         """, color);
-                }
                 break;
+            }
             case (AuthorizationInvalidResponseException responseException):
-                {
-                    WriteColorLine($"""
+            {
+                WriteColorLine($"""
 
                         AuthorizationInvalidResponseException:
                         Error: {responseException.ErrorReason}
@@ -270,27 +270,27 @@ partial class Program
                         Message: {responseException.Message}
                         InnerException.Message: {responseException.InnerException?.Message}
                         """, color);
-                }
                 break;
+            }
             case (AuthorizationException authException) when (authException.InnerException is not null):
-                {
-                    WriteColorLine($"""
+            {
+                WriteColorLine($"""
 
-                        AuthorizationException:
-                        Message: {authException.Message}
-                        InnerException.Message: {authException.InnerException.Message}
-                        """, color);
-                }
+                            AuthorizationException:
+                            Message: {authException.Message}
+                            InnerException.Message: {authException.InnerException.Message}
+                            """, color);
                 break;
+            }
             case (Exception ex):
-                {
-                    WriteColorLine($"""
+            {
+                WriteColorLine($"""
 
                         Exception:
                         Message: {ex.Message}
                         """, color);
-                }
                 break;
+            }
         }
     }
 
