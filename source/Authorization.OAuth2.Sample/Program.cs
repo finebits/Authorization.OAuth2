@@ -282,12 +282,12 @@ internal partial class Program
                             """, color);
                 break;
             }
-            case Exception ex:
+            default:
             {
                 WriteColorLine($"""
 
                         Exception:
-                        Message: {ex.Message}
+                        Message: {exception?.Message}
                         """, color);
                 break;
             }

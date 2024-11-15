@@ -63,9 +63,11 @@ namespace Finebits.Authorization.OAuth2.Microsoft
                     return "consent";
                 case MicrosoftAuthPrompt.SelectAccount:
                     return "select_account";
+                case MicrosoftAuthPrompt.None:
+                    return "none";
+                default:
+                    return "none";
             }
-
-            return "none";
         }
 
         private static Uri GetAuthorizationUri(string tenant)
