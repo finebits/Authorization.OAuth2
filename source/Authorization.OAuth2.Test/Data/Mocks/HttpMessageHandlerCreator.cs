@@ -296,7 +296,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
-                                               && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri"))),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
