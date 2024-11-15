@@ -31,7 +31,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
         Outlook
     }
 
-    internal class AuthCreator
+    internal static class AuthCreator
     {
         internal static IAuthorizationClient CreateAuthClient(AuthClientType type, HttpClient? httpClient, IAuthenticationBroker? broker, AuthConfiguration? config)
         {

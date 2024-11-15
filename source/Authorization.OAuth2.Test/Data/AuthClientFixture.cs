@@ -20,7 +20,7 @@ using System.Collections;
 
 namespace Finebits.Authorization.OAuth2.Test.Data
 {
-    internal class AuthClientDataFixture
+    internal static class AuthClientDataFixture
     {
         public static IEnumerable AuthClientFixtureData => CreateTestFixtureDataCollection(AuthClientCollection);
         public static IEnumerable RefreshableFixtureData => CreateTestFixtureDataCollection(RefreshableCollection);

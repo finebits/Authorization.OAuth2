@@ -26,7 +26,7 @@ using Moq;
 
 namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 {
-    internal class AuthenticationBrokerCreator
+    internal static class AuthenticationBrokerCreator
     {
         internal static Mock<IAuthenticationBroker> CreateSuccessBroker()
         {
