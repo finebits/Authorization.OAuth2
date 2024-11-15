@@ -40,10 +40,8 @@ internal class WebBrowserLauncherTests
     [TestCase("file://any")]
     [TestCase("custom://any")]
     [TestCase("custom:\\any")]
-    public async Task LaunchAsync_UnsupportedUri_Fail(string uriString)
+    public async Task LaunchAsync_UnsupportedUri_Fail(Uri uri)
     {
-        Uri uri = new Uri(uriString);
-
         WebBrowserLauncher webBrowserLauncher = new WebBrowserLauncher();
 
         bool result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);

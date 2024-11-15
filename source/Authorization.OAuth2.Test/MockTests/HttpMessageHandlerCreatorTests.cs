@@ -33,11 +33,11 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://google")]
     [TestCase("http://microsoft")]
     [TestCase("http://outlook")]
-    public async Task CreateSuccess_TokenRequest_OK(string uri)
+    public async Task CreateSuccess_TokenRequest_OK(Uri uri)
     {
         using HttpRequestMessage request = new HttpRequestMessage
         {
-            RequestUri = new Uri(new Uri(uri), "token-uri"),
+            RequestUri = new Uri(uri, "token-uri"),
             Method = HttpMethod.Get,
         };
 
@@ -61,11 +61,11 @@ internal class HttpMessageHandlerCreatorTests
     [TestCase("http://google")]
     [TestCase("http://microsoft")]
     [TestCase("http://outlook")]
-    public async Task CreateSuccess_RefreshRequest_OK(string uri)
+    public async Task CreateSuccess_RefreshRequest_OK(Uri uri)
     {
         using HttpRequestMessage request = new HttpRequestMessage
         {
-            RequestUri = new Uri(new Uri(uri), "refresh-uri"),
+            RequestUri = new Uri(uri, "refresh-uri"),
             Method = HttpMethod.Get,
         };
 
