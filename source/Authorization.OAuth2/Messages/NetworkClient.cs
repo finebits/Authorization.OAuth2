@@ -61,6 +61,7 @@ namespace Finebits.Authorization.OAuth2.Messages
                     {
                         content = message.Response.Content;
                     }
+
                     throw new AuthorizationInvalidResponseException(content, ex);
                 }
 
@@ -93,6 +94,7 @@ namespace Finebits.Authorization.OAuth2.Messages
                     {
                         content = message.Response.Content;
                     }
+
                     throw new AuthorizationInvalidResponseException(content, ex);
                 }
 
