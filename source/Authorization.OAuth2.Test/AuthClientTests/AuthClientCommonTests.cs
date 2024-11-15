@@ -127,7 +127,6 @@ internal class AuthClientCommonTests
         Assert.That(client is IRevocable, Is.False);
     }
 
-
     [Test]
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.ProfileReaderCaseData))]
     public void ConvertIProfileReader_ProfileReaderClient_Success(Test.Data.AuthClientType clientType)

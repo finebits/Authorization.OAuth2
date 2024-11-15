@@ -337,7 +337,6 @@ internal class TypeTests
         });
     }
 
-
     [Test]
     [TestCase(null, null, null, null, "accessToken")]
     [TestCase(null, RefreshToken, null, null, "accessToken")]
