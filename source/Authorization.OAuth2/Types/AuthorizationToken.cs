@@ -35,7 +35,7 @@ namespace Finebits.Authorization.OAuth2.Types
         public AuthorizationToken(AuthorizationToken other)
             : base(other)
         {
-            if (other == null)
+            if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
