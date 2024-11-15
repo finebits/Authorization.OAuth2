@@ -43,30 +43,28 @@ namespace Finebits.Authorization.OAuth2.Messages
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            using (NetworkMessage<TContent> message = new(endpoint, method, payload, headers))
+            using NetworkMessage<TContent> message = new(endpoint, method, payload, headers);
+            try
             {
-                try
-                {
-                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    IInvalidResponse content = null;
-
-                    if (message.Response != null)
-                    {
-                        content = message.Response.Content;
-                    }
-
-                    throw new AuthorizationInvalidResponseException(content, ex);
-                }
-
-                return GetContent(message.Response);
+                await SendAsync(message, cancellationToken).ConfigureAwait(false);
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                IInvalidResponse content = null;
+
+                if (message.Response != null)
+                {
+                    content = message.Response.Content;
+                }
+
+                throw new AuthorizationInvalidResponseException(content, ex);
+            }
+
+            return GetContent(message.Response);
         }
 
         internal async Task<TContent> SendEmptyRequestAsync<TContent>(
@@ -76,30 +74,28 @@ namespace Finebits.Authorization.OAuth2.Messages
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            using (EmptyNetworkMessage<TContent> message = new(endpoint, method, headers))
+            using EmptyNetworkMessage<TContent> message = new(endpoint, method, headers);
+            try
             {
-                try
-                {
-                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    IInvalidResponse content = null;
-
-                    if (message.Response != null)
-                    {
-                        content = message.Response.Content;
-                    }
-
-                    throw new AuthorizationInvalidResponseException(content, ex);
-                }
-
-                return GetContent(message.Response);
+                await SendAsync(message, cancellationToken).ConfigureAwait(false);
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                IInvalidResponse content = null;
+
+                if (message.Response != null)
+                {
+                    content = message.Response.Content;
+                }
+
+                throw new AuthorizationInvalidResponseException(content, ex);
+            }
+
+            return GetContent(message.Response);
         }
 
         internal async Task<Stream> DownloadFileAsync<TError>(
@@ -108,39 +104,37 @@ namespace Finebits.Authorization.OAuth2.Messages
             HeaderCollection headers,
             CancellationToken cancellationToken)
         {
-            using (StreamNetworkMessage<TError> message = new(endpoint, method, headers))
+            using StreamNetworkMessage<TError> message = new(endpoint, method, headers);
+            try
             {
-                try
-                {
-                    await SendAsync(message, cancellationToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    IInvalidResponse content = null;
-
-                    if (message.Response.PickedResponse is StreamNetworkMessage<TError>.ErrorResponse error &&
-                        error.Content is IInvalidResponse invalidResponse)
-                    {
-                        content = invalidResponse;
-                    }
-
-                    throw new AuthorizationInvalidResponseException(content, ex);
-                }
-
-                if (message.Response.PickedResponse is StreamResponse streamResponse && streamResponse.Stream?.Length > 0)
-                {
-                    MemoryStream result = new();
-                    streamResponse.Stream?.CopyTo(result);
-                    result.Position = 0;
-                    return result;
-                }
-
-                throw new AuthorizationDownloadFileException();
+                await SendAsync(message, cancellationToken).ConfigureAwait(false);
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                IInvalidResponse content = null;
+
+                if (message.Response.PickedResponse is StreamNetworkMessage<TError>.ErrorResponse error &&
+                    error.Content is IInvalidResponse invalidResponse)
+                {
+                    content = invalidResponse;
+                }
+
+                throw new AuthorizationInvalidResponseException(content, ex);
+            }
+
+            if (message.Response.PickedResponse is StreamResponse streamResponse && streamResponse.Stream?.Length > 0)
+            {
+                MemoryStream result = new();
+                streamResponse.Stream?.CopyTo(result);
+                result.Position = 0;
+                return result;
+            }
+
+            throw new AuthorizationDownloadFileException();
         }
 
         private static T GetContent<T>(Network.RestClient.JsonResponse<T> response)
