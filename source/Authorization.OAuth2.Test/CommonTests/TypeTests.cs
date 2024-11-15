@@ -42,15 +42,15 @@ internal class TypeTests
     [Test]
     public void AuthenticationResult_Constructor_CorrectParam_Success()
     {
-        const string key1 = nameof(key1);
-        const string key2 = nameof(key2);
-        const string value1 = nameof(key1);
-        const string value2 = nameof(key2);
+        const string Key1 = nameof(Key1);
+        const string Key2 = nameof(Key2);
+        const string Value1 = nameof(Key1);
+        const string Value2 = nameof(Key2);
 
         NameValueCollection properties = new()
         {
-            { key1, value1 },
-            { key2, value2 },
+            { Key1, Value1 },
+            { Key2, Value2 },
         };
 
         AuthenticationResult? authResult = null;
@@ -60,8 +60,8 @@ internal class TypeTests
         Assert.That(authResult, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(authResult.Properties[key1], Is.EqualTo(value1));
-            Assert.That(authResult.Properties[key2], Is.EqualTo(value2));
+            Assert.That(authResult.Properties[Key1], Is.EqualTo(Value1));
+            Assert.That(authResult.Properties[Key2], Is.EqualTo(Value2));
         });
     }
 
