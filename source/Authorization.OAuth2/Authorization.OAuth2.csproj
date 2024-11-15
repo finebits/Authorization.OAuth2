@@ -6,6 +6,7 @@
     <AssemblyName>Finebits.Authorization.OAuth2</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
     <PackageId>Finebits.Authorization.OAuth2</PackageId>
     <Title>Finebits.Authorization.OAuth2</Title>

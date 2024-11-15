@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,6 +6,7 @@
     <AssemblyName>Finebits.Authorization.OAuth2.Outlook</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
     <PackageId>Finebits.Authorization.OAuth2.Outlook</PackageId>
     <Title>Finebits.Authorization.OAuth2.Outlook</Title>
