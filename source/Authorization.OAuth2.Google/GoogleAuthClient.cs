@@ -144,7 +144,7 @@ namespace Finebits.Authorization.OAuth2.Google
                 throw new AuthorizationDownloadFileException(AuthorizationDownloadFileException.DefaultMessage, ex);
             }
 
-            if (profile is GoogleUserProfile googleProfile && googleProfile.Avatar != null)
+            if (profile is GoogleUserProfile googleProfile && googleProfile.Avatar is not null)
             {
                 return await DownloadFileAsync<EmptyContent>(
                     endpoint: googleProfile.Avatar,

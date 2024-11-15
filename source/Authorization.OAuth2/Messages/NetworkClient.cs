@@ -56,7 +56,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             {
                 IInvalidResponse content = null;
 
-                if (message.Response != null)
+                if (message.Response is not null)
                 {
                     content = message.Response.Content;
                 }
@@ -87,7 +87,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             {
                 IInvalidResponse content = null;
 
-                if (message.Response != null)
+                if (message.Response is not null)
                 {
                     content = message.Response.Content;
                 }
@@ -140,7 +140,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         private static T GetContent<T>(Network.RestClient.JsonResponse<T> response)
             where T : IInvalidResponse
         {
-            if (response is null || (response.Content == null && typeof(T) != typeof(AuthorizationClient.EmptyContent)))
+            if (response is null || (response.Content is null && typeof(T) != typeof(AuthorizationClient.EmptyContent)))
             {
                 throw new AuthorizationEmptyResponseException();
             }

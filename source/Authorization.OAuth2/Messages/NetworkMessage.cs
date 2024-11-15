@@ -53,7 +53,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             HeaderCollection headers = null;
 
-            if (_headers != null)
+            if (_headers is not null)
             {
                 headers = new HeaderCollection
                 (
@@ -102,7 +102,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             HeaderCollection headers = null;
 
-            if (_headers != null)
+            if (_headers is not null)
             {
                 headers = new HeaderCollection
                 (
@@ -152,7 +152,7 @@ namespace Finebits.Authorization.OAuth2.Messages
         {
             HeaderCollection headers = null;
 
-            if (_headers != null)
+            if (_headers is not null)
             {
                 headers = new HeaderCollection
                 (
