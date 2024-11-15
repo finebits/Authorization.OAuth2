@@ -223,7 +223,7 @@ partial class Program
                         """, color);
                 break;
             }
-            case AuthorizationInvalidResponseException responseException when (responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse):
+            case AuthorizationInvalidResponseException responseException when responseException.ResponseDetails is IMicrosoftInvalidResponse microsoftResponse:
             {
                 WriteColorLine($"""
 
@@ -241,7 +241,7 @@ partial class Program
                         """, color);
                 break;
             }
-            case AuthorizationInvalidResponseException responseException when (responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse):
+            case AuthorizationInvalidResponseException responseException when responseException.ResponseDetails is IOutlookInvalidResponse outlookResponse:
             {
                 WriteColorLine($"""
 
@@ -259,7 +259,7 @@ partial class Program
                         """, color);
                 break;
             }
-            case (AuthorizationInvalidResponseException responseException):
+            case AuthorizationInvalidResponseException responseException:
             {
                 WriteColorLine($"""
 
@@ -272,7 +272,7 @@ partial class Program
                         """, color);
                 break;
             }
-            case (AuthorizationException authException) when (authException.InnerException is not null):
+            case AuthorizationException authException when authException.InnerException is not null:
             {
                 WriteColorLine($"""
 
@@ -282,7 +282,7 @@ partial class Program
                             """, color);
                 break;
             }
-            case (Exception ex):
+            case Exception ex:
             {
                 WriteColorLine($"""
 
