@@ -24,7 +24,7 @@ using Finebits.Authorization.OAuth2.Test.Data.Mocks;
 
 namespace Finebits.Authorization.OAuth2.Test.Data
 {
-    enum AuthClientType
+    internal enum AuthClientType
     {
         Google,
         Microsoft,
