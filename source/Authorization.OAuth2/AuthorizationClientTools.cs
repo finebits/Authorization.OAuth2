@@ -93,7 +93,10 @@ namespace Finebits.Authorization.OAuth2
             return Tools.Cryptography.GenerateRandomString(32);
         }
 
-        protected static string GetAuthCode(AuthenticationResult result) => GetPropertyValue(result?.Properties, AuthCodePropertyName);
+        protected static string GetAuthCode(AuthenticationResult result)
+        {
+            return GetPropertyValue(result?.Properties, AuthCodePropertyName);
+        }
 
         protected static bool IsStateCorrect(AuthenticationResult result, string state)
         {
