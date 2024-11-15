@@ -77,7 +77,7 @@ namespace Finebits.Authorization.OAuth2
 
         protected static (string method, string verifier, string challenge) GenerateCodeChallengeSHA256()
         {
-            const string method = "S256";
+            const string Method = "S256";
 
             string verifier = Tools.Cryptography.GenerateRandomString(64);
 
@@ -85,7 +85,7 @@ namespace Finebits.Authorization.OAuth2
             byte[] hash = Tools.Cryptography.GetHashSha256(buffer);
             string challenge = Tools.Cryptography.ConvertToBase64UrlEncode(hash, true);
 
-            return (method, verifier, challenge);
+            return (Method, verifier, challenge);
         }
 
         protected static string GenerateState()
