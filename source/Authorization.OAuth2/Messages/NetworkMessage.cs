@@ -167,19 +167,30 @@ namespace Finebits.Authorization.OAuth2.Messages
             };
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "StreamResponse is disposed by FlexibleResponse")]
         protected override FlexibleResponse CreateResponse()
         {
-            return new FlexibleResponse(
-            [
-                new ErrorResponse()
-                {
-                    Options = new JsonSerializerOptions
-                    {
-                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                    }
-                },
-                new StreamResponse()
-            ]);
+            StreamResponse streamResponse = new();
+
+            try
+            {
+                return new FlexibleResponse(
+                            [
+                                new ErrorResponse()
+                                {
+                                    Options = new JsonSerializerOptions
+                                    {
+                                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                                    }
+                                },
+                                streamResponse
+                            ]);
+            }
+            catch
+            {
+                streamResponse.Dispose();
+                throw;
+            }
         }
     }
 }
