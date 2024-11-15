@@ -117,10 +117,10 @@ namespace Finebits.Authorization.OAuth2
             }
 
             HeaderCollection result = new(headers ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
-            HeaderCollection authorizationHeader = new(new[]
-            {
+            HeaderCollection authorizationHeader = new(
+            [
                 ("Authorization", new System.Net.Http.Headers.AuthenticationHeaderValue(token.TokenType, token.AccessToken).ToString())
-            });
+            ]);
 
             return new HeaderCollection(result.Union(authorizationHeader));
         }

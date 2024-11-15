@@ -169,8 +169,8 @@ namespace Finebits.Authorization.OAuth2.Messages
 
         protected override FlexibleResponse CreateResponse()
         {
-            return new FlexibleResponse(new Response[]
-            {
+            return new FlexibleResponse(
+            [
                 new ErrorResponse()
                 {
                     Options = new JsonSerializerOptions
@@ -179,7 +179,7 @@ namespace Finebits.Authorization.OAuth2.Messages
                     }
                 },
                 new StreamResponse()
-            });
+            ]);
         }
     }
 }
