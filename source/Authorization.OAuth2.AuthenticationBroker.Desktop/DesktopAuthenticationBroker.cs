@@ -74,7 +74,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
                     throw new InvalidOperationException($"The web browser cannot be launched.");
                 }
 
-                using CancellationTokenRegistration ctr = cancellationToken.Register(() => httpListener.Stop());
+                using CancellationTokenRegistration ctr = cancellationToken.Register(httpListener.Stop);
                 HttpListenerContext context = await httpListener.GetContextAsync().ConfigureAwait(false);
 
                 HttpListenerResponse response = context.Response;
