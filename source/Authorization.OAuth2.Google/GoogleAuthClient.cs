@@ -39,18 +39,18 @@ namespace Finebits.Authorization.OAuth2.Google
 
         protected override Task<Uri> GetAuthenticationEndpointAsync(string userId, object properties, CancellationToken cancellationToken)
         {
-            var authorizationEndpoint = Configuration.AuthorizationUri;
-            var clientId = Configuration.ClientId;
-            var redirectUri = Uri.EscapeDataString(Configuration.RedirectUri.ToString());
+            Uri authorizationEndpoint = Configuration.AuthorizationUri;
+            string clientId = Configuration.ClientId;
+            string redirectUri = Uri.EscapeDataString(Configuration.RedirectUri.ToString());
 
-            var endpoint = $"{authorizationEndpoint}?response_type=code&redirect_uri={redirectUri}&client_id={clientId}";
+            string endpoint = $"{authorizationEndpoint}?response_type=code&redirect_uri={redirectUri}&client_id={clientId}";
 
             if (properties is AuthProperties props)
             {
                 endpoint += $"&state={props.State}&code_challenge={props.CodeChallenge}&code_challenge_method={props.CodeChallengeMethod}";
             }
 
-            var scope = Configuration.GetScope();
+            string scope = Configuration.GetScope();
             if (!string.IsNullOrEmpty(scope))
             {
                 scope = Uri.EscapeDataString(scope);
@@ -67,7 +67,7 @@ namespace Finebits.Authorization.OAuth2.Google
 
         protected override async Task<AuthorizationToken> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
-            var response = await SendRequestAsync<GoogleTokenContent>(
+            GoogleTokenContent response = await SendRequestAsync<GoogleTokenContent>(
                 endpoint: Configuration.TokenUri,
                 method: HttpMethod.Post,
                 token: null,
@@ -115,7 +115,7 @@ namespace Finebits.Authorization.OAuth2.Google
                     Id = content.Id,
                     Email = content.Email,
                     DisplayName = content.GivenName,
-                    Avatar = Uri.TryCreate(content.Picture, UriKind.Absolute, out var avatar) ? avatar : null,
+                    Avatar = Uri.TryCreate(content.Picture, UriKind.Absolute, out Uri avatar) ? avatar : null,
                     Name = content.Name,
                     FamilyName = content.FamilyName,
                     IsEmailVerified = content.IsEmailVerified,

@@ -40,7 +40,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
         protected static bool StartProcess(string fileName)
         {
-            using (var process = Process.Start(new ProcessStartInfo(fileName) { UseShellExecute = true }))
+            using (Process process = Process.Start(new ProcessStartInfo(fileName) { UseShellExecute = true }))
             {
                 return process != null;
             }

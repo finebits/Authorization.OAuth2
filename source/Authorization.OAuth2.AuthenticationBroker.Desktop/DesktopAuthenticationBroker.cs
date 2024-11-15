@@ -62,7 +62,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var httpListener = new HttpListener())
+            using (HttpListener httpListener = new HttpListener())
             {
                 const int ERROR_OPERATION_ABORTED = 995;
                 try
@@ -75,14 +75,14 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
                         throw new InvalidOperationException($"The web browser cannot be launched.");
                     }
 
-                    using (var ctr = cancellationToken.Register(() => httpListener.Stop()))
+                    using (CancellationTokenRegistration ctr = cancellationToken.Register(() => httpListener.Stop()))
                     {
-                        var context = await httpListener.GetContextAsync().ConfigureAwait(false);
+                        HttpListenerContext context = await httpListener.GetContextAsync().ConfigureAwait(false);
 
-                        var response = context.Response;
-                        var buffer = Encoding.UTF8.GetBytes(ResponseString);
+                        HttpListenerResponse response = context.Response;
+                        byte[] buffer = Encoding.UTF8.GetBytes(ResponseString);
                         response.ContentLength64 = buffer.Length;
-                        using (var responseOutput = response.OutputStream)
+                        using (System.IO.Stream responseOutput = response.OutputStream)
                         {
                             responseOutput.Write(buffer, 0, buffer.Length);
                         }
@@ -109,7 +109,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
         public static int GetRandomUnusedPort()
         {
-            var listener = new TcpListener(IPAddress.Loopback, IPEndPoint.MinPort);
+            TcpListener listener = new TcpListener(IPAddress.Loopback, IPEndPoint.MinPort);
             try
             {
                 listener.Start();

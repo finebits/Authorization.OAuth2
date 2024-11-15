@@ -29,9 +29,9 @@ partial class Program
     {
         try
         {
-            using var httpClient = new HttpClient();
-            var launcher = new WebBrowserLauncher();
-            var redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
+            using HttpClient httpClient = new HttpClient();
+            WebBrowserLauncher launcher = new WebBrowserLauncher();
+            Uri redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
 
             Console.WriteLine("Welcome to OAuth2.Sample.");
 
@@ -49,27 +49,27 @@ partial class Program
                 Select option (default is 1): 
                 """);
 
-            var authClient = Console.ReadLine() switch
+            IAuthorizationClient authClient = Console.ReadLine() switch
             {
                 "2" => GetMicrosoftAuthClient(httpClient, launcher, redirectURI),
                 "3" => GetOutlookAuthClient(httpClient, launcher, redirectURI),
                 _ => GetGoogleAuthClient(httpClient, launcher, redirectURI),
             };
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
 
-            var token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
+            AuthorizationToken token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             Console.WriteLine();
             WriteColorLine("Login operation is completed.", ConsoleColor.Green);
             PrintToken(token, "Login response");
 
             Console.WriteLine();
-            var freshToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
+            AuthorizationToken? freshToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
             PrintToken(token, "Refresh response");
             token.Update(freshToken);
 
             Console.WriteLine();
-            var profile = await ReadProfileAsync(authClient, token).ConfigureAwait(false);
+            IUserProfile? profile = await ReadProfileAsync(authClient, token).ConfigureAwait(false);
             PrintProfile(profile, "User profile");
 
             Console.WriteLine();
@@ -123,7 +123,7 @@ partial class Program
     {
         if (client is IRefreshable refreshClient)
         {
-            var result = await refreshClient.RefreshTokenAsync(token).ConfigureAwait(false);
+            AuthorizationToken result = await refreshClient.RefreshTokenAsync(token).ConfigureAwait(false);
             WriteColorLine("Refresh operation is completed.", ConsoleColor.Green);
             return result;
         }
@@ -191,8 +191,8 @@ partial class Program
         {
             try
             {
-                using var avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
-                using var fileAvatar = new FileStream(name, FileMode.OpenOrCreate, FileAccess.Write);
+                using Stream avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
+                using FileStream fileAvatar = new FileStream(name, FileMode.OpenOrCreate, FileAccess.Write);
 
                 fileAvatar.SetLength(0);
                 await avatar.CopyToAsync(fileAvatar).ConfigureAwait(false);
