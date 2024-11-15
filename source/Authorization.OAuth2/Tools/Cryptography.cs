@@ -34,7 +34,7 @@ namespace Finebits.Authorization.OAuth2.Tools
         public static byte[] GetRandomValues(uint length)
         {
             byte[] buffer = new byte[length];
-            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
+            using (RNGCryptoServiceProvider crypto = new())
             {
                 crypto.GetBytes(buffer);
             }

@@ -43,7 +43,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            using (NetworkMessage<TContent> message = new NetworkMessage<TContent>(endpoint, method, payload, headers))
+            using (NetworkMessage<TContent> message = new(endpoint, method, payload, headers))
             {
                 try
                 {
@@ -76,7 +76,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
-            using (EmptyNetworkMessage<TContent> message = new EmptyNetworkMessage<TContent>(endpoint, method, headers))
+            using (EmptyNetworkMessage<TContent> message = new(endpoint, method, headers))
             {
                 try
                 {
@@ -108,7 +108,7 @@ namespace Finebits.Authorization.OAuth2.Messages
             HeaderCollection headers,
             CancellationToken cancellationToken)
         {
-            using (StreamNetworkMessage<TError> message = new StreamNetworkMessage<TError>(endpoint, method, headers))
+            using (StreamNetworkMessage<TError> message = new(endpoint, method, headers))
             {
                 try
                 {
@@ -133,7 +133,7 @@ namespace Finebits.Authorization.OAuth2.Messages
 
                 if (message.Response.PickedResponse is StreamResponse streamResponse && streamResponse.Stream?.Length > 0)
                 {
-                    MemoryStream result = new MemoryStream();
+                    MemoryStream result = new();
                     streamResponse.Stream?.CopyTo(result);
                     result.Position = 0;
                     return result;

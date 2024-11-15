@@ -62,7 +62,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (HttpListener httpListener = new HttpListener())
+            using (HttpListener httpListener = new())
             {
                 const int ERROR_OPERATION_ABORTED = 995;
                 try
@@ -109,7 +109,7 @@ namespace Finebits.Authorization.OAuth2.AuthenticationBroker
 
         public static int GetRandomUnusedPort()
         {
-            TcpListener listener = new TcpListener(IPAddress.Loopback, IPEndPoint.MinPort);
+            TcpListener listener = new(IPAddress.Loopback, IPEndPoint.MinPort);
             try
             {
                 listener.Start();
