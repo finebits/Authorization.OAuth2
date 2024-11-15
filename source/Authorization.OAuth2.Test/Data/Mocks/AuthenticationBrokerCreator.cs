@@ -57,7 +57,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         internal static Mock<IAuthenticationBroker> CreateEmptyDataBroker()
         {
-            return CreateBroker(() => Task.FromResult(new AuthenticationResult(new())));
+            return CreateBroker(() => Task.FromResult(new AuthenticationResult([])));
         }
 
         internal static Mock<IAuthenticationBroker> CreateMissingDataBroker()
