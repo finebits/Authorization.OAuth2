@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -24,14 +24,14 @@ using Finebits.Authorization.OAuth2.Test.Data.Mocks;
 
 namespace Finebits.Authorization.OAuth2.Test.Data
 {
-    enum AuthClientType
+    internal enum AuthClientType
     {
         Google,
         Microsoft,
         Outlook
     }
 
-    internal class AuthCreator
+    internal static class AuthCreator
     {
         internal static IAuthorizationClient CreateAuthClient(AuthClientType type, HttpClient? httpClient, IAuthenticationBroker? broker, AuthConfiguration? config)
         {
@@ -72,7 +72,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         internal static AuthConfiguration CreateGoogleConfig()
         {
-            var host = new Uri("https://google");
+            Uri host = new("https://google");
 
             return new GoogleConfiguration(
                 new Uri(host, "auth-uri"),
@@ -84,13 +84,13 @@ namespace Finebits.Authorization.OAuth2.Test.Data
                 ClientId = "fake-google-client-id",
                 ClientSecret = "fake-google-client-secret",
                 RedirectUri = new Uri("https://redirect"),
-                ScopeList = new[] { "fake-scope" }
+                ScopeList = ["fake-scope"]
             };
         }
 
         internal static AuthConfiguration CreateMicrosoftConfig()
         {
-            var host = new Uri("https://microsoft");
+            Uri host = new("https://microsoft");
 
             return new MicrosoftConfiguration(
                 new Uri(host, "auth-uri"),
@@ -101,13 +101,13 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 ClientId = "fake-microsoft-client-id",
                 RedirectUri = new Uri("https://redirect"),
-                ScopeList = new[] { "fake-scope" }
+                ScopeList = ["fake-scope"]
             };
         }
 
         internal static AuthConfiguration CreateOutlookConfig()
         {
-            var host = new Uri("https://outlook");
+            Uri host = new("https://outlook");
 
             return new OutlookConfiguration(
                 new Uri(host, "auth-uri"),
@@ -116,7 +116,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 ClientId = "fake-outlook-client-id",
                 RedirectUri = new Uri("https://redirect"),
-                ScopeList = new[] { "fake-scope" }
+                ScopeList = ["fake-scope"]
             };
         }
 

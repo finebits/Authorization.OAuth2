@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -26,7 +26,7 @@ using Moq;
 
 namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 {
-    internal class AuthenticationBrokerCreator
+    internal static class AuthenticationBrokerCreator
     {
         internal static Mock<IAuthenticationBroker> CreateSuccessBroker()
         {
@@ -57,14 +57,14 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         internal static Mock<IAuthenticationBroker> CreateEmptyDataBroker()
         {
-            return CreateBroker(() => Task.FromResult(new AuthenticationResult(new())));
+            return CreateBroker(() => Task.FromResult(new AuthenticationResult([])));
         }
 
         internal static Mock<IAuthenticationBroker> CreateMissingDataBroker()
         {
             static AuthenticationResult GetMissingResult(Uri requestUri)
             {
-                var query = HttpUtility.ParseQueryString(requestUri.Query);
+                NameValueCollection query = HttpUtility.ParseQueryString(requestUri.Query);
 
                 NameValueCollection properties = new()
                 {
@@ -74,9 +74,9 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 return new AuthenticationResult(properties);
             }
 
-            var request = new Uri("https://request");
+            Uri request = new("https://request");
 
-            var mock = new Mock<IAuthenticationBroker>();
+            Mock<IAuthenticationBroker> mock = new();
             mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
                 .Callback<Uri, Uri, CancellationToken>((r, _, _) => request = r)
                 .Returns(() => Task.FromResult(GetMissingResult(request)));
@@ -96,7 +96,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         private static Mock<IAuthenticationBroker> CreateBroker(Func<Task<AuthenticationResult>> valueFunction)
         {
-            var mock = new Mock<IAuthenticationBroker>();
+            Mock<IAuthenticationBroker> mock = new();
             mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
                 .Returns(valueFunction);
 
@@ -107,7 +107,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
         {
             static AuthenticationResult GetSuccessResult(Uri requestUri, string? state)
             {
-                var query = HttpUtility.ParseQueryString(requestUri.Query);
+                NameValueCollection query = HttpUtility.ParseQueryString(requestUri.Query);
 
                 NameValueCollection properties = new()
                 {
@@ -118,9 +118,9 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 return new AuthenticationResult(properties);
             }
 
-            var request = new Uri("https://request");
+            Uri request = new("https://request");
 
-            var mock = new Mock<IAuthenticationBroker>();
+            Mock<IAuthenticationBroker> mock = new();
             mock.Setup(broker => broker.AuthenticateAsync(It.IsAny<Uri>(), It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
                 .Callback<Uri, Uri, CancellationToken>((r, _, _) => request = r)
                 .Returns(() => Task.FromResult(GetSuccessResult(request, state)));

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var response = await _client.SendRequestAsync<TokenContent>(
+                TokenContent response = await _client.SendRequestAsync<TokenContent>(
                     endpoint: _client.Config.RefreshUri,
                     method: HttpMethod.Post,
                     token: token,
@@ -86,13 +86,13 @@ namespace Finebits.Authorization.OAuth2
 
             public string GrantType
             {
-                get { return _grantType ?? RefreshTokenType; }
-                set { _grantType = value; }
+                get => _grantType ?? RefreshTokenType;
+                set => _grantType = value;
             }
 
             public NameValueCollection GetCollection()
             {
-                var result = new NameValueCollection
+                NameValueCollection result = new NameValueCollection
                 {
                     {"grant_type", GrantType},
                     {"client_id", ClientId},

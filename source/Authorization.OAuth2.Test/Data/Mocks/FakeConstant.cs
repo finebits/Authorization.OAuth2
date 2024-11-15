@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -18,13 +18,13 @@
 
 namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 {
-    internal struct FakeConstant
+    internal static class FakeConstant
     {
         public const string Error = "fake-error";
         public const string ErrorDescription = "fake-error-description";
         public const string ErrorSubcode = "fake-error-subcode";
 
-        public struct Token
+        public static class Token
         {
             public const string TokenType = "Bearer";
             public const string AccessToken = "fake-access-token";
@@ -38,13 +38,13 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             public const int ExpiresIn = 3600;
         }
 
-        public struct UserProfile
+        public static class UserProfile
         {
             public const string Id = "fake-id";
             public const string DisplayName = "fake-display-name";
             public const string Email = "fake@email";
 
-            public struct Google
+            public static class Google
             {
                 public const string Name = "fake-name";
                 public const string FamilyName = "fake-family-name";
@@ -53,7 +53,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 public const string Locale = "fake-locale";
             }
 
-            public struct Microsoft
+            public static class Microsoft
             {
                 public const string GivenName = "fake-givenName";
                 public const string Surname = "fake-surname";
@@ -64,7 +64,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 public const string OfficeLocation = "fake-officeLocation";
             }
 
-            public struct Outlook
+            public static class Outlook
             {
                 public const string Alias = "fake-Alias";
                 public const string MailboxGuid = "fake-MailboxGuid";

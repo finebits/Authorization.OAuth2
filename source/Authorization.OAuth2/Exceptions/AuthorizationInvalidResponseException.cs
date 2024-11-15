@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -28,7 +28,7 @@ namespace Finebits.Authorization.OAuth2.Exceptions
         public string ErrorReason { get; private set; }
         public IInvalidResponse ResponseDetails { get; private set; }
 
-        public static readonly string DefaultMessage = "Authorization cannot be done. The service response contains an error.";
+        public const string DefaultMessage = "Authorization cannot be done. The service response contains an error.";
 
         public AuthorizationInvalidResponseException()
         { }

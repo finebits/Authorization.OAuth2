@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -37,18 +37,18 @@ namespace Finebits.Authorization.OAuth2.Microsoft
 
         protected override Task<Uri> GetAuthenticationEndpointAsync(string userId, object properties, CancellationToken cancellationToken)
         {
-            var authorizationEndpoint = Configuration.AuthorizationUri;
-            var clientId = Configuration.ClientId;
-            var redirectUri = Uri.EscapeDataString(Configuration.RedirectUri.ToString());
+            Uri authorizationEndpoint = Configuration.AuthorizationUri;
+            string clientId = Configuration.ClientId;
+            string redirectUri = Uri.EscapeDataString(Configuration.RedirectUri.ToString());
 
-            var endpoint = $"{authorizationEndpoint}?response_type=code&response_mode=query&redirect_uri={redirectUri}&client_id={clientId}";
+            string endpoint = $"{authorizationEndpoint}?response_type=code&response_mode=query&redirect_uri={redirectUri}&client_id={clientId}";
 
             if (properties is AuthProperties props)
             {
                 endpoint += $"&state={props.State}&code_challenge={props.CodeChallenge}&code_challenge_method={props.CodeChallengeMethod}";
             }
 
-            var scope = Configuration.GetScope();
+            string scope = Configuration.GetScope();
             if (!string.IsNullOrEmpty(scope))
             {
                 scope = Uri.EscapeDataString(scope);

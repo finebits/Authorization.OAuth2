@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -29,7 +29,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
     {
         public static Mock<HttpMessageHandler> CreateSuccess()
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new();
 
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -44,7 +44,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null && rm.RequestUri.AbsolutePath.EndsWith("token-uri") == true),
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null && rm.RequestUri.AbsolutePath.EndsWith("token-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -65,7 +65,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("google", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("token-uri") == true),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("token-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -85,7 +85,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null && rm.RequestUri.AbsolutePath.EndsWith("refresh-uri") == true),
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null && rm.RequestUri.AbsolutePath.EndsWith("refresh-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -106,7 +106,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("google", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("refresh-uri") == true),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("refresh-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -124,7 +124,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null && rm.RequestUri.AbsolutePath.EndsWith("revoke-uri") == true),
+                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null && rm.RequestUri.AbsolutePath.EndsWith("revoke-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -137,7 +137,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("google", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -161,7 +161,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("microsoft", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -187,7 +187,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -211,7 +211,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
-                                               && rm.RequestUri.AbsolutePath.EndsWith("avatar-uri") == true),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("avatar-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -224,14 +224,14 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         public static Mock<HttpMessageHandler> CreateCancellationToken(CancellationTokenSource cts)
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new();
 
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
-                .Callback(() => { cts.Cancel(); })
+                .Callback(() => cts?.Cancel())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -251,7 +251,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         public static Mock<HttpMessageHandler> CreateInvalidResponse()
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new();
 
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -274,8 +274,8 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("microsoft", StringComparison.Ordinal)
-                                               && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true ||
-                                                   rm.RequestUri.AbsolutePath.EndsWith("avatar-uri") == true)),
+                                               && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri") ||
+                                                   rm.RequestUri.AbsolutePath.EndsWith("avatar-uri"))),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -296,7 +296,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
-                                               && (rm.RequestUri.AbsolutePath.EndsWith("profile-uri") == true)),
+                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
@@ -325,7 +325,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         private static Mock<HttpMessageHandler> Create(Func<HttpResponseMessage> valueFunction)
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new();
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",

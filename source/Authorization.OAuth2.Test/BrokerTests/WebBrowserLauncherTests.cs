@@ -22,15 +22,16 @@ using Finebits.Authorization.OAuth2.AuthenticationBroker;
 
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 
+[SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit Test Naming Conventions")]
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
 internal class WebBrowserLauncherTests
 {
     [Test]
     public void LaunchAsync_NullUri_Exception()
     {
-        var webBrowserLauncher = new WebBrowserLauncher();
+        WebBrowserLauncher webBrowserLauncher = new();
 
-        var exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await webBrowserLauncher.LaunchAsync(null).ConfigureAwait(false));
+        ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await webBrowserLauncher.LaunchAsync(null).ConfigureAwait(false));
 
         Assert.That(exception.ParamName, Is.EqualTo("uri"));
     }
@@ -39,24 +40,22 @@ internal class WebBrowserLauncherTests
     [TestCase("file://any")]
     [TestCase("custom://any")]
     [TestCase("custom:\\any")]
-    public async Task LaunchAsync_UnsupportedUri_Fail(string uriString)
+    public async Task LaunchAsync_UnsupportedUri_Fail(Uri uri)
     {
-        var uri = new Uri(uriString);
+        WebBrowserLauncher webBrowserLauncher = new();
 
-        var webBrowserLauncher = new WebBrowserLauncher();
-
-        var result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
+        bool result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
         Assert.That(result, Is.False);
     }
 
     [Test]
     public async Task LaunchAsync_RelativeUri_Fail()
     {
-        var uri = new Uri("test/test", UriKind.Relative);
+        Uri uri = new("test/test", UriKind.Relative);
 
-        var webBrowserLauncher = new WebBrowserLauncher();
+        WebBrowserLauncher webBrowserLauncher = new();
 
-        var result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
+        bool result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
         Assert.That(result, Is.False);
     }
 }

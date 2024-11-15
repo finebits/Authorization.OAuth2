@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -25,22 +25,22 @@ using Finebits.Authorization.OAuth2.Outlook;
 
 namespace Finebits.Authorization.OAuth2.Sample;
 
-partial class Program
+internal partial class Program
 {
     private static IAuthorizationClient GetGoogleAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
     {
         // Create <client_id> and <client_secret>: https://console.developers.google.com/apis/credentials
         // You can add additional scopes if necessary.
-        var config = new GoogleConfiguration
+        GoogleConfiguration config = new()
         {
             ClientId = "<client_id>",
             ClientSecret = "<client_secret>",
             RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
+            ScopeList =
+            [
                 "profile",
                 "email"
-            }
+            ]
         };
         return new GoogleAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
@@ -50,15 +50,15 @@ partial class Program
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
         // You can add additional scopes if necessary.
-        var config = new MicrosoftConfiguration
+        MicrosoftConfiguration config = new()
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
+            ScopeList =
+            [
                 "offline_access",
                 "https://graph.microsoft.com/.default",
-            }
+            ]
         };
         return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
@@ -68,15 +68,15 @@ partial class Program
         // https://learn.microsoft.com/en-us/graph/auth-register-app-v2#register-an-application
         // Create <client_id>: https://portal.azure.com/
         // You can add additional scopes if necessary.
-        var config = new OutlookConfiguration
+        OutlookConfiguration config = new()
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
+            ScopeList =
+            [
                 "offline_access",
                 "https://outlook.office.com/.default"
-            }
+            ]
         };
         return new OutlookAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }

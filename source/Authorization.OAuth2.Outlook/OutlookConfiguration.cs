@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -53,9 +53,11 @@ namespace Finebits.Authorization.OAuth2.Outlook
                     return "consent";
                 case OutlookAuthPrompt.SelectAccount:
                     return "select_account";
+                case OutlookAuthPrompt.None:
+                    return "none";
+                default:
+                    return "none";
             }
-
-            return "none";
         }
 
         private static Uri GetAuthorizationUri(string tenant)

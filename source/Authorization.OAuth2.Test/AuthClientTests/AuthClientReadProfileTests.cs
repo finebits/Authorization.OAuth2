@@ -30,6 +30,7 @@ using Moq;
 
 namespace Finebits.Authorization.OAuth2.Test.AuthClientTests;
 
+[SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit Test Naming Conventions")]
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
 [TestFixtureSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.ProfileReaderFixtureData))]
 internal class AuthClientReadProfileTests
@@ -44,28 +45,28 @@ internal class AuthClientReadProfileTests
     [Test]
     public void ReadProfileAsync_NullParam_Exception()
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, mockHttpClient.Object, mockAuthBroker.Object, config);
+        Mock<HttpClient> mockHttpClient = new();
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, mockHttpClient.Object, mockAuthBroker.Object, config);
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        var exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await profileReader.ReadProfileAsync(null).ConfigureAwait(false));
+        ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await profileReader.ReadProfileAsync(null).ConfigureAwait(false));
         Assert.That(exception.ParamName, Is.EqualTo("token"));
     }
 
     [Test]
     public void ReadProfileAsync_CorrectRequest_Success()
     {
-        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        var token = Test.Data.AuthCreator.CreateFakeToken();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
         IUserProfile? userProfile = null;
@@ -87,51 +88,51 @@ internal class AuthClientReadProfileTests
     [Test]
     public void ReadProfileAsync_CancellationToken_Exception()
     {
-        using var cts = new CancellationTokenSource();
-        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateSuccess().Object);
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        var token = Test.Data.AuthCreator.CreateFakeToken();
+        using CancellationTokenSource cts = new();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateSuccess().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
         cts.Cancel();
-        var exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(token, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(token, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
     [Test]
     public void ReadProfileAsync_RequestCancellationToken_Exception()
     {
-        using var cts = new CancellationTokenSource();
-        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateCancellationToken(cts).Object);
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        var token = Test.Data.AuthCreator.CreateFakeToken();
+        using CancellationTokenSource cts = new();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateCancellationToken(cts).Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        var exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(token, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(token, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
     [Test]
     public void ReadProfileAsync_HttpInvalidResponse_Exception()
     {
-        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateInvalidResponse().Object);
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        var token = Test.Data.AuthCreator.CreateFakeToken();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateInvalidResponse().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
@@ -143,7 +144,7 @@ internal class AuthClientReadProfileTests
             Assert.That(exception.ResponseDetails is IOutlookInvalidResponse, client is OutlookAuthClient ? Is.True : Is.False);
         });
 
-        var innerException = exception.InnerException as HttpRequestException;
+        HttpRequestException? innerException = exception.InnerException as HttpRequestException;
         Assert.That(innerException, Is.Not.Null);
         Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -151,19 +152,19 @@ internal class AuthClientReadProfileTests
     [Test]
     public void ReadProfileAsync_HttpBadRequest_Exception()
     {
-        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateHttpError().Object);
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        var token = Test.Data.AuthCreator.CreateFakeToken();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateHttpError().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        var exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
-        var innerException = exception.InnerException as HttpRequestException;
+        HttpRequestException? innerException = exception.InnerException as HttpRequestException;
         Assert.That(innerException, Is.Not.Null);
         Assert.That(innerException.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -171,16 +172,16 @@ internal class AuthClientReadProfileTests
     [Test]
     public void ReadProfileAsync_HttpEmptyContent_Exception()
     {
-        using var httpClient = new HttpClient(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(AuthType);
-        var client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        var token = Test.Data.AuthCreator.CreateFakeToken();
+        using HttpClient httpClient = new(HttpMessageHandlerCreator.CreateEmptyResponse().Object);
+        Mock<IAuthenticationBroker> mockAuthBroker = new();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
+        IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
+        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
 
-        var profileReader = client as IProfileReader;
+        IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        var exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        AuthorizationEmptyResponseException? exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }

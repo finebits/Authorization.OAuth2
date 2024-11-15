@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -48,13 +48,13 @@ namespace Finebits.Authorization.OAuth2
 
             public string GrantType
             {
-                get { return _grantType ?? AuthorizationCodeType; }
-                set { _grantType = value; }
+                get => _grantType ?? AuthorizationCodeType;
+                set => _grantType = value;
             }
 
             public NameValueCollection GetCollection()
             {
-                var result = new NameValueCollection
+                NameValueCollection result = new NameValueCollection
                 {
                     {"grant_type", GrantType},
                     {"code", Code},

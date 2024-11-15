@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -20,7 +20,7 @@ using System.Collections;
 
 namespace Finebits.Authorization.OAuth2.Test.Data
 {
-    internal class AuthClientDataFixture
+    internal static class AuthClientDataFixture
     {
         public static IEnumerable AuthClientFixtureData => CreateTestFixtureDataCollection(AuthClientCollection);
         public static IEnumerable RefreshableFixtureData => CreateTestFixtureDataCollection(RefreshableCollection);
@@ -86,18 +86,12 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         private static IEnumerable CreateTestFixtureDataCollection(IEnumerable<AuthClientType> collection)
         {
-            foreach (var item in collection)
-            {
-                yield return new TestFixtureData(item);
-            }
+            return collection.Select(item => new TestFixtureData(item));
         }
 
         private static IEnumerable CreateTestCaseDataCollection(IEnumerable<AuthClientType> collection)
         {
-            foreach (var item in collection)
-            {
-                yield return new TestCaseData(item);
-            }
+            return collection.Select(item => new TestCaseData(item));
         }
     }
 }

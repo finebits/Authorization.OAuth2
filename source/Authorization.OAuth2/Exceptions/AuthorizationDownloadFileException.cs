@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -22,7 +22,7 @@ namespace Finebits.Authorization.OAuth2.Exceptions
 {
     public sealed class AuthorizationDownloadFileException : AuthorizationException
     {
-        public static readonly string DefaultMessage = "The file could not be downloaded.";
+        public const string DefaultMessage = "The file could not be downloaded.";
 
         public AuthorizationDownloadFileException()
             : this(DefaultMessage)

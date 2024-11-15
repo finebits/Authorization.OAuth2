@@ -27,13 +27,14 @@ using Moq;
 
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 
+[SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit Test Naming Conventions")]
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
 internal class DesktopAuthenticationBrokerTests
 {
     [Test]
     public void Constructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DesktopAuthenticationBroker(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new DesktopAuthenticationBroker(null));
         Assert.That(exception.ParamName, Is.EqualTo("launcher"));
     }
 
@@ -41,14 +42,11 @@ internal class DesktopAuthenticationBrokerTests
     [TestCase(null, null, "requestUri")]
     [TestCase(null, "https://callback", "requestUri")]
     [TestCase("https://request", null, "callbackUri")]
-    public void AuthenticateAsync_NullParam_Exception(string? requestStringUri, string? callbackStringUri, string paramName)
+    public void AuthenticateAsync_NullParam_Exception(Uri? requestUri, Uri? callbackUri, string paramName)
     {
-        var broker = new DesktopAuthenticationBroker(new Mock<IWebBrowserLauncher>().Object);
+        DesktopAuthenticationBroker broker = new(new Mock<IWebBrowserLauncher>().Object);
 
-        Uri? requestUri = string.IsNullOrEmpty(requestStringUri) ? null : new(requestStringUri);
-        Uri? callbackUri = string.IsNullOrEmpty(callbackStringUri) ? null : new(callbackStringUri);
-
-        var exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await broker.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
+        ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await broker.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(paramName));
@@ -57,13 +55,13 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void AuthenticateAsync_NonLaunched_Exception()
     {
-        var mockLauncher = new Mock<IWebBrowserLauncher>();
+        Mock<IWebBrowserLauncher> mockLauncher = new();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(false));
 
-        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
-        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
+        DesktopAuthenticationBroker broker = new(mockLauncher.Object);
+        Uri callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
-        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), callback).ConfigureAwait(false));
+        InvalidOperationException? exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await broker.AuthenticateAsync(new Uri("https://request/"), callback).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }
@@ -71,16 +69,16 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void AuthenticateAsync_CancellationToken_Exception()
     {
-        using var cts = new CancellationTokenSource();
-        var mockLauncher = new Mock<IWebBrowserLauncher>();
+        using CancellationTokenSource cts = new();
+        Mock<IWebBrowserLauncher> mockLauncher = new();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
-        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
+        DesktopAuthenticationBroker broker = new(mockLauncher.Object);
+        Uri callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.Cancel();
         AuthenticationResult? result = null;
-        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => result = await broker.AuthenticateAsync(new Uri("https://request/"), callback, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.ThrowsAsync<OperationCanceledException>(async () => result = await broker.AuthenticateAsync(new Uri("https://request/"), callback, cts.Token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.CancellationToken, Is.EqualTo(cts.Token));
@@ -89,16 +87,16 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void AuthenticateAsync_CancellationTokenDelay_Exception()
     {
-        using var cts = new CancellationTokenSource();
-        var mockLauncher = new Mock<IWebBrowserLauncher>();
+        using CancellationTokenSource cts = new();
+        Mock<IWebBrowserLauncher> mockLauncher = new();
         mockLauncher.Setup(m => m.LaunchAsync(It.IsAny<Uri>())).Returns(Task.FromResult(true));
 
-        var broker = new DesktopAuthenticationBroker(mockLauncher.Object);
-        var callback = DesktopAuthenticationBroker.GetLoopbackUri();
+        DesktopAuthenticationBroker broker = new(mockLauncher.Object);
+        Uri callback = DesktopAuthenticationBroker.GetLoopbackUri();
 
         cts.CancelAfter(500);
         AuthenticationResult? result = null;
-        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => result = await broker.AuthenticateAsync(new Uri("https://request/"), callback, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.ThrowsAsync<OperationCanceledException>(async () => result = await broker.AuthenticateAsync(new Uri("https://request/"), callback, cts.Token).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.CancellationToken, Is.EqualTo(cts.Token));
@@ -107,7 +105,7 @@ internal class DesktopAuthenticationBrokerTests
     [Test]
     public void GetRandomUnusedPort_Call_Success()
     {
-        var port = int.MinValue;
+        int port = int.MinValue;
 
         Assert.DoesNotThrow(() => port = DesktopAuthenticationBroker.GetRandomUnusedPort());
 

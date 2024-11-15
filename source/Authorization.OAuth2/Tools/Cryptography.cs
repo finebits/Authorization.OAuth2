@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -34,7 +34,7 @@ namespace Finebits.Authorization.OAuth2.Tools
         public static byte[] GetRandomValues(uint length)
         {
             byte[] buffer = new byte[length];
-            using (var crypto = new RNGCryptoServiceProvider())
+            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
             {
                 crypto.GetBytes(buffer);
             }
@@ -42,9 +42,10 @@ namespace Finebits.Authorization.OAuth2.Tools
             return buffer;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings", Justification = "The return value is a Base64Url encoded string.")]
         public static string ConvertToBase64UrlEncode(byte[] buffer, bool noPadding)
         {
-            var base64 = Convert.ToBase64String(buffer);
+            string base64 = Convert.ToBase64String(buffer);
 
             // Converts base64 to base64url.
             base64 = base64.Replace("+", "-");
@@ -61,7 +62,7 @@ namespace Finebits.Authorization.OAuth2.Tools
 
         public static string GenerateRandomString(uint length)
         {
-            var data = GetRandomValues(length);
+            byte[] data = GetRandomValues(length);
             return ConvertToBase64UrlEncode(data, true);
         }
     }

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -23,6 +23,7 @@ using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Test.CommonTests;
 
+[SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit Test Naming Conventions")]
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
 internal class TypeTests
 {
@@ -41,15 +42,15 @@ internal class TypeTests
     [Test]
     public void AuthenticationResult_Constructor_CorrectParam_Success()
     {
-        const string key1 = nameof(key1);
-        const string key2 = nameof(key2);
-        const string value1 = nameof(key1);
-        const string value2 = nameof(key2);
+        const string Key1 = nameof(Key1);
+        const string Key2 = nameof(Key2);
+        const string Value1 = nameof(Key1);
+        const string Value2 = nameof(Key2);
 
         NameValueCollection properties = new()
         {
-            { key1, value1 },
-            { key2, value2 },
+            { Key1, Value1 },
+            { Key2, Value2 },
         };
 
         AuthenticationResult? authResult = null;
@@ -59,15 +60,15 @@ internal class TypeTests
         Assert.That(authResult, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(authResult.Properties[key1], Is.EqualTo(value1));
-            Assert.That(authResult.Properties[key2], Is.EqualTo(value2));
+            Assert.That(authResult.Properties[Key1], Is.EqualTo(Value1));
+            Assert.That(authResult.Properties[Key2], Is.EqualTo(Value2));
         });
     }
 
     [Test]
     public void AuthenticationResult_Constructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new AuthenticationResult(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthenticationResult(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("properties"));
@@ -123,7 +124,7 @@ internal class TypeTests
     [TestCase(AccessToken, null, TokenType, "refreshToken")]
     public void Token_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string exceptionParamName)
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new Token(accessToken, refreshToken, tokenType));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Token(accessToken, refreshToken, tokenType));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(exceptionParamName));
@@ -132,7 +133,7 @@ internal class TypeTests
     [Test]
     public void Token_CopyConstructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new Token(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Token(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("other"));
@@ -191,7 +192,7 @@ internal class TypeTests
     [Test]
     public void Token_Update_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() =>
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() =>
         {
             Token token = new(AccessToken, RefreshToken, TokenType);
             token.Update(null);
@@ -336,7 +337,6 @@ internal class TypeTests
         });
     }
 
-
     [Test]
     [TestCase(null, null, null, null, "accessToken")]
     [TestCase(null, RefreshToken, null, null, "accessToken")]
@@ -353,7 +353,7 @@ internal class TypeTests
     [TestCase(AccessToken, RefreshToken, TokenType, null, "scope")]
     public void AuthorizationToken_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string? scope, string exceptionParamName)
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(accessToken, refreshToken, tokenType, default, scope));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(accessToken, refreshToken, tokenType, default, scope));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(exceptionParamName));
@@ -362,7 +362,7 @@ internal class TypeTests
     [Test]
     public void AuthorizationToken_CopyConstructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("other"));
@@ -371,7 +371,7 @@ internal class TypeTests
     [Test]
     public void AuthorizationToken_Update_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() =>
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() =>
         {
             AuthorizationToken token = new(AccessToken, RefreshToken, TokenType, default, Scope);
             token.Update(null);

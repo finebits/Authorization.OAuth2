@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -30,7 +30,7 @@ namespace Finebits.Authorization.OAuth2.Messages
     {
         protected override async Task<bool> ReadContentAsync(HttpContent content, CancellationToken cancellationToken)
         {
-            if (content == null)
+            if (content is null)
             {
                 return false;
             }
