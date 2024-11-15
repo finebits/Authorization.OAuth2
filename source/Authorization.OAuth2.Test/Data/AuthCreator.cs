@@ -84,7 +84,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
                 ClientId = "fake-google-client-id",
                 ClientSecret = "fake-google-client-secret",
                 RedirectUri = new Uri("https://redirect"),
-                ScopeList = new[] { "fake-scope" }
+                ScopeList = ["fake-scope"]
             };
         }
 
@@ -101,7 +101,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 ClientId = "fake-microsoft-client-id",
                 RedirectUri = new Uri("https://redirect"),
-                ScopeList = new[] { "fake-scope" }
+                ScopeList = ["fake-scope"]
             };
         }
 
@@ -116,7 +116,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             {
                 ClientId = "fake-outlook-client-id",
                 RedirectUri = new Uri("https://redirect"),
-                ScopeList = new[] { "fake-scope" }
+                ScopeList = ["fake-scope"]
             };
         }
 
