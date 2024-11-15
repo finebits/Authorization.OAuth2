@@ -301,5 +301,4 @@ internal partial class Program
         Console.WriteLine(text);
         Console.ForegroundColor = defaultColor;
     }
-
 }
