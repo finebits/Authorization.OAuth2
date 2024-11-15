@@ -25,7 +25,7 @@ using Finebits.Authorization.OAuth2.Outlook;
 
 namespace Finebits.Authorization.OAuth2.Sample;
 
-partial class Program
+internal partial class Program
 {
     private static IAuthorizationClient GetGoogleAuthClient(HttpClient httpClient, IWebBrowserLauncher launcher, Uri redirectURI)
     {

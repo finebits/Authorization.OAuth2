@@ -23,7 +23,7 @@ using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Sample;
 
-partial class Program
+internal partial class Program
 {
     private static async Task Main(string[] _)
     {
