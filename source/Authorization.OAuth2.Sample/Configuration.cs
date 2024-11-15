@@ -36,11 +36,11 @@ partial class Program
             ClientId = "<client_id>",
             ClientSecret = "<client_secret>",
             RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
+            ScopeList =
+            [
                 "profile",
                 "email"
-            }
+            ]
         };
         return new GoogleAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
@@ -54,11 +54,11 @@ partial class Program
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
+            ScopeList =
+            [
                 "offline_access",
                 "https://graph.microsoft.com/.default",
-            }
+            ]
         };
         return new MicrosoftAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
@@ -72,11 +72,11 @@ partial class Program
         {
             ClientId = "<client_id>",
             RedirectUri = redirectURI,
-            ScopeList = new[]
-            {
+            ScopeList =
+            [
                 "offline_access",
                 "https://outlook.office.com/.default"
-            }
+            ]
         };
         return new OutlookAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);
     }
