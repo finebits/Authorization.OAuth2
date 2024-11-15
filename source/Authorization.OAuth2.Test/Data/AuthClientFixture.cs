@@ -86,18 +86,12 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         private static IEnumerable CreateTestFixtureDataCollection(IEnumerable<AuthClientType> collection)
         {
-            foreach (AuthClientType item in collection)
-            {
-                yield return new TestFixtureData(item);
-            }
+            return collection.Select(item => new TestFixtureData(item));
         }
 
         private static IEnumerable CreateTestCaseDataCollection(IEnumerable<AuthClientType> collection)
         {
-            foreach (AuthClientType item in collection)
-            {
-                yield return new TestCaseData(item);
-            }
+            return collection.Select(item => new TestCaseData(item));
         }
     }
 }
