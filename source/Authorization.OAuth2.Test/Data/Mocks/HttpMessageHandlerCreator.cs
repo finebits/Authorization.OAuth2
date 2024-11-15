@@ -231,7 +231,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     "SendAsync",
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
-                .Callback(() => { cts.Cancel(); })
+                .Callback(() => cts?.Cancel())
                 .ReturnsAsync(() => new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
