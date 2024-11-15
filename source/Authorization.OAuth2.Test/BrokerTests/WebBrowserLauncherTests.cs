@@ -28,9 +28,9 @@ internal class WebBrowserLauncherTests
     [Test]
     public void LaunchAsync_NullUri_Exception()
     {
-        var webBrowserLauncher = new WebBrowserLauncher();
+        WebBrowserLauncher webBrowserLauncher = new WebBrowserLauncher();
 
-        var exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await webBrowserLauncher.LaunchAsync(null).ConfigureAwait(false));
+        ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await webBrowserLauncher.LaunchAsync(null).ConfigureAwait(false));
 
         Assert.That(exception.ParamName, Is.EqualTo("uri"));
     }
@@ -41,22 +41,22 @@ internal class WebBrowserLauncherTests
     [TestCase("custom:\\any")]
     public async Task LaunchAsync_UnsupportedUri_Fail(string uriString)
     {
-        var uri = new Uri(uriString);
+        Uri uri = new Uri(uriString);
 
-        var webBrowserLauncher = new WebBrowserLauncher();
+        WebBrowserLauncher webBrowserLauncher = new WebBrowserLauncher();
 
-        var result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
+        bool result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
         Assert.That(result, Is.False);
     }
 
     [Test]
     public async Task LaunchAsync_RelativeUri_Fail()
     {
-        var uri = new Uri("test/test", UriKind.Relative);
+        Uri uri = new Uri("test/test", UriKind.Relative);
 
-        var webBrowserLauncher = new WebBrowserLauncher();
+        WebBrowserLauncher webBrowserLauncher = new WebBrowserLauncher();
 
-        var result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
+        bool result = await webBrowserLauncher.LaunchAsync(uri).ConfigureAwait(false);
         Assert.That(result, Is.False);
     }
 }

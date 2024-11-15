@@ -28,12 +28,12 @@ internal class AuthenticationBrokerCreatorTests
     [Test]
     public async Task CreateSuccessBroker_BrokerWorkflow_Success()
     {
-        var state = "fake-state";
-        var requestUri = new Uri($"https://service/auth-uri?state={state}");
-        var callbackUri = new Uri("https://redirect");
+        string state = "fake-state";
+        Uri requestUri = new Uri($"https://service/auth-uri?state={state}");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
-        var result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateSuccessBroker();
+        Types.AuthenticationResult result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
 
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
@@ -49,11 +49,11 @@ internal class AuthenticationBrokerCreatorTests
     [Test]
     public void CreateCanceledBroker_BrokerWorkflow_Exception()
     {
-        var requestUri = new Uri($"https://service/auth-uri");
-        var callbackUri = new Uri("https://redirect");
+        Uri requestUri = new Uri($"https://service/auth-uri");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateCanceledBroker();
-        var exception = Assert.ThrowsAsync<OperationCanceledException>(async () => await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateCanceledBroker();
+        OperationCanceledException? exception = Assert.ThrowsAsync<OperationCanceledException>(async () => await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }
@@ -61,11 +61,11 @@ internal class AuthenticationBrokerCreatorTests
     [Test]
     public async Task CreateInvalidDataBroker_BrokerWorkflow_Error()
     {
-        var requestUri = new Uri($"https://service/auth-uri");
-        var callbackUri = new Uri("https://redirect");
+        Uri requestUri = new Uri($"https://service/auth-uri");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateInvalidDataBroker();
-        var result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateInvalidDataBroker();
+        Types.AuthenticationResult result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
 
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
@@ -81,23 +81,23 @@ internal class AuthenticationBrokerCreatorTests
     [Test]
     public void CreateThrowExceptionBroker_BrokerWorkflow_Exception()
     {
-        var requestUri = new Uri($"https://service/auth-uri");
-        var callbackUri = new Uri("https://redirect");
+        Uri requestUri = new Uri($"https://service/auth-uri");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateThrowExceptionBroker();
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateThrowExceptionBroker();
 
-        var exception = Assert.CatchAsync<Exception>(async () => await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
+        Exception? exception = Assert.CatchAsync<Exception>(async () => await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
     [Test]
     public async Task CreateEmptyDataBroker_BrokerWorkflow_Empty()
     {
-        var requestUri = new Uri($"https://service/auth-uri");
-        var callbackUri = new Uri("https://redirect");
+        Uri requestUri = new Uri($"https://service/auth-uri");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateEmptyDataBroker();
-        var result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateEmptyDataBroker();
+        Types.AuthenticationResult result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
 
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
@@ -110,11 +110,11 @@ internal class AuthenticationBrokerCreatorTests
     [Test]
     public async Task CreateMissingDataBroker_BrokerWorkflow_CodeMissing()
     {
-        var requestUri = new Uri($"https://service/auth-uri");
-        var callbackUri = new Uri("https://redirect");
+        Uri requestUri = new Uri($"https://service/auth-uri");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateMissingDataBroker();
-        var result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateMissingDataBroker();
+        Types.AuthenticationResult result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
 
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>
@@ -130,12 +130,12 @@ internal class AuthenticationBrokerCreatorTests
     [Test]
     public async Task CreateWrongDataBroker_BrokerWorkflow_WrongState()
     {
-        var state = "fake-state";
-        var requestUri = new Uri($"https://service/auth-uri?state={state}");
-        var callbackUri = new Uri("https://redirect");
+        string state = "fake-state";
+        Uri requestUri = new Uri($"https://service/auth-uri?state={state}");
+        Uri callbackUri = new Uri("https://redirect");
 
-        var mockBroker = AuthenticationBrokerCreator.CreateWrongDataBroker();
-        var result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
+        Moq.Mock<Abstractions.IAuthenticationBroker> mockBroker = AuthenticationBrokerCreator.CreateWrongDataBroker();
+        Types.AuthenticationResult result = await mockBroker.Object.AuthenticateAsync(requestUri, callbackUri).ConfigureAwait(false);
 
         Assert.That(result, Is.Not.Null);
         Assert.Multiple(() =>

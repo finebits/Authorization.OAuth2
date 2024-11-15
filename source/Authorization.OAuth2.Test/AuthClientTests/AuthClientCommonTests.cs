@@ -31,9 +31,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.AuthClientCaseData))]
     public void CreateAuthorizationClient_CorrectParam_Success(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -44,11 +44,11 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.AuthClientCaseData))]
     public void CreateAuthorizationClient_NullParam_Exception(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
 
-        var exception = Assert.Throws<ArgumentNullException>(() => Test.Data.AuthCreator.CreateAuthClient(clientType, null, null, null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => Test.Data.AuthCreator.CreateAuthClient(clientType, null, null, null));
         Assert.That(exception.ParamName, Is.EqualTo("httpClient"));
 
         exception = Assert.Throws<ArgumentNullException>(() => Test.Data.AuthCreator.CreateAuthClient(clientType, null, mockAuthBroker.Object, null));
@@ -74,9 +74,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.RefreshableCaseData))]
     public void ConvertIRefreshable_RefreshableClient_Success(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -88,9 +88,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.NonRefreshableCaseData))]
     public void ConvertIRefreshable_NonRefreshableClient_Fail(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -102,9 +102,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.RevocableCaseData))]
     public void ConvertIRevocable_RevocableClient_Success(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -116,9 +116,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.IrrevocableCaseData))]
     public void ConvertIRevocable_IrrevocableClient_Fail(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -131,9 +131,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.ProfileReaderCaseData))]
     public void ConvertIProfileReader_ProfileReaderClient_Success(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -145,9 +145,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.NonProfileReaderCaseData))]
     public void ConvertIProfileReader_NonProfileReaderClient_Fail(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -159,9 +159,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.UserAvatarLoaderCaseData))]
     public void ConvertIUserAvatarLoader_UserAvatarLoaderClient_Success(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));
@@ -173,9 +173,9 @@ internal class AuthClientCommonTests
     [TestCaseSource(typeof(Test.Data.AuthClientDataFixture), nameof(Test.Data.AuthClientDataFixture.NonUserAvatarLoaderCaseData))]
     public void ConvertIUserAvatarLoader_NonUserAvatarLoaderClient_Fail(Test.Data.AuthClientType clientType)
     {
-        var mockHttpClient = new Mock<HttpClient>();
-        var mockAuthBroker = new Mock<IAuthenticationBroker>();
-        var config = Test.Data.AuthCreator.CreateConfig(clientType);
+        Mock<HttpClient> mockHttpClient = new Mock<HttpClient>();
+        Mock<IAuthenticationBroker> mockAuthBroker = new Mock<IAuthenticationBroker>();
+        AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(clientType);
         IAuthorizationClient? client = null;
 
         Assert.DoesNotThrow(() => client = Test.Data.AuthCreator.CreateAuthClient(clientType, mockHttpClient.Object, mockAuthBroker.Object, config));

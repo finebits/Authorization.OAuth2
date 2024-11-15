@@ -86,7 +86,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         private static IEnumerable CreateTestFixtureDataCollection(IEnumerable<AuthClientType> collection)
         {
-            foreach (var item in collection)
+            foreach (AuthClientType item in collection)
             {
                 yield return new TestFixtureData(item);
             }
@@ -94,7 +94,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data
 
         private static IEnumerable CreateTestCaseDataCollection(IEnumerable<AuthClientType> collection)
         {
-            foreach (var item in collection)
+            foreach (AuthClientType item in collection)
             {
                 yield return new TestCaseData(item);
             }

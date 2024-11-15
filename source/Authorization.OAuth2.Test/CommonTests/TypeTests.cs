@@ -67,7 +67,7 @@ internal class TypeTests
     [Test]
     public void AuthenticationResult_Constructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new AuthenticationResult(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthenticationResult(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("properties"));
@@ -123,7 +123,7 @@ internal class TypeTests
     [TestCase(AccessToken, null, TokenType, "refreshToken")]
     public void Token_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string exceptionParamName)
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new Token(accessToken, refreshToken, tokenType));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Token(accessToken, refreshToken, tokenType));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(exceptionParamName));
@@ -132,7 +132,7 @@ internal class TypeTests
     [Test]
     public void Token_CopyConstructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new Token(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Token(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("other"));
@@ -191,7 +191,7 @@ internal class TypeTests
     [Test]
     public void Token_Update_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() =>
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() =>
         {
             Token token = new(AccessToken, RefreshToken, TokenType);
             token.Update(null);
@@ -353,7 +353,7 @@ internal class TypeTests
     [TestCase(AccessToken, RefreshToken, TokenType, null, "scope")]
     public void AuthorizationToken_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string? scope, string exceptionParamName)
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(accessToken, refreshToken, tokenType, default, scope));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(accessToken, refreshToken, tokenType, default, scope));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(exceptionParamName));
@@ -362,7 +362,7 @@ internal class TypeTests
     [Test]
     public void AuthorizationToken_CopyConstructor_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("other"));
@@ -371,7 +371,7 @@ internal class TypeTests
     [Test]
     public void AuthorizationToken_Update_NullParam_Exception()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() =>
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() =>
         {
             AuthorizationToken token = new(AccessToken, RefreshToken, TokenType, default, Scope);
             token.Update(null);

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------- //
 //                                                                              //
 //   Copyright 2024 Finebits (https://finebits.com/)                            //
 //                                                                              //
@@ -29,7 +29,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
     {
         public static Mock<HttpMessageHandler> CreateSuccess()
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new Mock<HttpMessageHandler>();
 
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -224,7 +224,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         public static Mock<HttpMessageHandler> CreateCancellationToken(CancellationTokenSource cts)
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new Mock<HttpMessageHandler>();
 
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -251,7 +251,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         public static Mock<HttpMessageHandler> CreateInvalidResponse()
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new Mock<HttpMessageHandler>();
 
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -325,7 +325,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
 
         private static Mock<HttpMessageHandler> Create(Func<HttpResponseMessage> valueFunction)
         {
-            var mock = new Mock<HttpMessageHandler>();
+            Mock<HttpMessageHandler> mock = new Mock<HttpMessageHandler>();
             mock.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
