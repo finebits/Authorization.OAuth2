@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>13.0</LangVersion>
     <RootNamespace>Finebits.Authorization.OAuth2.AuthenticationBroker</RootNamespace>
     <AssemblyName>Finebits.Authorization.OAuth2.AuthenticationBroker.Desktop</AssemblyName>
 

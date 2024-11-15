@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>13.0</LangVersion>
     <RootNamespace>Finebits.Authorization.OAuth2</RootNamespace>
     <AssemblyName>Finebits.Authorization.OAuth2</AssemblyName>
     <AnalysisLevel>6.0-all</AnalysisLevel>
