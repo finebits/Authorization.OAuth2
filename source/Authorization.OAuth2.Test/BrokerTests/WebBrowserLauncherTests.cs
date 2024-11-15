@@ -22,6 +22,7 @@ using Finebits.Authorization.OAuth2.AuthenticationBroker;
 
 namespace Finebits.Authorization.OAuth2.Test.BrokerTests;
 
+[SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit Test Naming Conventions")]
 [SuppressMessage("Performance", "CA1812: Avoid uninstantiated internal classes", Justification = "Class is instantiated via NUnit Framework")]
 internal class WebBrowserLauncherTests
 {
