@@ -20,7 +20,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 using Finebits.Authorization.OAuth2.Exceptions;
-using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Test.Data.Mocks;
 
 namespace Finebits.Authorization.OAuth2.Test.AuthClientTests;
