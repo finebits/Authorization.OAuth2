@@ -45,19 +45,19 @@ internal class AuthClientLoginTests
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        Types.AuthorizationToken authToken = await client.LoginAsync().ConfigureAwait(false);
+        Types.AuthCredential credential = await client.LoginAsync().ConfigureAwait(false);
 
-        Assert.That(authToken, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(authToken.AccessToken, Is.EqualTo(FakeConstant.Token.AccessToken));
-            Assert.That(authToken.RefreshToken, Is.EqualTo(FakeConstant.Token.RefreshToken));
-            Assert.That(authToken.TokenType, Is.EqualTo(FakeConstant.Token.TokenType));
-            Assert.That(authToken.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Token.ExpiresIn)));
+            Assert.That(credential.AccessToken, Is.EqualTo(FakeConstant.Credential.AccessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(FakeConstant.Credential.RefreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(FakeConstant.Credential.TokenType));
+            Assert.That(credential.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Credential.ExpiresIn)));
 
-            if (authToken is GoogleAuthorizationToken googleToken)
+            if (credential is GoogleAuthCredential googleCredential)
             {
-                Assert.That(googleToken.IdToken, Is.Not.Null);
+                Assert.That(googleCredential.IdToken, Is.Not.Null);
             }
         });
     }
@@ -70,15 +70,15 @@ internal class AuthClientLoginTests
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         Abstractions.IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
 
-        Types.AuthorizationToken authToken = await client.LoginAsync("UserId").ConfigureAwait(false);
+        Types.AuthCredential credential = await client.LoginAsync("UserId").ConfigureAwait(false);
 
-        Assert.That(authToken, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(authToken.AccessToken, Is.EqualTo(FakeConstant.Token.AccessToken));
-            Assert.That(authToken.RefreshToken, Is.EqualTo(FakeConstant.Token.RefreshToken));
-            Assert.That(authToken.TokenType, Is.EqualTo(FakeConstant.Token.TokenType));
-            Assert.That(authToken.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Token.ExpiresIn)));
+            Assert.That(credential.AccessToken, Is.EqualTo(FakeConstant.Credential.AccessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(FakeConstant.Credential.RefreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(FakeConstant.Credential.TokenType));
+            Assert.That(credential.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Credential.ExpiresIn)));
         });
     }
 

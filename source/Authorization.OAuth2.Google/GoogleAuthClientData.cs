@@ -25,7 +25,7 @@ namespace Finebits.Authorization.OAuth2.Google
 {
     public partial class GoogleAuthClient
     {
-        protected class GoogleTokenContent : TokenContent
+        protected class GoogleAuthContent : AuthContent
         {
             [JsonInclude]
             [JsonPropertyName("id_token")]

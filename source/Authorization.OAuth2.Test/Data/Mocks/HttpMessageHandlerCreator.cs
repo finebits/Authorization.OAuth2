@@ -52,11 +52,11 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = FakeConstant.Token.AccessToken,
-                            token_type = FakeConstant.Token.TokenType,
-                            expires_in = FakeConstant.Token.ExpiresIn,
-                            refresh_token = FakeConstant.Token.RefreshToken,
-                            scope = FakeConstant.Token.Scope,
+                            access_token = FakeConstant.Credential.AccessToken,
+                            token_type = FakeConstant.Credential.TokenType,
+                            expires_in = FakeConstant.Credential.ExpiresIn,
+                            refresh_token = FakeConstant.Credential.RefreshToken,
+                            scope = FakeConstant.Credential.Scope,
                         }),
                 });
 
@@ -73,12 +73,12 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = FakeConstant.Token.AccessToken,
-                            token_type = FakeConstant.Token.TokenType,
-                            expires_in = FakeConstant.Token.ExpiresIn,
-                            refresh_token = FakeConstant.Token.RefreshToken,
-                            scope = FakeConstant.Token.Scope,
-                            id_token = FakeConstant.Token.IdToken,
+                            access_token = FakeConstant.Credential.AccessToken,
+                            token_type = FakeConstant.Credential.TokenType,
+                            expires_in = FakeConstant.Credential.ExpiresIn,
+                            refresh_token = FakeConstant.Credential.RefreshToken,
+                            scope = FakeConstant.Credential.Scope,
+                            id_token = FakeConstant.Credential.IdToken,
                         }),
                 });
 
@@ -93,11 +93,11 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = FakeConstant.Token.NewAccessToken,
-                            token_type = FakeConstant.Token.TokenType,
-                            expires_in = FakeConstant.Token.ExpiresIn,
-                            refresh_token = FakeConstant.Token.NewRefreshToken,
-                            scope = FakeConstant.Token.Scope,
+                            access_token = FakeConstant.Credential.NewAccessToken,
+                            token_type = FakeConstant.Credential.TokenType,
+                            expires_in = FakeConstant.Credential.ExpiresIn,
+                            refresh_token = FakeConstant.Credential.NewRefreshToken,
+                            scope = FakeConstant.Credential.Scope,
                         }),
                 });
 
@@ -114,10 +114,10 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                     Content = JsonContent.Create(
                         new
                         {
-                            access_token = FakeConstant.Token.NewAccessToken,
-                            token_type = FakeConstant.Token.TokenType,
-                            expires_in = FakeConstant.Token.ExpiresIn,
-                            scope = FakeConstant.Token.Scope,
+                            access_token = FakeConstant.Credential.NewAccessToken,
+                            token_type = FakeConstant.Credential.TokenType,
+                            expires_in = FakeConstant.Credential.ExpiresIn,
+                            scope = FakeConstant.Credential.Scope,
                         }),
                 });
 

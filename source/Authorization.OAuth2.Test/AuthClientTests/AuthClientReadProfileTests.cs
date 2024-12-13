@@ -54,7 +54,7 @@ internal class AuthClientReadProfileTests
         Assert.That(profileReader, Is.Not.Null);
 
         ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await profileReader.ReadProfileAsync(null).ConfigureAwait(false));
-        Assert.That(exception.ParamName, Is.EqualTo("token"));
+        Assert.That(exception.ParamName, Is.EqualTo("credential"));
     }
 
     [Test]
@@ -64,14 +64,14 @@ internal class AuthClientReadProfileTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
         IUserProfile? userProfile = null;
 
-        Assert.DoesNotThrowAsync(async () => userProfile = await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        Assert.DoesNotThrowAsync(async () => userProfile = await profileReader.ReadProfileAsync(credential).ConfigureAwait(false));
 
         Assert.That(userProfile, Is.Not.Null);
         Assert.Multiple(() =>
@@ -93,13 +93,13 @@ internal class AuthClientReadProfileTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
         cts.Cancel();
-        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(token, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(credential, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
@@ -111,12 +111,12 @@ internal class AuthClientReadProfileTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(token, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await profileReader.ReadProfileAsync(credential, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
@@ -127,12 +127,12 @@ internal class AuthClientReadProfileTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(credential).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
@@ -156,12 +156,12 @@ internal class AuthClientReadProfileTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await profileReader.ReadProfileAsync(credential).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         HttpRequestException? innerException = exception.InnerException as HttpRequestException;
@@ -176,12 +176,12 @@ internal class AuthClientReadProfileTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IProfileReader? profileReader = client as IProfileReader;
         Assert.That(profileReader, Is.Not.Null);
 
-        AuthorizationEmptyResponseException? exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await profileReader.ReadProfileAsync(token).ConfigureAwait(false));
+        AuthorizationEmptyResponseException? exception = Assert.ThrowsAsync<AuthorizationEmptyResponseException>(async () => await profileReader.ReadProfileAsync(credential).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }

@@ -25,6 +25,6 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IRefreshable
     {
-        Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default);
+        Task<AuthCredential> RefreshAsync(Credential credential, CancellationToken cancellationToken = default);
     }
 }

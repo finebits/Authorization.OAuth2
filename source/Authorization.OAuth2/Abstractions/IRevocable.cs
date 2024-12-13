@@ -25,6 +25,6 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IRevocable
     {
-        Task RevokeTokenAsync(Token token, CancellationToken cancellationToken = default);
+        Task RevokeAsync(Credential credential, CancellationToken cancellationToken = default);
     }
 }

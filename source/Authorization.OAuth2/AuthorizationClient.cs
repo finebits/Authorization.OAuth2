@@ -56,12 +56,12 @@ namespace Finebits.Authorization.OAuth2
             Config = (AuthConfiguration)config.Clone();
         }
 
-        public Task<AuthorizationToken> LoginAsync(CancellationToken cancellationToken = default)
+        public Task<AuthCredential> LoginAsync(CancellationToken cancellationToken = default)
         {
             return StartLoginAsync(null, cancellationToken);
         }
 
-        public Task<AuthorizationToken> LoginAsync(string userId, CancellationToken cancellationToken = default)
+        public Task<AuthCredential> LoginAsync(string userId, CancellationToken cancellationToken = default)
         {
             if (userId is null)
             {
@@ -76,7 +76,7 @@ namespace Finebits.Authorization.OAuth2
             return StartLoginAsync(userId, cancellationToken);
         }
 
-        public virtual async Task<AuthorizationToken> StartLoginAsync(string userId, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthCredential> StartLoginAsync(string userId, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             object properties = await PrepareAsync(userId, cancellationToken).ConfigureAwait(false);
@@ -93,7 +93,7 @@ namespace Finebits.Authorization.OAuth2
             ThrowIfAuthenticationUnsuccessful(result);
 
             cancellationToken.ThrowIfCancellationRequested();
-            return await GetTokenAsync(result, properties, cancellationToken).ConfigureAwait(false);
+            return await AuthorizeAsync(result, properties, cancellationToken).ConfigureAwait(false);
         }
 
         protected virtual Task<object> PrepareAsync(string userId, CancellationToken cancellationToken)
@@ -115,17 +115,17 @@ namespace Finebits.Authorization.OAuth2
             return Task.FromResult(Config.RedirectUri);
         }
 
-        protected virtual async Task<AuthorizationToken> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
+        protected virtual async Task<AuthCredential> AuthorizeAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
-            TokenContent response = await SendRequestAsync<TokenContent>(
+            AuthContent response = await SendRequestAsync<AuthContent>(
                 endpoint: Config.TokenUri,
                 method: HttpMethod.Post,
-                token: null,
+                credential: null,
                 payload: GetTokenPayload(result, properties),
                 headers: null,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return new AuthorizationToken(
+            return new AuthCredential(
                 response.AccessToken,
                 response.RefreshToken,
                 response.TokenType,
@@ -171,7 +171,7 @@ namespace Finebits.Authorization.OAuth2
 
                 string code = GetAuthCode(result);
 
-                return new TokenPayload()
+                return new AuthPayload()
                 {
                     ClientId = Config.ClientId,
                     ClientSecret = Config.ClientSecret,

@@ -32,31 +32,31 @@ namespace Finebits.Authorization.OAuth2
         protected class RefreshableClient : IRefreshable
         {
             private readonly AuthorizationClient _client;
-            public Func<Token, NameValueCollection> RefreshPayloadCreator { get; set; }
+            public Func<Credential, NameValueCollection> RefreshPayloadCreator { get; set; }
 
             public RefreshableClient(AuthorizationClient client)
             {
                 _client = client;
             }
 
-            public async Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
+            public async Task<AuthCredential> RefreshAsync(Credential credential, CancellationToken cancellationToken = default)
             {
-                if (token is null)
+                if (credential is null)
                 {
-                    throw new ArgumentNullException(nameof(token));
+                    throw new ArgumentNullException(nameof(credential));
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                TokenContent response = await _client.SendRequestAsync<TokenContent>(
+                AuthContent response = await _client.SendRequestAsync<AuthContent>(
                     endpoint: _client.Config.RefreshUri,
                     method: HttpMethod.Post,
-                    token: token,
-                    payload: RefreshPayloadCreator?.Invoke(token) ?? GetDefaultRefreshPayload(token),
+                    credential: credential,
+                    payload: RefreshPayloadCreator?.Invoke(credential) ?? GetDefaultRefreshPayload(credential),
                     headers: null,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                return new AuthorizationToken(
+                return new AuthCredential(
                     response.AccessToken,
                     response.RefreshToken,
                     response.TokenType,
@@ -65,13 +65,13 @@ namespace Finebits.Authorization.OAuth2
                     );
             }
 
-            private NameValueCollection GetDefaultRefreshPayload(Token token)
+            private NameValueCollection GetDefaultRefreshPayload(Credential credential)
             {
                 return new RefreshPayload()
                 {
                     ClientId = _client.Config.ClientId,
                     ClientSecret = _client.Config.ClientSecret,
-                    RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken,
+                    RefreshToken = (credential ?? throw new ArgumentNullException(nameof(credential))).RefreshToken,
                 }.GetCollection();
             }
         }

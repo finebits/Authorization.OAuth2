@@ -58,25 +58,25 @@ internal partial class Program
 
             using CancellationTokenSource cts = new(TimeSpan.FromMinutes(5));
 
-            AuthorizationToken token = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
+            AuthCredential credential = await authClient.LoginAsync(cts.Token).ConfigureAwait(false);
             Console.WriteLine();
             WriteColorLine("Login operation is completed.", ConsoleColor.Green);
-            PrintToken(token, "Login response");
+            PrintCredential(credential, "Login response");
 
             Console.WriteLine();
-            AuthorizationToken? freshToken = await RefreshTokenAsync(authClient, token).ConfigureAwait(false);
-            PrintToken(token, "Refresh response");
-            token.Update(freshToken);
+            AuthCredential? fresh = await RefreshAsync(authClient, credential).ConfigureAwait(false);
+            PrintCredential(credential, "Refresh response");
+            credential.Update(fresh);
 
             Console.WriteLine();
-            IUserProfile? profile = await ReadProfileAsync(authClient, token).ConfigureAwait(false);
+            IUserProfile? profile = await ReadProfileAsync(authClient, credential).ConfigureAwait(false);
             PrintProfile(profile, "User profile");
 
             Console.WriteLine();
-            await LoadUserAvatarAsync(authClient, token, "./avatar.jpg").ConfigureAwait(false);
+            await LoadUserAvatarAsync(authClient, credential, "./avatar.jpg").ConfigureAwait(false);
 
             Console.WriteLine();
-            await RevokeTokenAsync(authClient, token).ConfigureAwait(false);
+            await RevokeAsync(authClient, credential).ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -84,9 +84,9 @@ internal partial class Program
         }
     }
 
-    private static void PrintToken(Types.AuthorizationToken? authToken, string header)
+    private static void PrintCredential(Types.AuthCredential? credential, string header)
     {
-        if (authToken is null)
+        if (credential is null)
         {
             return;
         }
@@ -94,11 +94,11 @@ internal partial class Program
         Console.WriteLine($"{header}:", ConsoleColor.Yellow);
 
         Console.WriteLine($"""
-                AccessToken: {authToken.AccessToken[0..8]}...
-                RefreshToken: {authToken.RefreshToken[0..8]}...
-                TokenType: {authToken.TokenType ?? "null"}
-                ExpiresIn: {authToken.ExpiresIn}
-                Scope: {authToken.Scope ?? "null"}
+                AccessToken: {credential.AccessToken[0..8]}...
+                RefreshToken: {credential.RefreshToken[0..8]}...
+                TokenType: {credential.TokenType ?? "null"}
+                ExpiresIn: {credential.ExpiresIn}
+                Scope: {credential.Scope ?? "null"}
                 """);
     }
 
@@ -119,11 +119,11 @@ internal partial class Program
                 """);
     }
 
-    private static async Task<Types.AuthorizationToken?> RefreshTokenAsync(IAuthorizationClient client, Token token)
+    private static async Task<Types.AuthCredential?> RefreshAsync(IAuthorizationClient client, Credential credential)
     {
         if (client is IRefreshable refreshClient)
         {
-            AuthorizationToken result = await refreshClient.RefreshTokenAsync(token).ConfigureAwait(false);
+            AuthCredential result = await refreshClient.RefreshAsync(credential).ConfigureAwait(false);
             WriteColorLine("Refresh operation is completed.", ConsoleColor.Green);
             return result;
         }
@@ -135,16 +135,16 @@ internal partial class Program
         return null;
     }
 
-    private static async Task RevokeTokenAsync(IAuthorizationClient client, Token token)
+    private static async Task RevokeAsync(IAuthorizationClient client, Credential credential)
     {
-        if (token is null)
+        if (credential is null)
         {
-            throw new ArgumentNullException(nameof(token));
+            throw new ArgumentNullException(nameof(credential));
         }
 
         if (client is IRevocable revokeClient)
         {
-            await revokeClient.RevokeTokenAsync(token).ConfigureAwait(false);
+            await revokeClient.RevokeAsync(credential).ConfigureAwait(false);
             WriteColorLine("Revoke operation is completed.", ConsoleColor.Green);
         }
         else
@@ -153,18 +153,18 @@ internal partial class Program
         }
     }
 
-    private static async Task<IUserProfile?> ReadProfileAsync(IAuthorizationClient client, Token token)
+    private static async Task<IUserProfile?> ReadProfileAsync(IAuthorizationClient client, Credential credential)
     {
         IUserProfile? profile = null;
 
-        if (token is null)
+        if (credential is null)
         {
-            throw new ArgumentNullException(nameof(token));
+            throw new ArgumentNullException(nameof(credential));
         }
 
         if (client is IProfileReader profileReader)
         {
-            profile = await profileReader.ReadProfileAsync(token).ConfigureAwait(false);
+            profile = await profileReader.ReadProfileAsync(credential).ConfigureAwait(false);
             WriteColorLine("Read Profile operation is completed.", ConsoleColor.Green);
         }
         else
@@ -175,11 +175,11 @@ internal partial class Program
         return profile;
     }
 
-    private static async Task LoadUserAvatarAsync(IAuthorizationClient client, Token token, string name)
+    private static async Task LoadUserAvatarAsync(IAuthorizationClient client, Credential credential, string name)
     {
-        if (token is null)
+        if (credential is null)
         {
-            throw new ArgumentNullException(nameof(token));
+            throw new ArgumentNullException(nameof(credential));
         }
 
         if (name is null)
@@ -191,7 +191,7 @@ internal partial class Program
         {
             try
             {
-                using Stream avatar = await avatarLoader.LoadAvatarAsync(token).ConfigureAwait(false);
+                using Stream avatar = await avatarLoader.LoadAvatarAsync(credential).ConfigureAwait(false);
                 using FileStream fileAvatar = new(name, FileMode.OpenOrCreate, FileAccess.Write);
 
                 fileAvatar.SetLength(0);

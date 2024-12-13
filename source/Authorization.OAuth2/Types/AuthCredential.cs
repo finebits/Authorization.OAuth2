@@ -20,49 +20,44 @@ using System;
 
 namespace Finebits.Authorization.OAuth2.Types
 {
-    public class Token
+    public class AuthCredential : Credential
     {
-        public const string BearerType = "Bearer";
-        public const string DefaultTokenType = BearerType;
+        public TimeSpan ExpiresIn { get; private set; }
+        public string Scope { get; private set; }
 
-        public string AccessToken { get; private set; }
-        public string RefreshToken { get; private set; }
-        public string TokenType { get; private set; }
-
-        public Token(string accessToken, string refreshToken, string tokenType)
+        public AuthCredential(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope)
+            : base(accessToken, refreshToken, tokenType)
         {
-            AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
-            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
-            TokenType = tokenType ?? DefaultTokenType;
+            ExpiresIn = expiresIn;
+            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }
 
-        public Token(Token other)
+        public AuthCredential(AuthCredential other)
+            : base(other)
         {
             if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            AccessToken = other.AccessToken;
-            RefreshToken = other.RefreshToken;
-            TokenType = other.TokenType;
+            ExpiresIn = other.ExpiresIn;
+            Scope = other.Scope;
         }
 
-        public virtual void Update(Token other)
+        public override void Update(Credential other)
         {
             if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            AccessToken = GetValueOrDefault(other.AccessToken, AccessToken);
-            RefreshToken = GetValueOrDefault(other.RefreshToken, RefreshToken);
-            TokenType = GetValueOrDefault(other.TokenType, TokenType);
-        }
+            base.Update(other);
 
-        protected static string GetValueOrDefault(string value, string defaultValue)
-        {
-            return string.IsNullOrEmpty(value) ? defaultValue : value;
+            if (other is AuthCredential credential)
+            {
+                ExpiresIn = credential.ExpiresIn;
+                Scope = GetValueOrDefault(credential.Scope, Scope);
+            }
         }
     }
 }

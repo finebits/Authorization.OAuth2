@@ -20,44 +20,49 @@ using System;
 
 namespace Finebits.Authorization.OAuth2.Types
 {
-    public class AuthorizationToken : Token
+    public class Credential
     {
-        public TimeSpan ExpiresIn { get; private set; }
-        public string Scope { get; private set; }
+        public const string BearerType = "Bearer";
+        public const string DefaultTokenType = BearerType;
 
-        public AuthorizationToken(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope)
-            : base(accessToken, refreshToken, tokenType)
+        public string AccessToken { get; private set; }
+        public string RefreshToken { get; private set; }
+        public string TokenType { get; private set; }
+
+        public Credential(string accessToken, string refreshToken, string tokenType)
         {
-            ExpiresIn = expiresIn;
-            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
+            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
+            TokenType = tokenType ?? DefaultTokenType;
         }
 
-        public AuthorizationToken(AuthorizationToken other)
-            : base(other)
+        public Credential(Credential other)
         {
             if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            ExpiresIn = other.ExpiresIn;
-            Scope = other.Scope;
+            AccessToken = other.AccessToken;
+            RefreshToken = other.RefreshToken;
+            TokenType = other.TokenType;
         }
 
-        public override void Update(Token other)
+        public virtual void Update(Credential other)
         {
             if (other is null)
             {
                 throw new ArgumentNullException(nameof(other));
             }
 
-            base.Update(other);
+            AccessToken = GetValueOrDefault(other.AccessToken, AccessToken);
+            RefreshToken = GetValueOrDefault(other.RefreshToken, RefreshToken);
+            TokenType = GetValueOrDefault(other.TokenType, TokenType);
+        }
 
-            if (other is AuthorizationToken token)
-            {
-                ExpiresIn = token.ExpiresIn;
-                Scope = GetValueOrDefault(token.Scope, Scope);
-            }
+        protected static string GetValueOrDefault(string value, string defaultValue)
+        {
+            return string.IsNullOrEmpty(value) ? defaultValue : value;
         }
     }
 }

@@ -68,12 +68,12 @@ namespace Finebits.Authorization.OAuth2.Microsoft
             return Task.FromResult(new Uri(endpoint));
         }
 
-        public Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
+        public Task<AuthCredential> RefreshAsync(Credential credential, CancellationToken cancellationToken = default)
         {
-            return new RefreshableClient(this).RefreshTokenAsync(token, cancellationToken);
+            return new RefreshableClient(this).RefreshAsync(credential, cancellationToken);
         }
 
-        public Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
+        public Task<IUserProfile> ReadProfileAsync(Credential credential, CancellationToken cancellationToken = default)
         {
             return new ProfileReader<MicrosoftProfileContent>(this)
             {
@@ -87,14 +87,14 @@ namespace Finebits.Authorization.OAuth2.Microsoft
                     UserPrincipalName = content.UserPrincipalName,
                     PreferredLanguage = content.PreferredLanguage
                 }
-            }.ReadProfileAsync(token, cancellationToken);
+            }.ReadProfileAsync(credential, cancellationToken);
         }
 
-        public async Task<Stream> LoadAvatarAsync(Token token, CancellationToken cancellationToken = default)
+        public async Task<Stream> LoadAvatarAsync(Credential credential, CancellationToken cancellationToken = default)
         {
-            if (token is null)
+            if (credential is null)
             {
-                throw new ArgumentNullException(nameof(token));
+                throw new ArgumentNullException(nameof(credential));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -102,7 +102,7 @@ namespace Finebits.Authorization.OAuth2.Microsoft
             return await DownloadFileAsync<MicrosoftEmptyContent>(
                  endpoint: Configuration.UserAvatarUri,
                  method: HttpMethod.Get,
-                 token: token,
+                 credential: credential,
                  headers: null,
                  cancellationToken: cancellationToken).ConfigureAwait(false);
         }

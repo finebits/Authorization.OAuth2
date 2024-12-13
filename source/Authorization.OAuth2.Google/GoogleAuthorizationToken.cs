@@ -22,11 +22,11 @@ using Finebits.Authorization.OAuth2.Types;
 
 namespace Finebits.Authorization.OAuth2.Google
 {
-    public class GoogleAuthorizationToken : AuthorizationToken
+    public class GoogleAuthCredential : AuthCredential
     {
         public string IdToken { get; private set; }
 
-        public GoogleAuthorizationToken(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope, string idToken)
+        public GoogleAuthCredential(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope, string idToken)
             : base(accessToken, refreshToken, tokenType, expiresIn, scope)
         {
             IdToken = idToken;

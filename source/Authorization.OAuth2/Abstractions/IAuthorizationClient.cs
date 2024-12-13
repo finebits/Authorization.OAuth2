@@ -25,8 +25,8 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IAuthorizationClient
     {
-        Task<AuthorizationToken> LoginAsync(CancellationToken cancellationToken = default);
+        Task<AuthCredential> LoginAsync(CancellationToken cancellationToken = default);
 
-        Task<AuthorizationToken> LoginAsync(string userId, CancellationToken cancellationToken = default);
+        Task<AuthCredential> LoginAsync(string userId, CancellationToken cancellationToken = default);
     }
 }

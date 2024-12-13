@@ -32,18 +32,18 @@ namespace Finebits.Authorization.OAuth2
         protected class RevocableClient : IRevocable
         {
             private readonly AuthorizationClient _client;
-            public Func<Token, NameValueCollection> RevokePayloadCreator { get; set; }
+            public Func<Credential, NameValueCollection> RevokePayloadCreator { get; set; }
 
             public RevocableClient(AuthorizationClient client)
             {
                 _client = client;
             }
 
-            public virtual async Task RevokeTokenAsync(Token token, CancellationToken cancellationToken = default)
+            public virtual async Task RevokeAsync(Credential credential, CancellationToken cancellationToken = default)
             {
-                if (token is null)
+                if (credential is null)
                 {
-                    throw new ArgumentNullException(nameof(token));
+                    throw new ArgumentNullException(nameof(credential));
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
@@ -51,13 +51,13 @@ namespace Finebits.Authorization.OAuth2
                 await _client.SendRequestAsync<EmptyContent>(
                     endpoint: _client.Config.RevokeUri,
                     method: HttpMethod.Post,
-                    token: token,
-                    payload: RevokePayloadCreator?.Invoke(token) ?? GetDefaultRevokePayload(token),
+                    credential: credential,
+                    payload: RevokePayloadCreator?.Invoke(credential) ?? GetDefaultRevokePayload(credential),
                     headers: null,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            private static NameValueCollection GetDefaultRevokePayload(Token _)
+            private static NameValueCollection GetDefaultRevokePayload(Credential _)
             {
                 return [];
             }

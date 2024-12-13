@@ -65,17 +65,17 @@ namespace Finebits.Authorization.OAuth2.Google
             return Task.FromResult(new Uri(endpoint));
         }
 
-        protected override async Task<AuthorizationToken> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
+        protected override async Task<AuthCredential> AuthorizeAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
-            GoogleTokenContent response = await SendRequestAsync<GoogleTokenContent>(
+            GoogleAuthContent response = await SendRequestAsync<GoogleAuthContent>(
                 endpoint: Configuration.TokenUri,
                 method: HttpMethod.Post,
-                token: null,
+                credential: null,
                 payload: GetTokenPayload(result, properties),
                 headers: null,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return new GoogleAuthorizationToken(
+            return new GoogleAuthCredential(
                 response.AccessToken,
                 response.RefreshToken,
                 response.TokenType,
@@ -85,28 +85,28 @@ namespace Finebits.Authorization.OAuth2.Google
                 );
         }
 
-        public Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
+        public Task<AuthCredential> RefreshAsync(Credential credential, CancellationToken cancellationToken = default)
         {
-            return new RefreshableClient(this).RefreshTokenAsync(token, cancellationToken);
+            return new RefreshableClient(this).RefreshAsync(credential, cancellationToken);
         }
 
-        public Task RevokeTokenAsync(Token token, CancellationToken cancellationToken = default)
+        public Task RevokeAsync(Credential credential, CancellationToken cancellationToken = default)
         {
             return new RevocableClient(this)
             {
                 RevokePayloadCreator = GetRevokePayload
-            }.RevokeTokenAsync(token, cancellationToken);
+            }.RevokeAsync(credential, cancellationToken);
         }
 
-        protected static NameValueCollection GetRevokePayload(Token token)
+        protected static NameValueCollection GetRevokePayload(Credential credential)
         {
             return new RevokePayload()
             {
-                RefreshToken = (token ?? throw new ArgumentNullException(nameof(token))).RefreshToken
+                RefreshToken = (credential ?? throw new ArgumentNullException(nameof(credential))).RefreshToken
             }.GetCollection();
         }
 
-        public Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
+        public Task<IUserProfile> ReadProfileAsync(Credential credential, CancellationToken cancellationToken = default)
         {
             return new ProfileReader<GoogleProfileContent>(this)
             {
@@ -121,14 +121,14 @@ namespace Finebits.Authorization.OAuth2.Google
                     IsEmailVerified = content.IsEmailVerified,
                     Locale = content.Locale,
                 }
-            }.ReadProfileAsync(token, cancellationToken);
+            }.ReadProfileAsync(credential, cancellationToken);
         }
 
-        public async Task<Stream> LoadAvatarAsync(Token token, CancellationToken cancellationToken = default)
+        public async Task<Stream> LoadAvatarAsync(Credential credential, CancellationToken cancellationToken = default)
         {
-            if (token is null)
+            if (credential is null)
             {
-                throw new ArgumentNullException(nameof(token));
+                throw new ArgumentNullException(nameof(credential));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -137,7 +137,7 @@ namespace Finebits.Authorization.OAuth2.Google
 
             try
             {
-                profile = await ReadProfileAsync(token, cancellationToken).ConfigureAwait(false);
+                profile = await ReadProfileAsync(credential, cancellationToken).ConfigureAwait(false);
             }
             catch (AuthorizationEmptyResponseException ex)
             {
@@ -149,7 +149,7 @@ namespace Finebits.Authorization.OAuth2.Google
                 return await DownloadFileAsync<EmptyContent>(
                     endpoint: googleProfile.Avatar,
                     method: HttpMethod.Get,
-                    token: null,
+                    credential: null,
                     headers: null,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
