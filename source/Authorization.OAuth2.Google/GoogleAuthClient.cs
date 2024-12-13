@@ -65,7 +65,7 @@ namespace Finebits.Authorization.OAuth2.Google
             return Task.FromResult(new Uri(endpoint));
         }
 
-        protected override async Task<AuthCredential> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
+        protected override async Task<AuthCredential> AuthorizeAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
             GoogleAuthContent response = await SendRequestAsync<GoogleAuthContent>(
                 endpoint: Configuration.TokenUri,

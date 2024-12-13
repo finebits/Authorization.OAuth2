@@ -93,7 +93,7 @@ namespace Finebits.Authorization.OAuth2
             ThrowIfAuthenticationUnsuccessful(result);
 
             cancellationToken.ThrowIfCancellationRequested();
-            return await GetTokenAsync(result, properties, cancellationToken).ConfigureAwait(false);
+            return await AuthorizeAsync(result, properties, cancellationToken).ConfigureAwait(false);
         }
 
         protected virtual Task<object> PrepareAsync(string userId, CancellationToken cancellationToken)
@@ -115,7 +115,7 @@ namespace Finebits.Authorization.OAuth2
             return Task.FromResult(Config.RedirectUri);
         }
 
-        protected virtual async Task<AuthCredential> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
+        protected virtual async Task<AuthCredential> AuthorizeAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
             AuthContent response = await SendRequestAsync<AuthContent>(
                 endpoint: Config.TokenUri,
