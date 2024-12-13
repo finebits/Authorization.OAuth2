@@ -25,7 +25,6 @@ using Finebits.Authorization.OAuth2.Google;
 using Finebits.Authorization.OAuth2.Microsoft;
 using Finebits.Authorization.OAuth2.Outlook;
 using Finebits.Authorization.OAuth2.Test.Data.Mocks;
-using Finebits.Authorization.OAuth2.Types;
 
 using Moq;
 
