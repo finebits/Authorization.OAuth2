@@ -165,31 +165,6 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
-                                               && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(() => new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = JsonContent.Create(
-                        inputValue: new
-                        {
-                            Id = FakeConstant.UserProfile.Id,
-                            EmailAddress = FakeConstant.UserProfile.Email,
-                            DisplayName = FakeConstant.UserProfile.DisplayName,
-                            Alias = FakeConstant.UserProfile.Outlook.Alias,
-                            MailboxGuid = FakeConstant.UserProfile.Outlook.MailboxGuid,
-                        },
-                        options: new System.Text.Json.JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true,
-                        }),
-                });
-
-            mock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
                                                && rm.RequestUri.AbsolutePath.EndsWith("avatar-uri")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(() => new HttpResponseMessage()
