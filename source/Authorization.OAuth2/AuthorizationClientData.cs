@@ -34,7 +34,7 @@ namespace Finebits.Authorization.OAuth2
             public string CodeVerifier { get; set; }
         }
 
-        protected class TokenPayload
+        protected class AuthPayload
         {
             public string ClientId { get; set; }
 
@@ -86,7 +86,7 @@ namespace Finebits.Authorization.OAuth2
             public string ErrorReason { get; private set; }
         }
 
-        protected class TokenContent : EmptyContent
+        protected class AuthContent : EmptyContent
         {
             [JsonInclude]
             [JsonPropertyName("access_token")]

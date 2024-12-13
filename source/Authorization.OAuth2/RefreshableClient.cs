@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                TokenContent response = await _client.SendRequestAsync<TokenContent>(
+                AuthContent response = await _client.SendRequestAsync<AuthContent>(
                     endpoint: _client.Config.RefreshUri,
                     method: HttpMethod.Post,
                     credential: credential,

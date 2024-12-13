@@ -117,7 +117,7 @@ namespace Finebits.Authorization.OAuth2
 
         protected virtual async Task<AuthCredential> GetTokenAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
         {
-            TokenContent response = await SendRequestAsync<TokenContent>(
+            AuthContent response = await SendRequestAsync<AuthContent>(
                 endpoint: Config.TokenUri,
                 method: HttpMethod.Post,
                 credential: null,
@@ -171,7 +171,7 @@ namespace Finebits.Authorization.OAuth2
 
                 string code = GetAuthCode(result);
 
-                return new TokenPayload()
+                return new AuthPayload()
                 {
                     ClientId = Config.ClientId,
                     ClientSecret = Config.ClientSecret,
