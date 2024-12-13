@@ -52,13 +52,9 @@ internal class AuthClientLoginTests
         {
             Assert.That(credential.AccessToken, Is.EqualTo(FakeConstant.Credential.AccessToken));
             Assert.That(credential.RefreshToken, Is.EqualTo(FakeConstant.Credential.RefreshToken));
+            Assert.That(credential.IdToken, Is.EqualTo(FakeConstant.Credential.IdToken));
             Assert.That(credential.TokenType, Is.EqualTo(FakeConstant.Credential.TokenType));
             Assert.That(credential.ExpiresIn, Is.EqualTo(TimeSpan.FromSeconds(FakeConstant.Credential.ExpiresIn)));
-
-            if (credential is GoogleAuthCredential googleCredential)
-            {
-                Assert.That(googleCredential.IdToken, Is.Not.Null);
-            }
         });
     }
 

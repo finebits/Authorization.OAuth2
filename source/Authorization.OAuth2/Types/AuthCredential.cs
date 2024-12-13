@@ -23,13 +23,15 @@ namespace Finebits.Authorization.OAuth2.Types
     public class AuthCredential : Credential
     {
         public TimeSpan ExpiresIn { get; private set; }
+        public string IdToken { get; private set; }
         public string Scope { get; private set; }
 
-        public AuthCredential(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope)
-            : base(accessToken, refreshToken, tokenType)
+        public AuthCredential(string tokenType, string accessToken, string refreshToken, string idToken, TimeSpan expiresIn, string scope)
+            : base(tokenType, accessToken, refreshToken)
         {
-            ExpiresIn = expiresIn;
+            IdToken = idToken ?? throw new ArgumentNullException(nameof(idToken));
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            ExpiresIn = expiresIn;
         }
 
         public AuthCredential(AuthCredential other)
@@ -56,6 +58,7 @@ namespace Finebits.Authorization.OAuth2.Types
             if (other is AuthCredential credential)
             {
                 ExpiresIn = credential.ExpiresIn;
+                IdToken = GetValueOrDefault(credential.IdToken, IdToken);
                 Scope = GetValueOrDefault(credential.Scope, Scope);
             }
         }

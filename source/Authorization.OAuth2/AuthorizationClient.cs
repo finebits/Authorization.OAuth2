@@ -126,9 +126,10 @@ namespace Finebits.Authorization.OAuth2
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return new AuthCredential(
+                response.TokenType,
                 response.AccessToken,
                 response.RefreshToken,
-                response.TokenType,
+                response.IdToken,
                 TimeSpan.FromSeconds(response.ExpiresIn),
                 response.Scope
                 );

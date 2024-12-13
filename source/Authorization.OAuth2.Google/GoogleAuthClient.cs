@@ -65,26 +65,6 @@ namespace Finebits.Authorization.OAuth2.Google
             return Task.FromResult(new Uri(endpoint));
         }
 
-        protected override async Task<AuthCredential> AuthorizeAsync(AuthenticationResult result, object properties, CancellationToken cancellationToken)
-        {
-            GoogleAuthContent response = await SendRequestAsync<GoogleAuthContent>(
-                endpoint: Configuration.TokenUri,
-                method: HttpMethod.Post,
-                credential: null,
-                payload: GetTokenPayload(result, properties),
-                headers: null,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
-
-            return new GoogleAuthCredential(
-                response.AccessToken,
-                response.RefreshToken,
-                response.TokenType,
-                TimeSpan.FromSeconds(response.ExpiresIn),
-                response.Scope,
-                response.IdToken
-                );
-        }
-
         public Task<AuthCredential> RefreshAsync(Credential credential, CancellationToken cancellationToken = default)
         {
             return new RefreshableClient(this).RefreshAsync(credential, cancellationToken);

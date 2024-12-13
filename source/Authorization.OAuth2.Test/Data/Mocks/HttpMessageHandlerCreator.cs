@@ -57,27 +57,6 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                             expires_in = FakeConstant.Credential.ExpiresIn,
                             refresh_token = FakeConstant.Credential.RefreshToken,
                             scope = FakeConstant.Credential.Scope,
-                        }),
-                });
-
-            mock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
-                                               && rm.RequestUri.Host.Equals("google", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("token-uri")),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(() => new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = JsonContent.Create(
-                        new
-                        {
-                            access_token = FakeConstant.Credential.AccessToken,
-                            token_type = FakeConstant.Credential.TokenType,
-                            expires_in = FakeConstant.Credential.ExpiresIn,
-                            refresh_token = FakeConstant.Credential.RefreshToken,
-                            scope = FakeConstant.Credential.Scope,
                             id_token = FakeConstant.Credential.IdToken,
                         }),
                 });
