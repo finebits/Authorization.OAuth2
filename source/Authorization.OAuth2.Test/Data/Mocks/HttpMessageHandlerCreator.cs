@@ -57,27 +57,6 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                             expires_in = FakeConstant.Credential.ExpiresIn,
                             refresh_token = FakeConstant.Credential.RefreshToken,
                             scope = FakeConstant.Credential.Scope,
-                        }),
-                });
-
-            mock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
-                                               && rm.RequestUri.Host.Equals("google", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("token-uri")),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(() => new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = JsonContent.Create(
-                        new
-                        {
-                            access_token = FakeConstant.Credential.AccessToken,
-                            token_type = FakeConstant.Credential.TokenType,
-                            expires_in = FakeConstant.Credential.ExpiresIn,
-                            refresh_token = FakeConstant.Credential.RefreshToken,
-                            scope = FakeConstant.Credential.Scope,
                             id_token = FakeConstant.Credential.IdToken,
                         }),
                 });
@@ -179,31 +158,6 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
                             mobilePhone = FakeConstant.UserProfile.Microsoft.MobilePhone,
                             jobTitle = FakeConstant.UserProfile.Microsoft.JobTitle,
                             officeLocation = FakeConstant.UserProfile.Microsoft.OfficeLocation,
-                        }),
-                });
-
-            mock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.Is<HttpRequestMessage>(rm => rm.RequestUri != null
-                                               && rm.RequestUri.Host.Equals("outlook", StringComparison.Ordinal)
-                                               && rm.RequestUri.AbsolutePath.EndsWith("profile-uri")),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(() => new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = JsonContent.Create(
-                        inputValue: new
-                        {
-                            Id = FakeConstant.UserProfile.Id,
-                            EmailAddress = FakeConstant.UserProfile.Email,
-                            DisplayName = FakeConstant.UserProfile.DisplayName,
-                            Alias = FakeConstant.UserProfile.Outlook.Alias,
-                            MailboxGuid = FakeConstant.UserProfile.Outlook.MailboxGuid,
-                        },
-                        options: new System.Text.Json.JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true,
                         }),
                 });
 

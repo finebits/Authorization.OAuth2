@@ -38,6 +38,7 @@ internal partial class Program
             RedirectUri = redirectURI,
             ScopeList =
             [
+                "openid",
                 "profile",
                 "email"
             ]
@@ -57,6 +58,9 @@ internal partial class Program
             ScopeList =
             [
                 "offline_access",
+                "openid",
+                "profile",
+                "email",
                 "https://graph.microsoft.com/.default",
             ]
         };
@@ -75,7 +79,10 @@ internal partial class Program
             ScopeList =
             [
                 "offline_access",
-                "https://outlook.office.com/.default"
+                "openid",
+                "profile",
+                "email",
+                "https://outlook.office.com/.default",
             ]
         };
         return new OutlookAuthClient(httpClient, new DesktopAuthenticationBroker(launcher), config);

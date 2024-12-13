@@ -25,11 +25,11 @@ namespace Finebits.Authorization.OAuth2.Types
         public const string BearerType = "Bearer";
         public const string DefaultTokenType = BearerType;
 
+        public string TokenType { get; private set; }
         public string AccessToken { get; private set; }
         public string RefreshToken { get; private set; }
-        public string TokenType { get; private set; }
 
-        public Credential(string accessToken, string refreshToken, string tokenType)
+        public Credential(string tokenType, string accessToken, string refreshToken)
         {
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
             RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));

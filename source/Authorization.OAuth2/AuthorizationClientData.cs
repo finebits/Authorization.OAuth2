@@ -107,6 +107,10 @@ namespace Finebits.Authorization.OAuth2
             [JsonInclude]
             [JsonPropertyName("scope")]
             public string Scope { get; private set; } = string.Empty;
+
+            [JsonInclude]
+            [JsonPropertyName("id_token")]
+            public string IdToken { get; private set; } = string.Empty;
         }
     }
 }

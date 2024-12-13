@@ -16,10 +16,14 @@
 //                                                                              //
 // ---------------------------------------------------------------------------- //
 
+using System.IdentityModel.Tokens.Jwt;
+
 using Finebits.Authorization.OAuth2.Abstractions;
 using Finebits.Authorization.OAuth2.AuthenticationBroker;
 using Finebits.Authorization.OAuth2.Exceptions;
 using Finebits.Authorization.OAuth2.Types;
+
+using Microsoft.IdentityModel.Tokens;
 
 namespace Finebits.Authorization.OAuth2.Sample;
 
@@ -29,11 +33,14 @@ internal partial class Program
     {
         try
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.InputEncoding = System.Text.Encoding.UTF8;
+
             using HttpClient httpClient = new();
             WebBrowserLauncher launcher = new();
             Uri redirectURI = DesktopAuthenticationBroker.GetLoopbackUri();
 
-            Console.WriteLine("Welcome to OAuth2.Sample.");
+            WriteColorLine("Welcome to OAuth2.Sample.", ConsoleColor.White);
 
             if (!DesktopAuthenticationBroker.IsSupported)
             {
@@ -64,6 +71,9 @@ internal partial class Program
             PrintCredential(credential, "Login response");
 
             Console.WriteLine();
+            PrintTokenPayload(credential);
+
+            Console.WriteLine();
             AuthCredential? fresh = await RefreshAsync(authClient, credential).ConfigureAwait(false);
             PrintCredential(credential, "Refresh response");
             credential.Update(fresh);
@@ -91,15 +101,22 @@ internal partial class Program
             return;
         }
 
-        Console.WriteLine($"{header}:", ConsoleColor.Yellow);
+        WriteColorLine($"{header}:", ConsoleColor.White);
 
         Console.WriteLine($"""
-                AccessToken: {credential.AccessToken[0..8]}...
-                RefreshToken: {credential.RefreshToken[0..8]}...
                 TokenType: {credential.TokenType ?? "null"}
+                AccessToken: {PrintToken(credential.AccessToken)}
+                RefreshToken: {PrintToken(credential.RefreshToken)}
+                IdToken: {PrintToken(credential.IdToken)}
                 ExpiresIn: {credential.ExpiresIn}
                 Scope: {credential.Scope ?? "null"}
                 """);
+
+        static string PrintToken(string token)
+        {
+            const int PrintLength = 8;
+            return $"{(token.Length > PrintLength ? $"{token[0..PrintLength]}..." : "<empty>")}";
+        }
     }
 
     private static void PrintProfile(IUserProfile? profile, string header)
@@ -109,7 +126,7 @@ internal partial class Program
             return;
         }
 
-        Console.WriteLine($"{header}:", ConsoleColor.Yellow);
+        WriteColorLine($"{header}:", ConsoleColor.White);
 
         Console.WriteLine($"""
                 {nameof(IUserProfile.Id)}: {profile.Id}
@@ -206,6 +223,33 @@ internal partial class Program
         else
         {
             WriteColorLine("Load Avatar operation unavailable.", ConsoleColor.Yellow);
+        }
+    }
+
+    private static void PrintTokenPayload(AuthCredential credential)
+    {
+        if (credential is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(credential.IdToken))
+        {
+            WriteColorLine("Read IdToken operation unavailable.", ConsoleColor.Yellow);
+            return;
+        }
+
+        JwtSecurityTokenHandler handler = new();
+        SecurityToken securityToken = handler.ReadToken(credential.IdToken);
+
+        if (securityToken is JwtSecurityToken jwtToken)
+        {
+            WriteColorLine("IdToken Payload:", ConsoleColor.White);
+
+            foreach (KeyValuePair<string, object> item in jwtToken.Payload)
+            {
+                Console.WriteLine($"{item.Key}: {item.Value}");
+            }
         }
     }
 
