@@ -2,15 +2,10 @@
 
 ![Target](https://img.shields.io/badge/dynamic/xml?label=Target&query=//TargetFramework[1]&url=https://raw.githubusercontent.com/finebits/Authorization.OAuth2/main/source/Authorization.OAuth2/Authorization.OAuth2.csproj)
 [![License](https://img.shields.io/github/license/finebits/Authorization.OAuth2.svg)](https://github.com/finebits/Authorization.OAuth2/blob/main/LICENSE)
+[![Build and test](https://img.shields.io/github/actions/workflow/status/finebits/Authorization.OAuth2/build-and-test.yml?branch=main&logo=github&label=build)](https://github.com/finebits/Authorization.OAuth2/actions/workflows/build-and-test.yml?query=branch%3Amain)
+![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-total-test-coverage.json)
 
 This is a .netstandard2 library that allows an application to support the OAuth 2.0 protocol.
-
-## Build Status
-
-|Branch|Status|Code Coverage|
-|:-|:-:|:-:|
-| **[main](https://github.com/finebits/Authorization.OAuth2/tree/main)** | <sub>[![Main branch: build and test](https://img.shields.io/github/actions/workflow/status/finebits/Authorization.OAuth2/build-and-test.yml?branch=main&logo=github&label=)](https://github.com/finebits/Authorization.OAuth2/actions/workflows/build-and-test.yml?query=branch%3Amain)</sub> | <sub>![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-main-total-test-coverage.json)</sub> |
-| **[develop](https://github.com/finebits/Authorization.OAuth2/tree/develop)** | <sub>[![Develop branch: build and test](https://img.shields.io/github/actions/workflow/status/finebits/Authorization.OAuth2/build-and-test.yml?branch=develop&logo=github&label=)](https://github.com/finebits/Authorization.OAuth2/actions/workflows/build-and-test.yml?query=branch%3Adevelop)</sub> | <sub>![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/finebits-github/74f6d448f4f568a286d4622e92afbc75/raw/Authorization.OAuth2-develop-total-test-coverage.json)</sub> |
 
 ## NuGet Packages
 
@@ -71,20 +66,15 @@ GoogleConfiguration config = new()
     ClientId = "<client-id>",
     ClientSecret = "<client-secret>",
     RedirectUri = redirectURI,
-    ScopeList = new[] { "<scope>", "..." }
+    ScopeList = [ "<scope>", "..." ]
 };
 
 GoogleAuthClient authClient = new(httpClient, new DesktopAuthenticationBroker(launcher), config);
 
-// The result contains token parameters which can be used to send service requests.
-Token token = await authClient.LoginAsync();
+// The result contains a access token which can be used to send service requests.
+AuthCredential credential = await authClient.LoginAsync();
 
-// The result contains fresh token parameters.
-Token freshToken = await authClient.RefreshTokenAsync(token);
-
-token.Update(freshToken);
-
-IUserProfile profile = await authClient.ReadProfileAsync(token);
+IUserProfile profile = await authClient.ReadProfileAsync(credential);
 Console.WriteLine($"Name: {profile.DisplayName}");
 
 if (profile is IUserAvatar userAvatar)
@@ -92,14 +82,17 @@ if (profile is IUserAvatar userAvatar)
     Console.WriteLine($"Avatar URI: {userAvatar.Avatar}");
 }
 
-Stream avatar = await authClient.LoadAvatarAsync(token);
+Stream avatar = await authClient.LoadAvatarAsync(credential);
 
-await authClient.RevokeTokenAsync(token);
+AuthCredential fresh = await authClient.RefreshAsync(credential);
+credential.Update(fresh);
+
+await authClient.RevokeAsync(credential);
 ```
 
 ## Links
 
-- Google: 
+- Google:
   - [Using OAuth 2.0 to Access Google APIs](https://developers.google.com/identity/protocols/oauth2)
   - [OAuth 2.0 for Mobile & Desktop Apps](https://developers.google.com/identity/protocols/oauth2/native-app)
 - Microsoft:
