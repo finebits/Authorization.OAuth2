@@ -39,11 +39,11 @@ namespace Finebits.Authorization.OAuth2
                 _client = client;
             }
 
-            public async Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default)
+            public async Task<IUserProfile> ReadProfileAsync(Credential credential, CancellationToken cancellationToken = default)
             {
-                if (token is null)
+                if (credential is null)
                 {
-                    throw new ArgumentNullException(nameof(token));
+                    throw new ArgumentNullException(nameof(credential));
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
@@ -51,7 +51,7 @@ namespace Finebits.Authorization.OAuth2
                 TContent response = await _client.SendEmptyRequestAsync<TContent>(
                     endpoint: _client.Config.UserProfileUri,
                     method: HttpMethod.Get,
-                    token: token,
+                    credential: credential,
                     headers: null,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 

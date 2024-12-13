@@ -25,6 +25,6 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IProfileReader
     {
-        Task<IUserProfile> ReadProfileAsync(Token token, CancellationToken cancellationToken = default);
+        Task<IUserProfile> ReadProfileAsync(Credential credential, CancellationToken cancellationToken = default);
     }
 }

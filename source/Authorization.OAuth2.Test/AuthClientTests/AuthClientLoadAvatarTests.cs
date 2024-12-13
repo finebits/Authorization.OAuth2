@@ -52,7 +52,7 @@ internal class AuthClientLoadAvatarTests
         Assert.That(userAvatarLoader, Is.Not.Null);
 
         ArgumentNullException? exception = Assert.ThrowsAsync<ArgumentNullException>(async () => await userAvatarLoader.LoadAvatarAsync(null).ConfigureAwait(false));
-        Assert.That(exception.ParamName, Is.EqualTo("token"));
+        Assert.That(exception.ParamName, Is.EqualTo("credential"));
     }
 
     [Test]
@@ -62,13 +62,13 @@ internal class AuthClientLoadAvatarTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IUserAvatarLoader? userAvatarLoader = client as IUserAvatarLoader;
         Assert.That(userAvatarLoader, Is.Not.Null);
 
         Stream? stream = null;
-        Assert.DoesNotThrowAsync(async () => stream = await userAvatarLoader.LoadAvatarAsync(token).ConfigureAwait(false));
+        Assert.DoesNotThrowAsync(async () => stream = await userAvatarLoader.LoadAvatarAsync(credential).ConfigureAwait(false));
         Assert.That(stream, Is.Not.Null);
 
         using StreamReader reader = new(stream);
@@ -84,13 +84,13 @@ internal class AuthClientLoadAvatarTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IUserAvatarLoader? userAvatarLoader = client as IUserAvatarLoader;
         Assert.That(userAvatarLoader, Is.Not.Null);
 
         cts.Cancel();
-        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await userAvatarLoader.LoadAvatarAsync(token, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await userAvatarLoader.LoadAvatarAsync(credential, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
@@ -102,12 +102,12 @@ internal class AuthClientLoadAvatarTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IUserAvatarLoader? userAvatarLoader = client as IUserAvatarLoader;
         Assert.That(userAvatarLoader, Is.Not.Null);
 
-        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await userAvatarLoader.LoadAvatarAsync(token, cts.Token).ConfigureAwait(false));
+        OperationCanceledException? exception = Assert.CatchAsync<OperationCanceledException>(async () => await userAvatarLoader.LoadAvatarAsync(credential, cts.Token).ConfigureAwait(false));
         Assert.That(exception, Is.Not.Null);
     }
 
@@ -118,12 +118,12 @@ internal class AuthClientLoadAvatarTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IUserAvatarLoader? userAvatarLoader = client as IUserAvatarLoader;
         Assert.That(userAvatarLoader, Is.Not.Null);
 
-        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await userAvatarLoader.LoadAvatarAsync(token).ConfigureAwait(false));
+        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await userAvatarLoader.LoadAvatarAsync(credential).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>
@@ -146,12 +146,12 @@ internal class AuthClientLoadAvatarTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IUserAvatarLoader? userAvatarLoader = client as IUserAvatarLoader;
         Assert.That(userAvatarLoader, Is.Not.Null);
 
-        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await userAvatarLoader.LoadAvatarAsync(token).ConfigureAwait(false));
+        AuthorizationInvalidResponseException? exception = Assert.ThrowsAsync<AuthorizationInvalidResponseException>(async () => await userAvatarLoader.LoadAvatarAsync(credential).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
         HttpRequestException? innerException = exception.InnerException as HttpRequestException;
@@ -166,12 +166,12 @@ internal class AuthClientLoadAvatarTests
         Mock<IAuthenticationBroker> mockAuthBroker = new();
         AuthConfiguration config = Test.Data.AuthCreator.CreateConfig(AuthType);
         IAuthorizationClient client = Test.Data.AuthCreator.CreateAuthClient(AuthType, httpClient, mockAuthBroker.Object, config);
-        Types.Token token = Test.Data.AuthCreator.CreateFakeToken();
+        Types.Credential credential = Test.Data.AuthCreator.CreateFakeCredential();
 
         IUserAvatarLoader? userAvatarLoader = client as IUserAvatarLoader;
         Assert.That(userAvatarLoader, Is.Not.Null);
 
-        AuthorizationDownloadFileException? exception = Assert.ThrowsAsync<AuthorizationDownloadFileException>(async () => await userAvatarLoader.LoadAvatarAsync(token).ConfigureAwait(false));
+        AuthorizationDownloadFileException? exception = Assert.ThrowsAsync<AuthorizationDownloadFileException>(async () => await userAvatarLoader.LoadAvatarAsync(credential).ConfigureAwait(false));
 
         Assert.That(exception, Is.Not.Null);
     }

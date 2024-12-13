@@ -67,9 +67,9 @@ namespace Finebits.Authorization.OAuth2.Outlook
             return Task.FromResult(new Uri(endpoint));
         }
 
-        public Task<AuthorizationToken> RefreshTokenAsync(Token token, CancellationToken cancellationToken = default)
+        public Task<AuthCredential> RefreshAsync(Credential credential, CancellationToken cancellationToken = default)
         {
-            return new RefreshableClient(this).RefreshTokenAsync(token, cancellationToken);
+            return new RefreshableClient(this).RefreshAsync(credential, cancellationToken);
         }
     }
 }

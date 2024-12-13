@@ -20,19 +20,19 @@ using System;
 
 namespace Finebits.Authorization.OAuth2.Types
 {
-    public class AuthorizationToken : Token
+    public class AuthCredential : Credential
     {
         public TimeSpan ExpiresIn { get; private set; }
         public string Scope { get; private set; }
 
-        public AuthorizationToken(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope)
+        public AuthCredential(string accessToken, string refreshToken, string tokenType, TimeSpan expiresIn, string scope)
             : base(accessToken, refreshToken, tokenType)
         {
             ExpiresIn = expiresIn;
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }
 
-        public AuthorizationToken(AuthorizationToken other)
+        public AuthCredential(AuthCredential other)
             : base(other)
         {
             if (other is null)
@@ -44,7 +44,7 @@ namespace Finebits.Authorization.OAuth2.Types
             Scope = other.Scope;
         }
 
-        public override void Update(Token other)
+        public override void Update(Credential other)
         {
             if (other is null)
             {
@@ -53,10 +53,10 @@ namespace Finebits.Authorization.OAuth2.Types
 
             base.Update(other);
 
-            if (other is AuthorizationToken token)
+            if (other is AuthCredential credential)
             {
-                ExpiresIn = token.ExpiresIn;
-                Scope = GetValueOrDefault(token.Scope, Scope);
+                ExpiresIn = credential.ExpiresIn;
+                Scope = GetValueOrDefault(credential.Scope, Scope);
             }
         }
     }

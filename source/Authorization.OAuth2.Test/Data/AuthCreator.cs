@@ -120,11 +120,11 @@ namespace Finebits.Authorization.OAuth2.Test.Data
             };
         }
 
-        internal static Types.Token CreateFakeToken()
+        internal static Types.Credential CreateFakeCredential()
         {
-            return new Types.Token(accessToken: FakeConstant.Token.AccessToken,
-                                   refreshToken: FakeConstant.Token.RefreshToken,
-                                   tokenType: FakeConstant.Token.TokenType);
+            return new Types.Credential(accessToken: FakeConstant.Credential.AccessToken,
+                                   refreshToken: FakeConstant.Credential.RefreshToken,
+                                   tokenType: FakeConstant.Credential.TokenType);
         }
     }
 }

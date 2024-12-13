@@ -26,6 +26,6 @@ namespace Finebits.Authorization.OAuth2.Abstractions
 {
     public interface IUserAvatarLoader
     {
-        Task<Stream> LoadAvatarAsync(Token token, CancellationToken cancellationToken = default);
+        Task<Stream> LoadAvatarAsync(Credential credential, CancellationToken cancellationToken = default);
     }
 }

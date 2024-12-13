@@ -76,42 +76,42 @@ internal class TypeTests
 
     [Test]
     [TestCase(AccessToken, RefreshToken, TokenType, TokenType)]
-    [TestCase(AccessToken, RefreshToken, null, Token.DefaultTokenType)]
-    public void Token_Constructor_CorrectParam_Success(string? accessToken, string? refreshToken, string? tokenType, string finalTokenType)
+    [TestCase(AccessToken, RefreshToken, null, Credential.DefaultTokenType)]
+    public void Credential_Constructor_CorrectParam_Success(string? accessToken, string? refreshToken, string? tokenType, string finalTokenType)
     {
-        Token? token = null;
+        Credential? credential = null;
 
-        Assert.DoesNotThrow(() => token = new Token(accessToken, refreshToken, tokenType));
+        Assert.DoesNotThrow(() => credential = new Credential(accessToken, refreshToken, tokenType));
 
-        Assert.That(token, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(token.AccessToken, Is.EqualTo(accessToken));
-            Assert.That(token.RefreshToken, Is.EqualTo(refreshToken));
-            Assert.That(token.TokenType, Is.EqualTo(finalTokenType));
+            Assert.That(credential.AccessToken, Is.EqualTo(accessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(refreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(finalTokenType));
         });
     }
 
     [Test]
     [TestCase(AccessToken, RefreshToken, TokenType, TokenType)]
-    [TestCase(AccessToken, RefreshToken, null, Token.DefaultTokenType)]
-    public void Token_CopyConstructor_CorrectParam_Success(string? accessToken, string? refreshToken, string? tokenType, string finalTokenType)
+    [TestCase(AccessToken, RefreshToken, null, Credential.DefaultTokenType)]
+    public void Credential_CopyConstructor_CorrectParam_Success(string? accessToken, string? refreshToken, string? tokenType, string finalTokenType)
     {
-        Token? token = null;
-        Token? newToken = null;
+        Credential? credential = null;
+        Credential? newCredential = null;
 
         Assert.DoesNotThrow(() =>
         {
-            token = new Token(accessToken, refreshToken, tokenType);
-            newToken = new Token(token);
+            credential = new Credential(accessToken, refreshToken, tokenType);
+            newCredential = new Credential(credential);
         });
 
-        Assert.That(newToken, Is.Not.Null);
+        Assert.That(newCredential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(newToken.AccessToken, Is.EqualTo(accessToken));
-            Assert.That(newToken.RefreshToken, Is.EqualTo(refreshToken));
-            Assert.That(newToken.TokenType, Is.EqualTo(finalTokenType));
+            Assert.That(newCredential.AccessToken, Is.EqualTo(accessToken));
+            Assert.That(newCredential.RefreshToken, Is.EqualTo(refreshToken));
+            Assert.That(newCredential.TokenType, Is.EqualTo(finalTokenType));
         });
     }
 
@@ -122,18 +122,18 @@ internal class TypeTests
     [TestCase(null, RefreshToken, TokenType, "accessToken")]
     [TestCase(AccessToken, null, null, "refreshToken")]
     [TestCase(AccessToken, null, TokenType, "refreshToken")]
-    public void Token_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string exceptionParamName)
+    public void Credential_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string exceptionParamName)
     {
-        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Token(accessToken, refreshToken, tokenType));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Credential(accessToken, refreshToken, tokenType));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(exceptionParamName));
     }
 
     [Test]
-    public void Token_CopyConstructor_NullParam_Exception()
+    public void Credential_CopyConstructor_NullParam_Exception()
     {
-        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Token(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new Credential(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("other"));
@@ -164,38 +164,38 @@ internal class TypeTests
     [TestCase(AccessToken, RefreshToken, TokenType,
               Empty, Empty, Empty,
               AccessToken, RefreshToken, TokenType)]
-    public void Token_Update_CorrectParam_Success(
+    public void Credential_Update_CorrectParam_Success(
         string accessToken, string refreshToken, string tokenType,
         string freshAccessToken, string freshRefreshToken, string freshTokenType,
         string finalAccessToken, string finalRefreshToken, string finalTokenType)
     {
-        Token? token = null;
-        Token? fresh = null;
+        Credential? credential = null;
+        Credential? fresh = null;
 
         Assert.DoesNotThrow(() =>
         {
-            token = new(accessToken, refreshToken, tokenType);
+            credential = new(accessToken, refreshToken, tokenType);
             fresh = new(freshAccessToken, freshRefreshToken, freshTokenType);
 
-            token.Update(fresh);
+            credential.Update(fresh);
         });
 
-        Assert.That(token, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(token.AccessToken, Is.EqualTo(finalAccessToken));
-            Assert.That(token.RefreshToken, Is.EqualTo(finalRefreshToken));
-            Assert.That(token.TokenType, Is.EqualTo(finalTokenType));
+            Assert.That(credential.AccessToken, Is.EqualTo(finalAccessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(finalRefreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(finalTokenType));
         });
     }
 
     [Test]
-    public void Token_Update_NullParam_Exception()
+    public void Credential_Update_NullParam_Exception()
     {
         ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() =>
         {
-            Token token = new(AccessToken, RefreshToken, TokenType);
-            token.Update(null);
+            Credential credential = new(AccessToken, RefreshToken, TokenType);
+            credential.Update(null);
         });
 
         Assert.That(exception, Is.Not.Null);
@@ -205,55 +205,55 @@ internal class TypeTests
     [Test]
     [TestCase(AccessToken, RefreshToken, TokenType, 0, Scope, TokenType)]
     [TestCase(AccessToken, RefreshToken, TokenType, TimeSpan.TicksPerDay, Scope, TokenType)]
-    [TestCase(AccessToken, RefreshToken, null, 0, Scope, Token.DefaultTokenType)]
-    [TestCase(AccessToken, RefreshToken, null, TimeSpan.TicksPerHour, Scope, Token.DefaultTokenType)]
+    [TestCase(AccessToken, RefreshToken, null, 0, Scope, Credential.DefaultTokenType)]
+    [TestCase(AccessToken, RefreshToken, null, TimeSpan.TicksPerHour, Scope, Credential.DefaultTokenType)]
 
-    public void AuthorizationToken_Constructor_CorrectParam_Success(string accessToken, string refreshToken, string? tokenType, long expiresInTicks, string scope, string finalTokenType)
+    public void AuthorizationCredential_Constructor_CorrectParam_Success(string accessToken, string refreshToken, string? tokenType, long expiresInTicks, string scope, string finalTokenType)
     {
         TimeSpan expiresIn = new(expiresInTicks);
 
-        AuthorizationToken? token = null;
+        AuthCredential? credential = null;
 
-        Assert.DoesNotThrow(() => token = new AuthorizationToken(accessToken, refreshToken, tokenType, expiresIn, scope));
+        Assert.DoesNotThrow(() => credential = new AuthCredential(accessToken, refreshToken, tokenType, expiresIn, scope));
 
-        Assert.That(token, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(token.AccessToken, Is.EqualTo(accessToken));
-            Assert.That(token.RefreshToken, Is.EqualTo(refreshToken));
-            Assert.That(token.TokenType, Is.EqualTo(finalTokenType));
-            Assert.That(token.ExpiresIn, Is.EqualTo(expiresIn));
-            Assert.That(token.Scope, Is.EqualTo(scope));
+            Assert.That(credential.AccessToken, Is.EqualTo(accessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(refreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(finalTokenType));
+            Assert.That(credential.ExpiresIn, Is.EqualTo(expiresIn));
+            Assert.That(credential.Scope, Is.EqualTo(scope));
         });
     }
 
     [Test]
     [TestCase(AccessToken, RefreshToken, TokenType, 0, Scope, TokenType)]
     [TestCase(AccessToken, RefreshToken, TokenType, TimeSpan.TicksPerDay, Scope, TokenType)]
-    [TestCase(AccessToken, RefreshToken, null, 0, Scope, Token.DefaultTokenType)]
-    [TestCase(AccessToken, RefreshToken, null, TimeSpan.TicksPerHour, Scope, Token.DefaultTokenType)]
+    [TestCase(AccessToken, RefreshToken, null, 0, Scope, Credential.DefaultTokenType)]
+    [TestCase(AccessToken, RefreshToken, null, TimeSpan.TicksPerHour, Scope, Credential.DefaultTokenType)]
 
-    public void AuthorizationToken_CopyConstructor_CorrectParam_Success(string accessToken, string refreshToken, string? tokenType, long expiresInTicks, string scope, string finalTokenType)
+    public void AuthorizationCredential_CopyConstructor_CorrectParam_Success(string accessToken, string refreshToken, string? tokenType, long expiresInTicks, string scope, string finalTokenType)
     {
         TimeSpan expiresIn = new(expiresInTicks);
 
-        AuthorizationToken? token = null;
-        AuthorizationToken? newToken = null;
+        AuthCredential? credential = null;
+        AuthCredential? newCredential = null;
 
         Assert.DoesNotThrow(() =>
         {
-            token = new AuthorizationToken(accessToken, refreshToken, tokenType, expiresIn, scope);
-            newToken = new AuthorizationToken(token);
+            credential = new AuthCredential(accessToken, refreshToken, tokenType, expiresIn, scope);
+            newCredential = new AuthCredential(credential);
         });
 
-        Assert.That(token, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(token.AccessToken, Is.EqualTo(accessToken));
-            Assert.That(token.RefreshToken, Is.EqualTo(refreshToken));
-            Assert.That(token.TokenType, Is.EqualTo(finalTokenType));
-            Assert.That(token.ExpiresIn, Is.EqualTo(expiresIn));
-            Assert.That(token.Scope, Is.EqualTo(scope));
+            Assert.That(credential.AccessToken, Is.EqualTo(accessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(refreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(finalTokenType));
+            Assert.That(credential.ExpiresIn, Is.EqualTo(expiresIn));
+            Assert.That(credential.Scope, Is.EqualTo(scope));
         });
     }
 
@@ -306,7 +306,7 @@ internal class TypeTests
     [TestCase(AccessToken, RefreshToken, TokenType, TimeSpan.TicksPerDay, Scope,
               FreshAccessToken, FreshRefreshToken, FreshTokenType, TimeSpan.TicksPerHour, Empty,
               FreshAccessToken, FreshRefreshToken, FreshTokenType, TimeSpan.TicksPerHour, Scope)]
-    public void AuthorizationToken_Update_CorrectParam_Success(
+    public void AuthorizationCredential_Update_CorrectParam_Success(
         string accessToken, string refreshToken, string tokenType, long expiresInTicks, string scope,
         string freshAccessToken, string freshRefreshToken, string freshTokenType, long freshExpiresInTicks, string freshScope,
         string finalAccessToken, string finalRefreshToken, string finalTokenType, long finalExpiresInTicks, string finalScope)
@@ -315,25 +315,25 @@ internal class TypeTests
         TimeSpan freshExpiresIn = new(freshExpiresInTicks);
         TimeSpan finalExpiresIn = new(finalExpiresInTicks);
 
-        AuthorizationToken? token = null;
-        AuthorizationToken? fresh = null;
+        AuthCredential? credential = null;
+        AuthCredential? fresh = null;
 
         Assert.DoesNotThrow(() =>
         {
-            token = new(accessToken, refreshToken, tokenType, expiresIn, scope);
+            credential = new(accessToken, refreshToken, tokenType, expiresIn, scope);
             fresh = new(freshAccessToken, freshRefreshToken, freshTokenType, freshExpiresIn, freshScope);
 
-            token.Update(fresh);
+            credential.Update(fresh);
         });
 
-        Assert.That(token, Is.Not.Null);
+        Assert.That(credential, Is.Not.Null);
         Assert.Multiple(() =>
         {
-            Assert.That(token.AccessToken, Is.EqualTo(finalAccessToken));
-            Assert.That(token.RefreshToken, Is.EqualTo(finalRefreshToken));
-            Assert.That(token.TokenType, Is.EqualTo(finalTokenType));
-            Assert.That(token.ExpiresIn, Is.EqualTo(finalExpiresIn));
-            Assert.That(token.Scope, Is.EqualTo(finalScope));
+            Assert.That(credential.AccessToken, Is.EqualTo(finalAccessToken));
+            Assert.That(credential.RefreshToken, Is.EqualTo(finalRefreshToken));
+            Assert.That(credential.TokenType, Is.EqualTo(finalTokenType));
+            Assert.That(credential.ExpiresIn, Is.EqualTo(finalExpiresIn));
+            Assert.That(credential.Scope, Is.EqualTo(finalScope));
         });
     }
 
@@ -351,30 +351,30 @@ internal class TypeTests
     [TestCase(AccessToken, null, TokenType, Scope, "refreshToken")]
     [TestCase(AccessToken, null, null, Scope, "refreshToken")]
     [TestCase(AccessToken, RefreshToken, TokenType, null, "scope")]
-    public void AuthorizationToken_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string? scope, string exceptionParamName)
+    public void AuthorizationCredential_Constructor_NullParam_Exception(string? accessToken, string? refreshToken, string? tokenType, string? scope, string exceptionParamName)
     {
-        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(accessToken, refreshToken, tokenType, default, scope));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthCredential(accessToken, refreshToken, tokenType, default, scope));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo(exceptionParamName));
     }
 
     [Test]
-    public void AuthorizationToken_CopyConstructor_NullParam_Exception()
+    public void AuthorizationCredential_CopyConstructor_NullParam_Exception()
     {
-        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthorizationToken(null));
+        ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() => new AuthCredential(null));
 
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.ParamName, Is.EqualTo("other"));
     }
 
     [Test]
-    public void AuthorizationToken_Update_NullParam_Exception()
+    public void AuthorizationCredential_Update_NullParam_Exception()
     {
         ArgumentNullException? exception = Assert.Throws<ArgumentNullException>(() =>
         {
-            AuthorizationToken token = new(AccessToken, RefreshToken, TokenType, default, Scope);
-            token.Update(null);
+            AuthCredential credential = new(AccessToken, RefreshToken, TokenType, default, Scope);
+            credential.Update(null);
         });
 
         Assert.That(exception, Is.Not.Null);

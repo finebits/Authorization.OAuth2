@@ -24,7 +24,7 @@ namespace Finebits.Authorization.OAuth2.Test.Data.Mocks
         public const string ErrorDescription = "fake-error-description";
         public const string ErrorSubcode = "fake-error-subcode";
 
-        public static class Token
+        public static class Credential
         {
             public const string TokenType = "Bearer";
             public const string AccessToken = "fake-access-token";

@@ -42,37 +42,37 @@ namespace Finebits.Authorization.OAuth2
         protected Task<TContent> SendRequestAsync<TContent>(
             Uri endpoint,
             HttpMethod method,
-            Token token,
+            Credential credential,
             NameValueCollection payload,
             HeaderCollection headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
             NetworkClient client = new(HttpClient);
-            return client.SendRequestAsync<TContent>(endpoint, method, payload, TryAddAuthorizationHeader(headers, token), cancellationToken);
+            return client.SendRequestAsync<TContent>(endpoint, method, payload, TryAddAuthorizationHeader(headers, credential), cancellationToken);
         }
 
         protected Task<TContent> SendEmptyRequestAsync<TContent>(
             Uri endpoint,
             HttpMethod method,
-            Token token,
+            Credential credential,
             HeaderCollection headers,
             CancellationToken cancellationToken)
             where TContent : IInvalidResponse
         {
             NetworkClient client = new(HttpClient);
-            return client.SendEmptyRequestAsync<TContent>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
+            return client.SendEmptyRequestAsync<TContent>(endpoint, method, TryAddAuthorizationHeader(headers, credential), cancellationToken);
         }
 
         protected Task<Stream> DownloadFileAsync<TError>(
             Uri endpoint,
             HttpMethod method,
-            Token token,
+            Credential credential,
             HeaderCollection headers,
             CancellationToken cancellationToken)
         {
             NetworkClient client = new(HttpClient);
-            return client.DownloadFileAsync<TError>(endpoint, method, TryAddAuthorizationHeader(headers, token), cancellationToken);
+            return client.DownloadFileAsync<TError>(endpoint, method, TryAddAuthorizationHeader(headers, credential), cancellationToken);
         }
 
         protected static (string method, string verifier, string challenge) GenerateCodeChallengeSHA256()
@@ -109,9 +109,9 @@ namespace Finebits.Authorization.OAuth2
             return properties[propertyName] ?? throw new AuthorizationPropertiesException(null, propertyName);
         }
 
-        private static HeaderCollection TryAddAuthorizationHeader(HeaderCollection headers, Token token)
+        private static HeaderCollection TryAddAuthorizationHeader(HeaderCollection headers, Credential credential)
         {
-            if (token is null)
+            if (credential is null)
             {
                 return headers;
             }
@@ -119,7 +119,7 @@ namespace Finebits.Authorization.OAuth2
             HeaderCollection result = new(headers ?? Enumerable.Empty<KeyValuePair<string, IEnumerable<string>>>());
             HeaderCollection authorizationHeader = new(
             [
-                ("Authorization", new System.Net.Http.Headers.AuthenticationHeaderValue(token.TokenType, token.AccessToken).ToString())
+                ("Authorization", new System.Net.Http.Headers.AuthenticationHeaderValue(credential.TokenType, credential.AccessToken).ToString())
             ]);
 
             return new HeaderCollection(result.Union(authorizationHeader));

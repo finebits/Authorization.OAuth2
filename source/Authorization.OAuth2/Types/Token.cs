@@ -20,7 +20,7 @@ using System;
 
 namespace Finebits.Authorization.OAuth2.Types
 {
-    public class Token
+    public class Credential
     {
         public const string BearerType = "Bearer";
         public const string DefaultTokenType = BearerType;
@@ -29,14 +29,14 @@ namespace Finebits.Authorization.OAuth2.Types
         public string RefreshToken { get; private set; }
         public string TokenType { get; private set; }
 
-        public Token(string accessToken, string refreshToken, string tokenType)
+        public Credential(string accessToken, string refreshToken, string tokenType)
         {
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
             RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
             TokenType = tokenType ?? DefaultTokenType;
         }
 
-        public Token(Token other)
+        public Credential(Credential other)
         {
             if (other is null)
             {
@@ -48,7 +48,7 @@ namespace Finebits.Authorization.OAuth2.Types
             TokenType = other.TokenType;
         }
 
-        public virtual void Update(Token other)
+        public virtual void Update(Credential other)
         {
             if (other is null)
             {
