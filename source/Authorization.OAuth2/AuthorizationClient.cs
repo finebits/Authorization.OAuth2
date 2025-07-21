@@ -147,10 +147,18 @@ namespace Finebits.Authorization.OAuth2
             string error = properties?.Get("error");
             if (!string.IsNullOrEmpty(error))
             {
-                throw new AuthorizationBrokerResultException(
-                    properties: properties,
-                    message: "Authorization cannot be done. The result of the authentication operation contains an error.",
-                    innerException: null);
+                string error_subcode = properties?.Get("error_subcode");
+                if (!string.IsNullOrEmpty(error_subcode) && error_subcode == "cancel")
+                {
+                    throw new OperationCanceledException("The authentication operation was canceled by the user.");
+                }
+                else
+                {
+                    throw new AuthorizationBrokerResultException(
+                        properties: properties,
+                        message: "Authorization cannot be done. The result of the authentication operation contains an error.",
+                        innerException: null);
+                }
             }
 
             if (properties is null || properties.Count == 0)
